@@ -1,0 +1,13 @@
+Index: libs/Makefile.am
+===================================================================
+--- libs.orig/Makefile.am	2008-09-25 17:48:46.000000000 +0200
++++ libs/Makefile.am	2008-09-25 17:48:53.000000000 +0200
+@@ -1,8 +1,5 @@
+ AUTOMAKE_OPTIONS = gnu
+ 
+ SUBDIRS = \
+-	libavs \
+-	liblcddisplay \
+-	liblircdclient \
+ 	libtuxtxt
+ 	

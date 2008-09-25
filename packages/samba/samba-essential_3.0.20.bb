@@ -3,7 +3,7 @@ inherit update-rc.d
 
 FILE_PR = "r6"
 
-SRC_URI = "file://config-lfs.patch;patch=1 \
+SRC_URI += "file://config-lfs.patch;patch=1 \
 	   file://init-essential \
            file://quota.patch;patch=1;pnum=0 \
 	   file://smb-essential.conf \

@@ -6,6 +6,8 @@ INHIBIT_PACKAGE_STRIP = "1"
 
 require madwifi-ng_r.inc
 
+DEFAULT_PREFERENCE = "-1"
+
 # Due to a minor Makefile restructuring, newer versions require an updated
 # patch; this is really ugly and some alternate way to do this that's more
 # generic should be figured out.

@@ -398,6 +398,8 @@ python populate_packages () {
 					continue
 			if (not os.path.islink(file)) and (not os.path.exists(file)):
 				continue
+			if file[-4:] == '.pyo':
+				continue
 			if file in seen:
 				continue
 			seen.append(file)

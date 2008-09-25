@@ -226,7 +226,7 @@ FILES_python-mailbox="${libdir}/python2.5/mailbox.* "
 DESCRIPTION_python-xml="Python basic XML support."
 PR_python-xml="ml0"
 RDEPENDS_python-xml="python-core python-re"
-FILES_python-xml="${libdir}/python2.5/lib-dynload/pyexpat.so ${libdir}/python2.5/xml ${libdir}/python2.5/xmllib.* "
+FILES_python-xml="${libdir}/python2.5/lib-dynload/pyexpat.so ${libdir}/python2.5/xml ${libdir}/python2.5/xmllib.* ${libdir}/python2.5/lib-dynload/_elementtree.so "
 
 DESCRIPTION_python-mime="Python MIME Handling APIs"
 PR_python-mime="ml0"

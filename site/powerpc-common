@@ -326,3 +326,6 @@ sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
 # dpkg
 dpkg_cv_va_copy=${ac_cv_va_copy=yes}
 dpkg_cv___va_copy=${ac_cv___va_copy=yes}
+
+# rp_pppoe
+rpppoe_cv_pack_bitfields=${rpppoe_cv_pack_bitfields=rev}

@@ -56,7 +56,7 @@ do_unpack_append() {
 do_move_ports() {
         if test -d ${WORKDIR}/trunk/ports ; then
 	    rm -rf ${S}/ports
-	    mv ${WORKDIR}/trunk/ports ${S}/
+	    mv -v ${WORKDIR}/trunk/ports ${S}/
 	fi    
 }
 

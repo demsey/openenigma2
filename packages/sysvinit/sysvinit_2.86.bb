@@ -39,7 +39,7 @@ ALTERNATIVE_PATH = "${base_sbindir}/init.sysvinit"
 ALTERNATIVE_PRIORITY = "50"
 
 PACKAGES =+ "sysvinit-pidof sysvinit-sulogin"
-FILES_${PN} += "${base_sbindir}/* ${base_bindir}/*"
+FILES_${PN} += "${base_sbindir} ${base_bindir}"
 FILES_sysvinit-pidof = "${base_bindir}/pidof.sysvinit"
 FILES_sysvinit-sulogin = "${base_sbindir}/sulogin"
 
@@ -102,6 +102,15 @@ EOF
 	mv ${D}${bindir}/last ${D}${bindir}/last.${PN}
 	mv ${D}${bindir}/mesg ${D}${bindir}/mesg.${PN}
 	mv ${D}${bindir}/wall ${D}${bindir}/wall.${PN}
+}
+
+do_install_append_opendreambox () {
+	cat <<EOF >>${D}/etc/inittab
+# enigma
+gui:2:respawn:/usr/bin/enigma.sh
+# enigma2
+e2:3:respawn:/usr/bin/enigma2.sh
+EOF
 }
 
 pkg_postinst_${PN} () {

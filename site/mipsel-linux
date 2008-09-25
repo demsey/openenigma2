@@ -106,10 +106,20 @@ rd_cv_ieee_works=${rd_cv_ieee_works=yes}
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
 
 # samba
+samba_cv_LINUX_LFS_SUPPORT=${samba_cv_LINUX_LFS_SUPPORT=yes}
+samba_cv_HAVE_OFF64_T=${samba_cv_HAVE_OFF64_T=yes}
+samba_cv_have_longlong=${samba_cv_have_longlong=yes}
+samba_cv_HAVE_UNSIGNED_CHAR=${samba_cv_HAVE_UNSIGNED_CHAR=yes}
 samba_cv_HAVE_GETTIMEOFDAY_TZ=${samba_cv_HAVE_GETTIMEOFDAY_TZ=yes}
+samba_cv_HAVE_C99_VSNPRINTF=${samba_cv_HAVE_C99_VSNPRINTF=yes}
+samba_cv_HAVE_BROKEN_READDIR=${samba_cv_HAVE_BROKEN_READDIR=no}
+samba_cv_HAVE_IFACE_IFCONF=${samba_cv_HAVE_IFACE_IFCONF=yes}
 
 # vim
 ac_cv_sizeof_int=${ac_cv_sizeof_int=4}
+ac_cv_sizeof_double=${ac_cv_sizeof_double=8}
+ac_cv_sizeof_float=${ac_cv_sizeof_float=4}
+ac_cv_sizeof_fpos_t=${ac_cv_sizeof_fpos_t=12}
 
 # sudo
 sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
@@ -127,3 +137,15 @@ ac_cv_func_posix_getpwnam_r=${ac_cv_func_posix_getpwnam_r=yes}
 cv_mono_sizeof_sunpath=108
 mono_cv_uscore=${mono_cv_uscore=no}
 
+#python2.5
+ac_cv_file__dev_ptmx=${ac_cv_file__dev_ptmx=yes}
+ac_cv_file__dev_ptc=${ac_cv_file__dev_ptc=no}
+ac_cv_no_strict_aliasing_ok=${ac_cv_no_strict_aliasing_ok=yes}
+ac_cv_pthread=${ac_cv_pthread=yes}
+ac_cv_cxx_thread=${ac_cv_cxx_thread=yes}
+
+# ipsec-tools
+ac_cv_va_copy=${ac_cv_va_copy=yes}
+ac_cv___va_copy=${ac_cv___va_copy=yes}
+ac_cv_va_val_copy=${ac_cv_va_val_copy=yes}
+racoon_cv_bug_getaddrinfo=${racoon_cv_bug_getaddrinfo=no}

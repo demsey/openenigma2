@@ -13,7 +13,8 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-${PV}.tar.bz2 
 	   file://install.patch;patch=1 \
 	   file://auto.net-sort-option-fix.patch;patch=1 \
 	   file://autofs-additional-distros.patch;patch=1 \
-	   file://no-bash.patch;patch=1"
+	   file://no-bash.patch;patch=1 \
+	   file://autofs-add-hotplug.patch;patch=1"
 
 inherit autotools update-rc.d
 

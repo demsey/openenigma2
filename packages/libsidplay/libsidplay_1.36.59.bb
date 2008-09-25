@@ -5,7 +5,7 @@ LICENSE = "GPL"
 
 FILE_PR = "r1"
 
-SRC_URI = "http://www.geocities.com/SiliconValley/Lakes/5147/sidplay/packages/libsidplay-${PV}.tgz \
+SRC_URI = "http://critical.ch/distfiles/libsidplay-${PV}.tgz \
            http://ftp.debian.org/debian/pool/main/libs/libsidplay/libsidplay_1.36.59-5.diff.gz;patch=1 \
 "
 

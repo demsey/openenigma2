@@ -1,7 +1,7 @@
 require gst-plugins.inc
 FILE_PR = "r0"
 
-DEPENDS += "gst-plugins-base mpeg2dec libsidplay"
+DEPENDS += "gst-plugins-base libsidplay"
 
 SRC_URI += "\
 #  file://cross-compile.patch;patch=1 \

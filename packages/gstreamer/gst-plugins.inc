@@ -1,12 +1,13 @@
 require gst-common.inc
 DESCRIPTION = "Plugins for GStreamer"
-DEPENDS = "gstreamer libmikmod libmad liboil libogg tremor libvorbis libid3tag"
+DEPENDS = "gstreamer libmikmod libmad liboil libogg tremor libvorbis libid3tag neon"
 
 PACKAGES_DYNAMIC = "gst-plugin-*"
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2"
 
 EXTRA_OECONF = "--disable-aalib --disable-shout2 --disable-sdl --disable-cdaudio --x-includes=${STAGING_INCDIR} --x-libraries=${STAGING_LIBDIR} "
+EXTRA_OECONF_opendreambox = "--disable-x --disable-aalib --disable-esd --disable-shout2 --disable-sdl --with-check=no --enable-neon"
 
 acpaths = "-I ${S}/common/m4 -I ${S}/m4"
 

@@ -1,0 +1,83 @@
+diff -u /home/tmbinc/opendreambox/1.6/build/tmp/work/mipsel-linux/tuxbox-tuxtxt-32bpp-0.0+cvs20060112-r6/tuxtxt/tuxtxt.c tuxtxt-newft/tuxtxt.c
+--- /home/tmbinc/opendreambox/1.6/build/tmp/work/mipsel-linux/tuxbox-tuxtxt-32bpp-0.0+cvs20060112-r6/tuxtxt/tuxtxt.c	2008-09-25 23:04:30.000000000 +0200
++++ tuxtxt-newft/tuxtxt.c	2008-09-25 23:00:56.000000000 +0200
+@@ -264,7 +264,7 @@
+ 		int i;
+ 		fontwidth = newwidth;
+ 		if (usettf)
+-			typettf.font.pix_width  = (FT_UShort) fontwidth * TTFWidthFactor16 / 16;
++			typettf_font.pix_width  = (FT_UShort) fontwidth * TTFWidthFactor16 / 16;
+ 		else
+ 		{
+ 			if (newwidth < 11)
+@@ -273,7 +273,7 @@
+ 				newwidth = 22;
+ 			else
+ 				newwidth = 23;
+-			typettf.font.pix_width  = typettf.font.pix_height = (FT_UShort) newwidth;
++			typettf_font.pix_width  = typettf_font.pix_height = (FT_UShort) newwidth;
+ 		}
+ 		for (i = 0; i <= 12; i++)
+ 			axdrcs[i] = (fontwidth * i + 6) / 12;
+@@ -1983,22 +1983,22 @@
+ 
+ 	if (usettf)
+ 	{
+-		typettf.font.face_id = (FTC_FaceID) TUXTXTTTFVAR;
+-		typettf.font.pix_height = (FT_UShort) fontheight * TTFHeightFactor16 / 16;
++		typettf_font.face_id = (FTC_FaceID) TUXTXTTTFVAR;
++		typettf_font.pix_height = (FT_UShort) fontheight * TTFHeightFactor16 / 16;
+ 	}
+ 	else
+ 	{
+-		typettf.font.face_id = (FTC_FaceID) TUXTXTOTBVAR;
+-		typettf.font.pix_width  = (FT_UShort) 23;
+-		typettf.font.pix_height = (FT_UShort) 23;
++		typettf_font.face_id = (FTC_FaceID) TUXTXTOTBVAR;
++		typettf_font.pix_width  = (FT_UShort) 23;
++		typettf_font.pix_height = (FT_UShort) 23;
+ 	}
+ 
+-	typettf.image_type = ftc_image_mono;
++	typettf.flags = FT_LOAD_MONOCHROME;
+ 
+-	if ((error = FTC_Manager_Lookup_Face(manager, typettf.font.face_id, &face)))
++	if ((error = FTC_Manager_Lookup_Face(manager, typettf_font.face_id, &face)))
+ 	{
+-		typettf.font.face_id = (usettf ? (FTC_FaceID) TUXTXTTTF : TUXTXTOTB);
+-		if ((error = FTC_Manager_Lookup_Face(manager, typettf.font.face_id, &face)))
++		typettf_font.face_id = (usettf ? (FTC_FaceID) TUXTXTTTF : TUXTXTOTB);
++		if ((error = FTC_Manager_Lookup_Face(manager, typettf_font.face_id, &face)))
+ 		{
+ 			printf("TuxTxt <FTC_Manager_Lookup_Face failed with Errorcode 0x%.2X>\n", error);
+ 			FTC_Manager_Done(manager);
+@@ -4893,10 +4893,10 @@
+ 	int old_width = fontwidth;
+ 	int old_height = fontheight;
+ 	setfontwidth(fontwidth_small_lcd);
+-	typettf.font.pix_height = fontheight = fontwidth_small_lcd;
++	typettf_font.pix_height = fontheight = fontwidth_small_lcd;
+ 	RenderChar(Char, 0, 0, -(YPos<<8 | XPos));
+ 	setfontwidth(old_width);
+-	typettf.font.pix_height = fontheight = old_height;
++	typettf_font.pix_height = fontheight = old_height;
+ }
+ #endif
+ 
+diff -u /home/tmbinc/opendreambox/1.6/build/tmp/work/mipsel-linux/tuxbox-tuxtxt-32bpp-0.0+cvs20060112-r6/tuxtxt/tuxtxt.h tuxtxt-newft/tuxtxt.h
+--- /home/tmbinc/opendreambox/1.6/build/tmp/work/mipsel-linux/tuxbox-tuxtxt-32bpp-0.0+cvs20060112-r6/tuxtxt/tuxtxt.h	2008-09-25 23:04:30.000000000 +0200
++++ tuxtxt-newft/tuxtxt.h	2008-09-25 23:00:26.000000000 +0200
+@@ -263,11 +264,11 @@
+ FTC_SBitCache   cache;
+ FTC_SBit        sbit;
+ 
+-#define FONTTYPE FTC_Image_Desc
++#define FONTTYPE FTC_ImageTypeRec
+ 
+ FT_Face			face;
+ FONTTYPE typettf;
+-
++FTC_FontRec typettf_font;
+ 
+ // G2 Charset (0 = Latin, 1 = Cyrillic, 2 = Greek)
+ const unsigned short int G2table[3][6*16] =
