@@ -16,7 +16,7 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs \
 	base-files-doc"
 
 # experimental packages
-OPENDREAMBOX_EXPERIMENTAL = "python-twisted enigma2 tuxbox-tuxtxt-32bpp"
+OPENDREAMBOX_EXPERIMENTAL = "python-twisted enigma2"
 OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrade \
 	enigma2-plugin-systemplugins-softwareupdate \
 	enigma2-plugin-systemplugins-positionersetup \
