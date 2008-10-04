@@ -9,13 +9,13 @@ HOMEPAGE = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/"
 LICENSE = "GPL"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 INHIBIT_DEFAULT_DEPS = "1"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-${PV}.tar.bz2 \
 	file://keyboard.patch;patch=1"
 
 def get_nptl_patches(bb, d):
-	if bb.data.getVar('GLIBC_ADDONS', d, 1) in ['nptl']:
+	if 'nptl' in bb.data.getVar('GLIBC_ADDONS', d, 1).split(','):
 		return "file://linux-libc-headers-2.6.12.0-mips_tls-1.patch;patch=1;pnum=1"
 	return ""
 

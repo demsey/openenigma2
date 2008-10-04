@@ -8,7 +8,7 @@ KV_dm7020 = "2.6.9"
 PV_dm7020 = "${KV}-20060622"
 
 def get_modules_extension(bb, d):
-	if bb.data.getVar('GLIBC_ADDONS', d, 1) in ['nptl']:
+	if 'nptl' in bb.data.getVar('GLIBC_ADDONS', d, 1).split(','):
 		return "-gcc4.1"
 	return ""
 
