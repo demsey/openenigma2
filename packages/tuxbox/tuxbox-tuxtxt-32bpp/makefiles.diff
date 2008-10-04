@@ -39,7 +39,7 @@ diff -Naur tuxtxt_org/Makefile.am tuxtxt/Makefile.am
 -	@FREETYPE_CFLAGS@ \
 -	-I$(top_srcdir)/include \
 -	-I$(includedir)/tuxbox/tuxtxt 
-+SUBDIRS = font
++SUBDIRS = font python
  
 -tuxtxt_la_LIBADD = \
 -	@FREETYPE_LIBS@ \
@@ -518,7 +518,7 @@ diff -Naur tuxtxt_org/acinclude.m4 tuxtxt/acinclude.m4
 diff -Naur tuxtxt_org/configure.ac tuxtxt/configure.ac
 --- tuxtxt_org/configure.ac	1970-01-01 01:00:00.000000000 +0100
 +++ tuxtxt/configure.ac	2006-12-28 12:08:58.000000000 +0100
-@@ -0,0 +1,16 @@
+@@ -0,0 +1,17 @@
 +AC_INIT(tuxbox-tuxtxt-32bpp,1.96)
 +AM_INIT_AUTOMAKE(tuxbox-tuxtxt-32bpp,1.96)
 +
@@ -535,3 +535,13 @@ diff -Naur tuxtxt_org/configure.ac tuxtxt/configure.ac
 +
 +AC_OUTPUT(Makefile)
 +AC_OUTPUT(font/Makefile)
++AC_OUTPUT(python/Makefile)
+diff -Naur tuxtxt_32bpp/python/Makefile.am tuxtxt/python/Makefile.am
+--- tuxtxt/python/Makefile.am	1970-01-01 01:00:00.000000000 +0100
++++ tuxtxt/python/Makefile.am	2006-03-10 21:43:45.000000000 +0100
+@@ -0,0 +1,5 @@
++installdir = $(LIBDIR)/enigma2/python/Plugins/Extensions/Tuxtxt
++
++install_DATA = \
++	plugin.py \
++	__init__.py

@@ -1,0 +1,77 @@
+--- ~/tuxtxt.c	2008-09-09 22:34:39.000000000 +0200
++++ ~/tuxtxt.c	2008-09-10 19:03:07.000000000 +0200
+@@ -867,15 +867,6 @@
+ 			 ymosaic[0], ymosaic[1], ymosaic[2], StartX, StartY, ascender);
+ #endif
+ 
+-	/* get fixed screeninfo */
+-	if (ioctl(fb, FBIOGET_FSCREENINFO, &fix_screeninfo) == -1)
+-	{
+-		perror("TuxTxt <FBIOGET_FSCREENINFO>");
+-		FTC_Manager_Done(manager);
+-		FT_Done_FreeType(library);
+-		return 0;
+-	}
+-
+ 	/* get variable screeninfo */
+ 	if (ioctl(fb, FBIOGET_VSCREENINFO, &var_screeninfo) == -1)
+ 	{
+@@ -885,6 +876,11 @@
+ 		return 0;
+ 	}
+ 
++	var_screeninfo_original = var_screeninfo;
++
++	var_screeninfo.xres = 720;
++	var_screeninfo.yres = 576;
++
+ 	/* set variable screeninfo for double buffering */
+ 	var_screeninfo.yres_virtual = 2*var_screeninfo.yres;
+ 	var_screeninfo.xres_virtual = var_screeninfo.xres;
+@@ -898,6 +894,15 @@
+ 		return 0;
+ 	}
+ 
++	/* get fixed screeninfo */
++	if (ioctl(fb, FBIOGET_FSCREENINFO, &fix_screeninfo) == -1)
++	{
++		perror("TuxTxt <FBIOGET_FSCREENINFO>");
++		FTC_Manager_Done(manager);
++		FT_Done_FreeType(library);
++		return 0;
++	}
++
+ #if TUXTXT_DEBUG
+ 	if (ioctl(fb, FBIOGET_VSCREENINFO, &var_screeninfo) == -1)
+ 	{
+@@ -1053,7 +1058,7 @@
+ 			perror("TuxTxt <FBIOPAN_DISPLAY>");
+ 	}
+ 	/* clear screen */
+-	memset(lfb, 0, var_screeninfo.yres * fix_screeninfo.line_length);
++	memset(lfb, 0, fix_screeninfo.smem_len);
+ 
+ 	/* close freetype */
+ 	FTC_Manager_Done(manager);
+@@ -1062,6 +1067,11 @@
+ 	/* unmap framebuffer */
+ 	munmap(lfb, fix_screeninfo.smem_len);
+ 
++	if (ioctl(fb, FBIOPUT_VSCREENINFO, &var_screeninfo_original) == -1)
++	{
++		perror("TuxTxt <FBIOPUT_VSCREENINFO>");
++	}
++
+ 	/* close lcd */
+ 	close(lcd);
+ 	
+--- ~/tuxtxt.h	2008-09-09 22:34:39.000000000 +0200
++++ ~/tuxtxt.h	2008-09-10 18:23:21.000000000 +0200
+@@ -207,6 +207,7 @@
+ /* framebuffer stuff */
+ unsigned char *lfb = 0;
+ struct fb_var_screeninfo var_screeninfo;
++struct fb_var_screeninfo var_screeninfo_original;
+ struct fb_fix_screeninfo fix_screeninfo;
+ 
+ /* freetype stuff */

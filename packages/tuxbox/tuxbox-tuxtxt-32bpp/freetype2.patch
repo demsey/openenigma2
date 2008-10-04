@@ -1,0 +1,87 @@
+--- ~/tuxtxt.c	2008-09-03 20:07:53.000000000 +0200
++++ ~/tuxtxt.c	2008-09-04 10:54:47.000000000 +0200
+@@ -243,7 +243,11 @@
+ 		int i;
+ 		fontwidth = newwidth;
+ 		if (usettf)
++#if ((defined(FREETYPE_MAJOR)) && (((FREETYPE_MAJOR == 2) && (((FREETYPE_MINOR == 1) && (FREETYPE_PATCH >= 9)) || (FREETYPE_MINOR > 1))) || (FREETYPE_MAJOR > 2)))
++			typettf.width  = (FT_UShort) fontwidth * TTFWidthFactor16 / 16;
++#else
+ 			typettf.font.pix_width  = (FT_UShort) fontwidth * TTFWidthFactor16 / 16;
++#endif
+ 		else
+ 		{
+ 			if (newwidth < 11)
+@@ -252,7 +256,11 @@
+ 				newwidth = 22;
+ 			else
+ 				newwidth = 23;
++#if ((defined(FREETYPE_MAJOR)) && (((FREETYPE_MAJOR == 2) && (((FREETYPE_MINOR == 1) && (FREETYPE_PATCH >= 9)) || (FREETYPE_MINOR > 1))) || (FREETYPE_MAJOR > 2)))
++			typettf.width  = typettf.height = (FT_UShort) newwidth;
++#else
+ 			typettf.font.pix_width  = typettf.font.pix_height = (FT_UShort) newwidth;
++#endif
+ 		}
+ 		for (i = 0; i <= 12; i++)
+ 			axdrcs[i] = (fontwidth * i + 6) / 12;
+@@ -808,22 +816,43 @@
+ 
+ 	if (usettf)
+ 	{
++#if ((defined(FREETYPE_MAJOR)) && (((FREETYPE_MAJOR == 2) && (((FREETYPE_MINOR == 1) && (FREETYPE_PATCH >= 9)) || (FREETYPE_MINOR > 1))) || (FREETYPE_MAJOR > 2)))
++		typettf.face_id = (FTC_FaceID) TUXTXTTTFVAR;
++		typettf.height = (FT_UShort) fontheight * TTFHeightFactor16 / 16;
++#else
+ 		typettf.font.face_id = (FTC_FaceID) TUXTXTTTFVAR;
+ 		typettf.font.pix_height = (FT_UShort) fontheight * TTFHeightFactor16 / 16;
++#endif
+ 	}
+ 	else
+ 	{
++#if ((defined(FREETYPE_MAJOR)) && (((FREETYPE_MAJOR == 2) && (((FREETYPE_MINOR == 1) && (FREETYPE_PATCH >= 9)) || (FREETYPE_MINOR > 1))) || (FREETYPE_MAJOR > 2)))
++		typettf.face_id = (FTC_FaceID) TUXTXTOTBVAR;
++		typettf.width  = (FT_UShort) 23;
++		typettf.height = (FT_UShort) 23;
++#else
+ 		typettf.font.face_id = (FTC_FaceID) TUXTXTOTBVAR;
+ 		typettf.font.pix_width  = (FT_UShort) 23;
+ 		typettf.font.pix_height = (FT_UShort) 23;
++#endif
+ 	}
+-
++#if ((defined(FREETYPE_MAJOR)) && (((FREETYPE_MAJOR == 2) && (((FREETYPE_MINOR == 1) && (FREETYPE_PATCH >= 9)) || (FREETYPE_MINOR > 1))) || (FREETYPE_MAJOR > 2)))
++	typettf.flags = FT_LOAD_MONOCHROME;
++#else
+ 	typettf.image_type = ftc_image_mono;
++#endif
+ 
++#if ((defined(FREETYPE_MAJOR)) && (((FREETYPE_MAJOR == 2) && (((FREETYPE_MINOR == 1) && (FREETYPE_PATCH >= 9)) || (FREETYPE_MINOR > 1))) || (FREETYPE_MAJOR > 2)))
++	if ((error = FTC_Manager_Lookup_Face(manager, typettf.face_id, &face)))
++	{
++		typettf.face_id = (usettf ? (FTC_FaceID) TUXTXTTTF : TUXTXTOTB);
++		if ((error = FTC_Manager_Lookup_Face(manager, typettf.face_id, &face)))
++#else
+ 	if ((error = FTC_Manager_Lookup_Face(manager, typettf.font.face_id, &face)))
+ 	{
+ 		typettf.font.face_id = (usettf ? (FTC_FaceID) TUXTXTTTF : TUXTXTOTB);
+ 		if ((error = FTC_Manager_Lookup_Face(manager, typettf.font.face_id, &face)))
++#endif
+ 		{
+ 			printf("TuxTxt <FTC_Manager_Lookup_Face failed with Errorcode 0x%.2X>\n", error);
+ 			FTC_Manager_Done(manager);
+--- ~/tuxtxt.h	2008-09-03 20:07:53.000000000 +0200
++++ ~/tuxtxt.h	2008-09-04 10:54:18.000000000 +0200
+@@ -210,6 +210,13 @@
+ struct fb_fix_screeninfo fix_screeninfo;
+ 
+ /* freetype stuff */
++#if ((defined(FREETYPE_MAJOR)) && (((FREETYPE_MAJOR == 2) && (((FREETYPE_MINOR == 1) && (FREETYPE_PATCH >= 9)) || (FREETYPE_MINOR > 1))) || (FREETYPE_MAJOR > 2)))
++typedef FTC_ImageTypeRec FTC_Image_Desc;
++typedef FTC_SBitCache FTC_SBit_Cache;
++#define FTC_SBit_Cache_New(a,b)		FTC_SBitCache_New(a,b)
++#define FTC_SBit_Cache_Lookup(a,b,c,d)	FTC_SBitCache_Lookup(a,b,c,d,NULL)
++#define FTC_Manager_Lookup_Face(a,b,c) FTC_Manager_LookupFace(a,b,c)
++#endif
+ FT_Library      library;
+ FTC_Manager     manager;
+ FTC_SBitCache   cache;

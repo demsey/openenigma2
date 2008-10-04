@@ -1,0 +1,214 @@
+diff -ru libs.org/libtuxtxt/libtuxtxt.c libs/libtuxtxt/libtuxtxt.c
+--- libs.org/libtuxtxt/libtuxtxt.c	2008-05-21 09:25:30.000000000 +0200
++++ libs/libtuxtxt/libtuxtxt.c	2008-05-22 09:42:18.000000000 +0200
+@@ -7,6 +7,12 @@
+  *    Info entnommen aus videotext-0.6.19991029,                              *
+  *    Copyright (c) 1994-96 Martin Buck  <martin-2.buck@student.uni-ulm.de>   *
+  *                                                                            *
++ *              ported 2006 to Dreambox 7025 / 32Bit framebuffer              *
++ *                   by Seddi <seddi@i-have-a-dreambox.com>                   *
++ *                                                                            *
++ *              ported 32Bit framebuffer to Tuxtxt v1.99 (2008)               *
++ *                      by the PLi team (Sat-Turner)                          *
++ *                                                                            *
+  ******************************************************************************/
+ 
+ #ifdef DEBUG
+diff -ru libs.org/libtuxtxt/tuxtxt_common.h libs/libtuxtxt/tuxtxt_common.h
+--- libs.org/libtuxtxt/tuxtxt_common.h	2008-08-13 19:53:47.000000000 +0200
++++ libs/libtuxtxt/tuxtxt_common.h	2008-05-31 13:44:57.000000000 +0200
+@@ -152,6 +152,19 @@
+ 	aG3_70, aG3_71, aG3_72, aG3_73, aG3_74, aG3_75, aG3_76, aG3_77, aG3_78, aG3_79, aG3_7a, aG3_7b, aG3_7c, aG3_7d, aG3_7e
+ };
+ 
++/* 32bit colortable */
++unsigned char bgra[][4] = { 
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
++"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xC0", "\0\0\0\x00",
++"\0\0\0\x33" };
++
+ tuxtxt_cache_struct tuxtxt_cache;
+ static pthread_mutex_t tuxtxt_cache_lock = PTHREAD_MUTEX_INITIALIZER;
+ int tuxtxt_get_zipsize(int p,int sp)
+@@ -2782,12 +2795,16 @@
+ void tuxtxt_FillRect(unsigned char *lfb, int xres, int x, int y, int w, int h, int color)
+ {
+ 	if (!lfb) return;
+-	unsigned char *p = lfb + x + y * xres;
++	unsigned char *p = lfb + x*4 + y * xres;
++	int xtmp;
+ 
+ 	if (w > 0)
+ 		for ( ; h > 0 ; h--)
+ 		{
+-			memset(p, color, w);
++			for (xtmp=0; xtmp<w; xtmp++)
++			{
++				memcpy(p+xtmp*4,bgra[color],4);
++			}
+ 			p += xres;
+ 		}
+ }
+@@ -2799,7 +2816,7 @@
+ 	unsigned char fgcolor, unsigned char bgcolor)
+ {
+ 	if (d == NULL) return;
+-	int bit, x, y;
++	int bit, x, y, ltmp;
+ 	unsigned char *ay = ax + 13; /* array[0..10] of y-offsets for each pixel */
+ 
+ 	for (y = 0; y < 10; y++) /* 10*2 bytes a 6 pixels per char definition */
+@@ -2823,9 +2840,21 @@
+ 			for (i = 0; i < h; i++)
+ 			{
+ 				if (ax[x+1] > ax[x])
+-					memset(d + ax[x], f1, ax[x+1] - ax[x]);
++				{
++//					memset(d + ax[x], f1, ax[x+1] - ax[x]);
++					for (ltmp=0 ; ltmp < (ax[x+1]-ax[x]); ltmp++)
++					{
++						memcpy(d + ax[x]*4 +ltmp*4,bgra[f1],4);
++					}
++				}
+ 				if (ax[x+7] > ax[x+6])
+-					memset(d + ax[x+6], f2, ax[x+7] - ax[x+6]); /* 2nd byte 6 pixels to the right */
++				{
++//					memset(d + ax[x+6], f2, ax[x+7] - ax[x+6]); /* 2nd byte 6 pixels to the right */
++					for (ltmp=0 ; ltmp < (ax[x+7]-ax[x+6]); ltmp++)
++					{
++						memcpy(d + ax[x+6]*4 +ltmp*4,bgra[f2],4);
++					}
++				}
+ 				d += xres;
+ 			}
+ 			d -= h * xres;
+@@ -2838,20 +2867,26 @@
+ void tuxtxt_DrawVLine(unsigned char *lfb, int xres, int x, int y, int l, int color)
+ {
+ 	if (!lfb) return;
+-	unsigned char *p = lfb + x + y * xres;
++	unsigned char *p = lfb + 4*x + y * xres;
+ 
+ 	for ( ; l > 0 ; l--)
+ 	{
+-		*p = color;
++		memcpy(p,bgra[color],4);
+ 		p += xres;
+ 	}
+ }
+ 
+ void tuxtxt_DrawHLine(unsigned char* lfb,int xres,int x, int y, int l, int color)
+ {
++	int ltmp;
+ 	if (!lfb) return;
+ 	if (l > 0)
+-		memset(lfb + x + y * xres, color, l);
++	{
++		for (ltmp=0; ltmp < l; ltmp++)
++		{
++			memcpy(lfb + x*4 + ltmp*4 + y * xres, bgra[color], 4);
++		}
++	}
+ }
+ 
+ void tuxtxt_FillRectMosaicSeparated(unsigned char *lfb, int xres,int x, int y, int w, int h, int fgcolor, int bgcolor, int set)
+@@ -2866,48 +2901,54 @@
+ 
+ void tuxtxt_FillTrapez(unsigned char *lfb, int xres,int x0, int y0, int l0, int xoffset1, int h, int l1, int color)
+ {
+-	unsigned char *p = lfb + x0 + y0 * xres;
++	unsigned char *p = lfb + x0*4 + y0 * xres;
+ 	int xoffset, l;
+ 	int yoffset;
++	int ltmp;
+ 
+ 	for (yoffset = 0; yoffset < h; yoffset++)
+ 	{
+ 		l = l0 + ((l1-l0) * yoffset + h/2) / h;
+ 		xoffset = (xoffset1 * yoffset + h/2) / h;
+ 		if (l > 0)
+-			memset(p + xoffset, color, l);
++		{
++			for (ltmp=0; ltmp < l; ltmp++)
++			{
++				memcpy(p + xoffset*4 +ltmp*4, bgra[color], 4);
++			}
++		}
+ 		p += xres;
+ 	}
+ }
+ void tuxtxt_FlipHorz(unsigned char *lfb, int xres,int x, int y, int w, int h)
+ {
+-	unsigned char buf[w];
+-	unsigned char *p = lfb + x + y * xres;
++	unsigned char buf[w*4];
++	unsigned char *p = lfb + x*4 + y * xres;
+ 	int w1,h1;
+ 
+ 	for (h1 = 0 ; h1 < h ; h1++)
+ 	{
+-		memcpy(buf,p,w);
++		memcpy(buf,p,w*4);
+ 		for (w1 = 0 ; w1 < w ; w1++)
+ 		{
+-			*(p+w1) = buf[w-(w1+1)];
++			memcpy(p+w1*4,buf+((w-w1)*4)-4,4);
+ 		}
+ 		p += xres;
+ 	}
+ }
+ void tuxtxt_FlipVert(unsigned char *lfb, int xres,int x, int y, int w, int h)
+ {
+-	unsigned char buf[w];
+-	unsigned char *p = lfb + x + y * xres, *p1, *p2;
++	unsigned char buf[w*4];
++	unsigned char *p = lfb + x*4 + y * xres, *p1, *p2;
+ 	int h1;
+ 
+ 	for (h1 = 0 ; h1 < h/2 ; h1++)
+ 	{
+ 		p1 = (p+(h1*xres));
+ 		p2 = (p+(h-(h1+1))*xres);
+-		memcpy(buf,p1,w);
+-		memcpy(p1,p2,w);
+-		memcpy(p2,buf,w);
++		memcpy(buf,p1,w*4);
++		memcpy(p1,p2,w*4);
++		memcpy(p2,buf,w*4);
+ 	}
+ }
+ 
+@@ -3163,7 +3204,7 @@
+ 				if (lfb) 
+ 				{
+ 					int x,y,f,c;
+-					unsigned char* p = lfb + *pPosX + PosY* xres;
++					unsigned char* p = lfb + (*pPosX)*4 + PosY* xres;
+ 					for (y=0; y<fontheight;y++)
+ 					{
+ 						for (f=0; f<factor; f++)
+@@ -3171,7 +3212,7 @@
+ 							for (x=0; x<curfontwidth*xfactor;x++)
+ 							{
+ 								c = (y&4 ? (x/3)&1 :((x+3)/3)&1);
+-								*(p+x) = (c ? fgcolor : bgcolor);
++								memcpy((p+x*4),bgra[(c ? fgcolor : bgcolor)],4);
+ 							}
+ 							p += xres;
+ 						}
+@@ -3209,7 +3250,7 @@
+ 			}
+ 			axdrcs[12] = curfontwidth; /* adjust last x-offset according to position, FIXME: double width */
+ 			tuxtxt_RenderDRCS(xres,p,
+-						  lfb + *pPosX + PosY * xres,
++						  lfb + (*pPosX)*4 + PosY * xres,
+ 						  axdrcs, fgcolor, bgcolor);
+ 		}
+ 		else

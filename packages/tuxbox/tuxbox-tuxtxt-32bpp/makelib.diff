@@ -1,0 +1,71 @@
+diff -ru tuxtxt.org/configure.ac tuxtxt/configure.ac
+--- tuxtxt.org/configure.ac	2008-05-22 11:30:43.000000000 +0200
++++ tuxtxt/configure.ac	2008-05-22 11:37:20.000000000 +0200
+@@ -1,5 +1,9 @@
+-AC_INIT(tuxbox-tuxtxt-32bpp,1.96)
+-AM_INIT_AUTOMAKE(tuxbox-tuxtxt-32bpp,1.96)
++AC_INIT(libtuxtxt32bpp,1.96)
++AM_INIT_AUTOMAKE(libtuxtxt32bpp,1.96)
++
++AM_PROG_LIBTOOL
++
++AC_DISABLE_STATIC
+ 
+ TUXBOX_APPS
+ TUXBOX_APPS_DIRECTORY
+diff -ru tuxtxt.org/Makefile.am tuxtxt/Makefile.am
+--- tuxtxt.org/Makefile.am	2008-05-22 11:30:43.000000000 +0200
++++ tuxtxt/Makefile.am	2008-05-22 11:37:20.000000000 +0200
+@@ -6,13 +6,14 @@
+ 	@FREETYPE_CFLAGS@ \
+ 	-funsigned-char \
+ 	-I$(top_srcdir)/include \
+-	-I$(prefix)/$(includedir)/tuxbox/tuxtxt 
++	-I$(prefix)/$(includedir)/tuxbox/tuxtxt
+ 
+-bin_PROGRAMS = tuxtxt
+-tuxtxt_LDADD = -lpthread -lz \
++libtuxtxt32bpp_la_LIBADD = -lpthread -lz \
+ 	@FREETYPE_LIBS@ \
+ 	@TUXTXT_LIBS@
+ 
+-tuxtxt_SOURCES = tuxtxt.c
++lib_LTLIBRARIES = libtuxtxt32bpp.la
++
++libtuxtxt32bpp_la_SOURCES = tuxtxt.c
+ 
+ install_DATA = tuxtxt2.conf
+diff -ru tuxtxt.org/tuxtxt.c tuxtxt/tuxtxt.c
+--- tuxtxt.org/tuxtxt.c	2008-05-23 10:32:31.000000000 +0200
++++ tuxtxt/tuxtxt.c	2008-05-23 10:33:53.000000000 +0200
+@@ -317,7 +317,7 @@
+  * main loop                                                                  *
+  ******************************************************************************/
+ 
+-int main(int argc, char **argv)
++int tuxtxt_run_ui(int pid)
+ {
+ 	char cvs_revision[] = "$Revision: 1.99 $";
+ 
+@@ -333,18 +333,8 @@
+ 	printf("TuxTxt %s\n", versioninfo);
+ 	printf("for 32bpp framebuffer\n");
+ 
+-	/* get params */
+-	tuxtxt_cache.vtxtpid = fb = lcd = rc = sx = ex = sy = ey = -1;
+-	if (argc==1)
+-	{
+-		printf("\nUSAGE: tuxtxt vtpid\n");
+-		printf("No PID given, so scanning for PIDs ...\n\n");
+-		tuxtxt_cache.vtxtpid=0;
+-	}
+-	else 
+-	{
+-		tuxtxt_cache.vtxtpid = atoi(argv[1]);
+-	}
++	fb = lcd = rc = sx = ex = sy = ey = -1;
++	tuxtxt_cache.vtxtpid = pid;
+ 
+ 	/* open Framebuffer */
+ 	if ((fb=open("/dev/fb/0", O_RDWR)) == -1)
+Only in tuxtxt: tuxtxt.c.orig
