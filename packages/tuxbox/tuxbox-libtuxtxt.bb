@@ -1,5 +1,5 @@
 DESCRIPTION = "tuxbox libtuxtxt"
-DEPENDS = "dreambox-dvbincludes"
+DEPENDS = "dreambox-dvbincludes libpng"
 MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libs;method=ext \
            file://libtuxtxt-only-libtuxtxt.diff;patch=1 \
@@ -17,7 +17,7 @@ SRCDATE_dm8000 = "20080814"
 SRCDATE_dm7020 = "20070307"
 
 PN = "libtuxtxt"
-PR = "r1"
+PR = "r2"
 
 PV = "0.0+cvs${SRCDATE}"
 S = "${WORKDIR}/libs"
