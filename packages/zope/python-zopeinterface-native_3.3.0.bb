@@ -1,4 +1,4 @@
-include zope-interface_${PV}.bb
+include python-zopeinterface_${PV}.bb
 inherit native
 DEPENDS = "python-native"
 
