@@ -6,7 +6,7 @@ OPENDREAMBOX_COMMON = "base-files busybox \
 	netkit-base fakelocale less dreambox-bootlogo  \
 	dreambox-dccamd dreambox-keymaps tuxbox-image-info dvbsnoop \
 	dreambox-compat tuxbox-common mrouted smartmontools hddtemp \
-	hotplug-ng autofs gdbserver"
+	hotplug-ng autofs gdbserver dreambox-feed-configs"
 
 OPENDREAMBOX_COMMON_D = "util-linux e2fsprogs \
 	ppp module-init-tools"
