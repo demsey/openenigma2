@@ -1,8 +1,8 @@
 export IMAGE_BASENAME = "dreambox-image"
 
-OPENDREAMBOX_COMMON = "base-files busybox \
-	ipkg initscripts-opendreambox sysvinit netbase dropbear \
-	base-passwd ncurses joe mc vsftpd timezones-alternative \
+OPENDREAMBOX_COMMON = "task-boot \
+	ipkg opkg-nogpg dropbear \
+	ncurses joe mc vsftpd timezones-alternative \
 	netkit-base fakelocale less dreambox-bootlogo  \
 	dreambox-dccamd dreambox-keymaps tuxbox-image-info dvbsnoop \
 	dreambox-compat tuxbox-common mrouted smartmontools hddtemp \
@@ -132,8 +132,8 @@ OPENDREAMBOX_COMMON_R += " ${OPENDREAMBOX_COMMON_MACHINE_R}"
 OPENDREAMBOX_COMMON_D += " ${OPENDREAMBOX_COMMON_MACHINE_D}"
 
 # add bootstrap stuff
-DEPENDS = "${OPENDREAMBOX_COMMON} ${BOOTSTRAP_EXTRA_DEPENDS} ${OPENDREAMBOX_COMMON_D}"
-export IMAGE_INSTALL = "${OPENDREAMBOX_COMMON} ${BOOTSTRAP_EXTRA_RDEPENDS} ${OPENDREAMBOX_COMMON_R}"
+DEPENDS = "${OPENDREAMBOX_COMMON} ${OPENDREAMBOX_COMMON_D}"
+IMAGE_INSTALL = "${OPENDREAMBOX_COMMON} ${OPENDREAMBOX_COMMON_R}"
 
 # we don't want any locales, at least not in the common way.
 IMAGE_LINGUAS = " "
