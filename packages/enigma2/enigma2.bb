@@ -8,11 +8,13 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	python-xml python-fcntl gst-plugin-decodebin python-stringold \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
 	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
-	gst-plugin-wavparse python-netclient gst-plugin-mpegstream"
+	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
+	gst-plugin-flac"
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
-RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska"
+RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska \
+	gst-plugin-subparse eglibc-gconv-iso8859-15 gst-plugin-cdxaparse"
 RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf"
 
 DESCRIPTION_append_enigma2-plugin-extensions-cutlisteditor = "enables you to cut your movies."
@@ -30,8 +32,8 @@ RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
 export LD="${CXX}"
 
 PN = "enigma2"
-PR = "r4"
-SRCDATE = "20080926"
+PR = "r0"
+SRCDATE = "20081022"
 
 # if you want experimental, use:
 REL_MAJOR="2"
