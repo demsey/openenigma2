@@ -18,10 +18,12 @@ Index: enigma2/lib/python/Components/UsageConfig.py
  	config.usage.hdd_standby = ConfigSelection(default = "120", choices = [
  		("0", _("no standby")), ("2", "10 " + _("seconds")), ("6", "30 " + _("seconds")),
  		("12", "1 " + _("minute")), ("24", "2 " + _("minutes")),
-@@ -56,6 +57,10 @@
+@@ -56,7 +56,11 @@
  
  	config.usage.blinking_display_clock_during_recording = ConfigYesNo(default = False)
- 
+ 	config.usage.load_length_of_movies_in_moviellist = ConfigYesNo(default = True)
+-	
++
 +	def EnableTtCachingChanged(configElement):
 +		setEnableTtCachingOnOff(int(configElement.value))
 +	config.usage.enable_tt_caching.addNotifier(EnableTtCachingChanged)
@@ -139,14 +141,17 @@ Index: enigma2/lib/dvb/decoder.cpp
  	finishShowSinglePic();
  	m_vpid = m_apid = m_pcrpid = m_textpid = pidNone;
  	m_changed = -1;
-Index: enigma2/data/setup.xml
+Index: data/setup.xml
 ===================================================================
---- enigma2/data/setup.xml	(revision 5639)
-+++ enigma2/data/setup.xml	(working copy)
-@@ -22,6 +22,7 @@
- 			<item level="0" text="Margin before record (minutes)">config.recording.margin_before</item>
+RCS file: /cvs/enigma2/data/setup.xml,v
+retrieving revision 1.48
+diff -u -r1.48 setup.xml
+--- enigma2/data/setup.xml	5 Oct 2008 22:37:19 -0000	1.48
++++ enigma2/data/setup.xml	21 Oct 2008 22:54:10 -0000
+@@ -23,6 +23,7 @@
  			<item level="0" text="Margin after record">config.recording.margin_after</item>
  			<item level="0" text="Show blinking clock in display during recording">config.usage.blinking_display_clock_during_recording</item>
+ 			<item level="2" text="Load Length of Movies in Movielist">config.usage.load_length_of_movies_in_moviellist</item>
 +			<item level="1" text="Enable teletext caching">config.usage.enable_tt_caching</item>
  			<item level="1" text="Show positioner movement">config.usage.showdish</item>
  			<item level="1" text="Enable multiple bouquets">config.usage.multibouquet</item>
