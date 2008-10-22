@@ -2,7 +2,7 @@ Index: Python-2.5.2/configure.in
 ===================================================================
 --- Python-2.5.2.orig/configure.in
 +++ Python-2.5.2/configure.in
-@@ -3410,45 +3410,6 @@ esac
+@@ -3410,45 +3410,8 @@ esac
  					   
  
  
@@ -45,6 +45,8 @@ Index: Python-2.5.2/configure.in
 - AC_DEFINE(PY_FORMAT_SIZE_T, "z", [Define to printf format modifier for Py_ssize_t])],
 - AC_MSG_RESULT(no))
 -
++AC_DEFINE(PY_FORMAT_SIZE_T, "z", [Defune to print format modifier for Py_ssize_t])
++
  AC_CHECK_TYPE(socklen_t,,
    AC_DEFINE(socklen_t,int,
              Define to `int' if <sys/socket.h> does not define.),[

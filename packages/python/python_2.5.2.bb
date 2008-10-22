@@ -6,7 +6,7 @@ PRIORITY = "optional"
 DEPENDS = "python-native db gdbm openssl readline sqlite3 zlib"
 DEPENDS_sharprom = "python-native db readline zlib gdbm openssl"
 # bump this on every change in contrib/python/generate-manifest-2.5.py
-FILE_PR = "ml13"
+FILE_PR = "ml14"
 
 PYTHON_MAJMIN = "2.5"
 
@@ -27,6 +27,13 @@ SRC_URI = "\
   \
   file://sitecustomize.py \
 "
+
+SRC_URI_append_opendreambox = " \
+  file://some_configure_fixes.patch;patch=1;pnum=0 \
+  file://strict_aliasing_site.patch;patch=0;pnum=0 \
+  file://fix_pthread_site.patch;patch=0;pnum=0 \
+  file://forced_largefile_support.patch;patch=1;pnum=1"
+
 S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools
