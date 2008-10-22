@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PN = "linux-dm8000"
 KV = "2.6.12"
 PV = "2.6.12"
-PR = "r5"
+PR = "r6"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
 SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
@@ -28,7 +28,8 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	file://linuxmips-2.6.12-fix-futex.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-gcc4-compile-fix.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-gdb-fix.patch;patch=1;pnum=1 \
-	file://linux-2.6.12-brcm-fix-minipci.patch;patch=1;pnum=1"
+	file://linux-2.6.12-brcm-fix-minipci.patch;patch=1;pnum=1 \
+	http://trappist.elis.ugent.be/~mronsse/cdfs/download/cdfs-2.6.12.tar.bz2"
 
 S = "${WORKDIR}/stblinux-2.6.12"
 
@@ -52,6 +53,10 @@ addtask munge before do_patch after do_unpack
 
 do_configure_prepend() {
 	oe_machinstall -m 0644 ${WORKDIR}/dm8000_defconfig ${S}/.config
+	if [ -d ${WORKDIR}/cdfs-${PV} ]; then
+		mv ${WORKDIR}/cdfs-${PV} ${S}/fs/cdfs
+		cd ${S} & patch -p0 < ${S}/fs/cdfs/patch.cdfs
+	fi;
 	oe_runmake oldconfig
 }
 
