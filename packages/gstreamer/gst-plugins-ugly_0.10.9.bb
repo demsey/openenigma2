@@ -1,5 +1,5 @@
 require gst-plugins.inc
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS += "gst-plugins-base ${@get_depends(bb, d)}"
 SRC_URI += "${@get_src_uri(bb, d)}"
