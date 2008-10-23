@@ -7,7 +7,7 @@ INHIBIT_PACKAGE_STRIP = "1"
 require madwifi-ng_r.inc
 
 # PR set after the include, to override what's set in the included file.
-FILE_PR = "r8"
+PR = "r8"
 
 SRC_URI += "http://sources.dreamboxupdate.com/download/snapshots/openwrt_madwifi_patches_20080829.tar.bz2 \
 	http://sources.dreamboxupdate.com/download/snapshots/ath_hal-20080815.tgz \

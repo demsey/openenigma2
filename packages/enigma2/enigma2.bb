@@ -5,7 +5,7 @@ DEPENDS = "jpeg libungif libmad libpng libsigc++-1.2 gettext-native \
 	gstreamer gst-plugins-good gst-plugins-bad gst-plugins-ugly \
 	libfribidi libxmlccwrap libdreamdvd tuxbox-tuxtxt-32bpp"
 RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
-	python-xml python-fcntl gst-plugin-decodebin python-stringold \
+	python-xml python-fcntl python-elementtree gst-plugin-decodebin python-stringold \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
 	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
@@ -33,7 +33,7 @@ export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20081022"
+SRCDATE = "20081024"
 
 # if you want experimental, use:
 REL_MAJOR="2"
