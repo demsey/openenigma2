@@ -1,4 +1,3 @@
-modprobe lcd
 echo 10 > /proc/progress
 [ -e /dev/dbox/oled0 ] && ln -s /dev/dbox/oled0 /dev/dbox/lcd0
 
@@ -14,7 +13,7 @@ echo 13 > /proc/progress
 swapon -a
 echo 14 > /proc/progress
 
-for mod in isofs cifs nfsd usb-storage sd autofs4 vfat ide-cd cdfs; do
+for mod in nfsd sd; do
 	modprobe $mod 2> /dev/null ;
 done
 
@@ -49,7 +48,7 @@ for i in 0 1; do
 done
 
 echo 18 > /proc/progress
-for i in dreambox_keyboard fp info; do
+for i in dreambox_keyboard fp bcm7400; do
 	modprobe $i;
 done
 
