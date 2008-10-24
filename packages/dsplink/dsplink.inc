@@ -9,7 +9,7 @@ inherit module
 S = "${WORKDIR}/dsplink_1_60/dsplink"
 
 # Needed for buildscripts
-export DSPLINK = "${S}"
+export DSPLINK="${S}"
 
 require ti-paths.inc
 
@@ -37,10 +37,8 @@ export DSPCFG
 export GPPOS
 
 do_configure () {
-
-# Run perl script to create appropriate makefiles (v1.60 and up)
-DSPLINK=${S} perl config/bin/dsplinkcfg.pl --platform=${DSPLINKPLATFORM} --nodsp=1 --dspcfg_0=${DSPCFG} --dspos_0=DSPBIOS5XX  --gppos=${GPPOS} --comps=ponslrm
-
+	# Run perl script to create appropriate makefiles (v1.60 and up)
+	perl config/bin/dsplinkcfg.pl --platform=${DSPLINKPLATFORM} --nodsp=1 --dspcfg_0=${DSPCFG} --dspos_0=DSPBIOS5XX  --gppos=${GPPOS} --comps=ponslrm
 }
 
 PARALLEL_MAKE = ""
@@ -55,13 +53,16 @@ do_compile () {
 	export DSP_BASE_RTDX=${TITOOLSDIR}/${TIBIOSDIR}/packages/ti/rtdx
 	export GPPTOOL_DIR=${CROSS_DIR}
 	export LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}
-	export LINK_INSTALL_DIR=${S}
+	export LINK_INSTALL_DIR=${DSPLINK}
 	export VARIANT=${DSPLINKSOC}
 	export PLATFORM=${DSPLINKPLATFORM}
 	export BASE_TOOLCHAIN=${CROSS_DIR}
 	export BASE_CGTOOLS=${BASE_TOOLCHAIN}/bin
+	# 'OSINC_PLATFORM' is used in both the dsp and gpp sides...	
 	export OSINC_PLATFORM1=${CROSS_DIR}/lib/gcc/${TARGET_SYS}/$(${TARGET_PREFIX}gcc -dumpversion)/include
 	export OSINC_TARGET=${BASE_TOOLCHAIN}/target/usr/include
+
+	# 'ARCHIVER' is being used in the dsp side of the build as well as gpp
 	export ARCHIVER_AR=${TARGET_PREFIX}ar
 	export BASE_SABIOS=${DSP_BASE_BIOS}
 	
