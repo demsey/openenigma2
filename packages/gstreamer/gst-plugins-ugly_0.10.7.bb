@@ -2,6 +2,7 @@ require gst-plugins.inc
 PR = "r0"
 
 DEPENDS += "gst-plugins-base libsidplay"
+EXTRA_OECONF_append_openmoko = "--disable-mad"
 
 SRC_URI += "\
 #  file://cross-compile.patch;patch=1 \
