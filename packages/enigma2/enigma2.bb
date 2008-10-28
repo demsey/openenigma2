@@ -33,7 +33,7 @@ export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20081024"
+SRCDATE = "20081029"
 
 # if you want experimental, use:
 REL_MAJOR="2"
