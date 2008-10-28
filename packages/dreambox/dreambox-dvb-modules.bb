@@ -13,25 +13,26 @@ def get_modules_extension(bb, d):
 	return ""
 
 KV_dm7025 = "2.6.12.6"
-PV_dm7025 = "${KV}-20080430${@get_modules_extension(bb, d)}"
+PV_dm7025 = "${KV}-20081001${@get_modules_extension(bb, d)}"
 
 KV_dm600pvr = "2.6.12"
-PV_dm600pvr = "${KV}-20071026"
+PV_dm600pvr = "${KV}-20080822"
 
 KV_dm500plus = "2.6.12"
-PV_dm500plus = "${KV}-20071026"
+PV_dm500plus = "${KV}-20080822"
 
 KV_dm800 = "2.6.12-5.1-brcmstb-dm800"
-PV_dm800 = "${KV}-20080521"
+PV_dm800 = "${KV}-20081003"
 
 KV_dm8000 = "2.6.12-5.1-brcmstb-dm8000"
-PV_dm8000 = "${KV}-20080920"
+PV_dm8000 = "${KV}-20081015"
 
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
 
 SRC_URI = "http://sources.dreamboxupdate.com/snapshots/dreambox-dvb-modules-${MACHINE}-${PV}.tar.bz2 "
 SRC_URI_append_dm7025 = "http://sources.dreamboxupdate.com/download/7020/fpupgrade-${MACHINE}-v7"
+SRC_URI_append_dm8000 = "http://sources.dreamboxupdate.com/download/7020/fpupgrade-${MACHINE}-v4"
 
 S = "${WORKDIR}"
 
@@ -71,17 +72,10 @@ do_install_dm8000() {
 		install -m 0644 ${WORKDIR}/$f ${D}/lib/modules/${KV}/extra/$f;
 	done
 	install -d ${D}${sbindir}
+	install -m 0755 ${WORKDIR}/fpupgrade-${MACHINE}-v4 ${D}${sbindir}/fpupgrade
 }
 
 do_install_dm800() {
-	install -d ${D}/lib/modules/${KV}/extra
-	for f in *.ko LICENSE; do
-		install -m 0644 ${WORKDIR}/$f ${D}/lib/modules/${KV}/extra/$f;
-	done
-	install -d ${D}${sbindir}
-}
-
-do_install_dm8000() {
 	install -d ${D}/lib/modules/${KV}/extra
 	for f in *.ko LICENSE; do
 		install -m 0644 ${WORKDIR}/$f ${D}/lib/modules/${KV}/extra/$f;
