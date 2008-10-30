@@ -33,22 +33,22 @@ export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20081029"
+SRCDATE = "20081030"
+SRCREV = "da3cacbbf835122eaa1b5e3810a23e9264561eec"
 
 # if you want experimental, use:
 REL_MAJOR="2"
 REL_MINOR="5"
 TAG = ""
 
-PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
+PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 
-SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver${TAG};date=${SRCDATE} \
-	file://tuxtxt_caching.patch;patch=1 \
+SRC_URI = "git://git.opendreambox.org/git/enigma2.git;proto=git \
 	file://enigma2.sh"
 
 SRC_URI_append_dm7025 = " file://enigma2-disable-iframesearch.patch;patch=1;pnum=1"
 
-S = "${WORKDIR}/enigma2"
+S = "${WORKDIR}/git"
 
 FILES_${PN} += "${datadir}/fonts"
 
@@ -71,9 +71,9 @@ python populate_packages_prepend () {
 
 do_stage_append() {
 	install -d ${STAGING_INCDIR}/enigma2
-	install -m 0644 ${WORKDIR}/enigma2/include/*.h ${STAGING_INCDIR}/enigma2
+	install -m 0644 ${S}/include/*.h ${STAGING_INCDIR}/enigma2
 	for dir in actions base components driver dvb dvb/lowlevel dvb_ci gdi gui mmi nav python service; do
 		install -d ${STAGING_INCDIR}/enigma2/lib/$dir;
-		install -m 0644 ${WORKDIR}/enigma2/lib/$dir/*.h ${STAGING_INCDIR}/enigma2/lib/$dir;
+		install -m 0644 ${S}/lib/$dir/*.h ${STAGING_INCDIR}/enigma2/lib/$dir;
 	done
 }
