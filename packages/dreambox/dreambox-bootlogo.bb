@@ -11,7 +11,7 @@ BINARY_VERSION_dm800 = "2"
 BINARY_VERSION_dm8000 = "2"
 
 PV = "${BINARY_VERSION}.${IMAGES_VERSION}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/7020/bootlogo-${MACHINE}-${BINARY_VERSION}.elf \
 	http://sources.dreamboxupdate.com/download/7020/bootlogo-${MACHINE}-${IMAGES_VERSION}.mvi \
@@ -39,8 +39,15 @@ do_install_append_dm800() {
 	install -m 0755 ${S}/switchoff-${MACHINE}-${IMAGES_VERSION}.mvi ${D}/usr/share/switchoff.mvi
 }
 
-do_install_append_dm8000() {
-	install -m 0755 ${S}/bootlogo-${MACHINE}-${IMAGES_VERSION}.jpg ${D}/boot/bootlogo.jpg
+do_install_dm8000() {
+	install -d ${D}/boot
+	install -d ${D}/usr/share/bootlogos
+	install -m 0755 ${S}/bootlogo-dm8000-${BINARY_VERSION}.elf ${D}/boot/bootlogo.elf
+	install -m 0755 ${S}/bootlogo-dm8000-${IMAGES_VERSION}.jpg ${D}/boot/bootlogo.jpg
+	install -m 0755 ${S}/bootlogo-dm8000-${IMAGES_VERSION}.mvi ${D}/usr/share/bootlogos/bootlogo.mvi
+	install -m 0755 ${S}/bootlogo_wait-dm8000-${IMAGES_VERSION}.mvi ${D}/usr/share/bootlogos/bootlogo_wait.mvi
+	install -m 0755 ${S}/backdrop-dm8000-${IMAGES_VERSION}.mvi ${D}/usr/share/bootlogos/backdrop.mvi
+	ln -sf /usr/share/backdrop.mvi ${D}/boot/backdrop.mvi
 }
 
 PACKAGE_ARCH := "${MACHINE_ARCH}"
