@@ -20,6 +20,5 @@ S = "${WORKDIR}/gdata.py-${PV}"
 PACKAGES = "python-gdata"
 
 do_stage() {
-        BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
-        ${STAGING_BINDIR}/python setup.py install --prefix=${STAGING_BINDIR}/.. --install-data=${STAGING_DATADIR}
+	distutils_stage_all
 }
