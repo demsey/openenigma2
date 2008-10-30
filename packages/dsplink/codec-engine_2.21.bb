@@ -15,7 +15,8 @@ PV = "221"
 
 SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_21_00_06.tar.gz \
            file://Makefile.dsplink \
-          "
+           file://cmemk-fix-class-device-api.diff;patch=1 \
+"
 
 S = "${WORKDIR}/codec_engine_2_21_00_06"
 
@@ -65,19 +66,6 @@ do_compile() {
 	cd ${S}/cetools/packages/ti/sdo/linuxutils/cmem
 
 	oe_runmake clean
-	# We probably don't need to build all 3, but atm it doesn't hurt us	
-	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
-           KERNEL_SRC=${STAGING_KERNEL_DIR}    \
-           KERNEL_VERSION=${KERNEL_VERSION}    \
-           CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
-           AR="${KERNEL_AR}" \
-           release
-	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
-           KERNEL_SRC=${STAGING_KERNEL_DIR}    \
-           KERNEL_VERSION=${KERNEL_VERSION}    \
-           CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
-           AR="${KERNEL_AR}" \
-           debug
 	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
            KERNEL_SRC=${STAGING_KERNEL_DIR}    \
            KERNEL_VERSION=${KERNEL_VERSION}    \
@@ -94,23 +82,16 @@ do_compile() {
 	
 	cd ${DSPPOWERSOC}/lpm
 
-	export KERNEL_DIR=${STAGING_KERNEL_DIR}
-	export TOOL_PREFIX=${TARGET_PREFIX} 
-
-	# Different SoCs use different toolchains by default, we just want them to use the OE one, so replace the entries because they can't be overloaded within the environment
-	sed -i -e s:/db/toolsrc/library/tools/vendors/mvl/arm/omap3/OMAP35x_SDK_0.9.7/src/linux/kernel_org/2.6_kernel:${STAGING_KERNEL_DIR}:g \
-           -e s:/db/toolsrc/library/tools/vendors/cs/arm/arm-2007q3/bin/arm-none-linux-gnueabi-:${TARGET_PREFIX}:g \
-           -e s:/db/atree/library/trees/power/power-d02x/imports:${STAGING_DIR}/${MULTIMACH_TARGET_SYS}:g \
-           -e s:/db/toolsrc/library/tools/vendors/mvl/arm/dm6446/REL_LSP_02_00_00_010/montavista/pro/devkit/lsp/ti-davinci/linux-2.6.18_pro500:${STAGING_KERNEL_DIR}:g \
-           -e s:/db/toolsrc/library/tools/vendors/mvl/arm/mvl5.0/montavista/pro/devkit/arm/v5t_le/bin/arm_v5t_le-:${TARGET_PREFIX}:g \
-        Makefile
-
-	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
+    unset LDFLAGS CFLAGS
+    make   KERNEL_PATH=${STAGING_KERNEL_DIR}   \
            KERNEL_SRC=${STAGING_KERNEL_DIR}    \
+           KERNEL_DIR=${STAGING_KERNEL_DIR}   \
            KERNEL_VERSION=${KERNEL_VERSION}    \
+           TOOL_PREFIX=${TARGET_PREFIX} \
+           DSPLINK_REPO=${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ \
            CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
            AR="${KERNEL_AR}"
-	
+
 	cd ${S}/examples
 	# export some more variable to point to external TI tools
 	# information is duplicated between the js and make based tools

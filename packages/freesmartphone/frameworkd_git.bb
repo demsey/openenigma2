@@ -12,7 +12,7 @@ inherit distutils update-rc.d
 INITSCRIPT_NAME = "frameworkd"
 INITSCRIPT_PARAMS = "defaults 29"
 
-SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
+SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=stabilization/milestone4 \
            file://frameworkd \
            file://frameworkd.conf"
 S = "${WORKDIR}/git"
@@ -27,6 +27,7 @@ RDEPENDS_${PN} += "\
   python-ctypes \
   python-dbus \
   python-datetime \
+  python-difflib \
   python-pprint \
   python-pygobject \
   python-pyrtc \
@@ -42,6 +43,7 @@ RDEPENDS_${PN} += "\
 
 RRECOMMENDS_${PN} += "\
   alsa-utils-amixer \
+  python-gst \
   ppp \
 "
 
