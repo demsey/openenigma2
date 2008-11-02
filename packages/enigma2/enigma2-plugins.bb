@@ -19,7 +19,7 @@ inherit autotools
 S = "${WORKDIR}/enigma2-plugins"
 
 DEPENDS = "${@get_version_depends(bb, d)}"
-DEPENDS += "enigma2"
+DEPENDS += "enigma2 python-gdata"
 
 def get_version_depends(bb, d):
 	if bb.data.getVar('REL_MINOR', d, 1) > '4':
