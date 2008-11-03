@@ -20,8 +20,8 @@ SRC_URI = "http://sources.dreamboxupdate.com/download/7020/bootlogo-${MACHINE}-$
 
 SRC_URI_append_dm8000 = " http://sources.dreamboxupdate.com/download/7020/bootlogo-${MACHINE}-${IMAGES_VERSION}.jpg"
 
-SRC_URI_append_dm800 = " http://sources.dreamboxupdate.com/download/7020/bootlogo_${MACHINE}-${IMAGES_VERSION}.jpg \
-	http://sources.dreamboxupdate.com/download/7020/switchoff_${MACHINE}-${IMAGES_VERSION}.mvi"
+SRC_URI_append_dm800 = " http://sources.dreamboxupdate.com/download/7020/bootlogo-${MACHINE}-${IMAGES_VERSION}.jpg \
+	http://sources.dreamboxupdate.com/download/7020/switchoff-${MACHINE}-${IMAGES_VERSION}.mvi"
 
 S = "${WORKDIR}/"
 
