@@ -82,7 +82,7 @@ fakeroot rootfs_ipk_do_rootfs () {
 	echo ${BUILDNAME} > ${IMAGE_ROOTFS}/${sysconfdir}/version
 
 	if [ "${ONLINE_PACKAGE_MANAGEMENT}" != "none" ]; then
-		if [ "${ONLINE_PACKAGE_MANAGEMENT}" == "add" ]; then
+		if [ "${ONLINE_PACKAGE_MANAGEMENT}" = "add" ]; then
 			rm -f ${IMAGE_ROOTFS}${libdir}/opkg/status
 			rm -f ${IMAGE_ROOTFS}${libdir}/opkg/*/*
 		else
