@@ -20,7 +20,7 @@ done
 echo 22 > /proc/progress
 
 mount -at nonfs,nosmbfs,noncpfs,nocifs 2>/dev/null
-echo 44 > /proc/progress
+echo 24 > /proc/progress
 
 tar xzf /etc/var.tar.gz -C /
 echo 28 > /proc/progress
