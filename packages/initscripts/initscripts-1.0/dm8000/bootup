@@ -17,7 +17,7 @@ for mod in nfsd sd; do
 	modprobe $mod 2> /dev/null ;
 done
 
-mount -at nonfs,nosmbfs,noncpfs 2>/dev/null
+mount -at nonfs,nosmbfs,noncpfs,nocifs 2>/dev/null
 echo 15 > /proc/progress
 
 tar xzf /etc/var.tar.gz -C /
@@ -85,7 +85,7 @@ echo 23 > /proc/progress
 ifup -a
 
 echo 24 > /proc/progress
-mount -at nfs,smbfs,cpfs 2>/dev/null
+mount -at nfs,smbfs,cpfs,cifs 2>/dev/null
 
 [ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"
 

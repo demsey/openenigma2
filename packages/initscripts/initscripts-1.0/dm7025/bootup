@@ -19,7 +19,7 @@ for mod in cifs nfsd usb-storage sd autofs4 vfat; do
 done
 echo 22 > /proc/progress
 
-mount -at nonfs,nosmbfs,noncpfs 2>/dev/null
+mount -at nonfs,nosmbfs,noncpfs,nocifs 2>/dev/null
 echo 44 > /proc/progress
 
 tar xzf /etc/var.tar.gz -C /
@@ -59,7 +59,7 @@ ifup -a
 
 echo 78 > /proc/progress
 # network mounts should be done here.
-mount -at nfs,smbfs,cpfs 2>/dev/null
+mount -at nfs,smbfs,cpfs,cifs 2>/dev/null
 
 echo 82 > /proc/progress
 [ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"
