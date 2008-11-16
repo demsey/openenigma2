@@ -19,10 +19,10 @@ TARGET_ARCH = "powerpc"
 TARGET_CPU = "405"
 
 EXTRA_IMAGECMD_jffs2 = " --eraseblock=0x4000 -n -b "
-IMAGE_CMD_jffs2 = "mkfs.jffs2 --root=${IMAGE_ROOTFS}/boot --faketime \
+IMAGE_CMD_jffs2 = "mkfs.jffs2 --root=${IMAGE_ROOTFS}/boot --faketime -x lzo \
        --output=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.boot.jffs2 \
        ${EXTRA_IMAGECMD}; rm -rf ${IMAGE_ROOTFS}/boot/*; \
-				mkfs.jffs2 --root=${IMAGE_ROOTFS} --faketime \
+				mkfs.jffs2 --root=${IMAGE_ROOTFS} --faketime -x lzo \
        --output=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
        ${EXTRA_IMAGECMD}; \
        buildimage ${STAGING_LIBDIR}/dreambox-secondstage/main.bin.gz \
