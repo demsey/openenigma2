@@ -4,8 +4,8 @@
 
 require fso-image.bb
 
-PV = "1.0"
-PR = "r1"
+PV = "1.1"
+PR = "r0"
 
 # no languages for now
 IMAGE_LINGUAS = ""
@@ -40,12 +40,13 @@ AUDIO_INSTALL = "\
   alsa-utils-amixer \
   gst-meta-audio \
   gst-plugin-modplug \
-  gst-plugin-sid \
+  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-sid', d)} \
   fso-sounds \
 "
 
 GTK_INSTALL = "\
-  xterm \
+  tango-icon-theme \
+  vala-terminal \
   gpe-scap \
 "
 

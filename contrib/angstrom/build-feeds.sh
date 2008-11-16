@@ -80,7 +80,6 @@ do
 		      checkers \
 		      cherokee \
 		      claws-mail \
-              ctorrent \
 		      cvs \
               distcc \
 		      dsniff \
@@ -174,7 +173,10 @@ do
 		      nmap \
 		      nmm \
 		      notecase \
-		      openmoko-browser2 \
+		      numptyphysics \
+	          opencv \
+              opencv-samples \
+              openmoko-browser2 \
 		      openredalert \
 		      openvpn \
 		      opie-notes \
@@ -189,7 +191,8 @@ do
 		      pkgconfig \
 		      pocketcellar \
 		      prboom \
-		      python \
+		      pushover \
+              python \
 		      python-pybluez \
 		      qfish2 \
 		      qmatrix \
@@ -202,6 +205,7 @@ do
 		      rdesktop \
 		      resistorui \
 		      roadmap-gtk2 \
+		      rtorrent \
 		      ruby \
 		      samba \
 		      screen \
@@ -291,7 +295,9 @@ do
                        task-opie task-opie-all \
 		       task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
                        angstrom-x11-base-depends angstrom-gpe-task-settings \
+                       xserver-xorg-conf \ 
                        "
+
 	do_build
 done
 
