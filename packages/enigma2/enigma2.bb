@@ -3,13 +3,14 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 DEPENDS = "jpeg libungif libmad libpng libsigc++-1.2 gettext-native \
 	dreambox-dvbincludes freetype libdvbsi++ python swig-native  \
 	gstreamer gst-plugins-good gst-plugins-bad gst-plugins-ugly \
+	gst-plugin-dvbmediasink gst-plugin-fluendo-mpegdemux \
 	libfribidi libxmlccwrap libdreamdvd tuxbox-tuxtxt-32bpp"
 RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	python-xml python-fcntl python-elementtree gst-plugin-decodebin python-stringold \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
 	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
-	gst-plugin-flac"
+	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-fluendo-mpegdemux \"
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
@@ -32,7 +33,7 @@ RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
 export LD="${CXX}"
 
 PN = "enigma2"
-PR = "r0"
+PR = "r1"
 SRCDATE = "20081030"
 SRCREV = "da3cacbbf835122eaa1b5e3810a23e9264561eec"
 
