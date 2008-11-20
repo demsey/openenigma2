@@ -11,7 +11,7 @@ echo 12 > /proc/progress
 depmod -Ae
 echo 16 > /proc/progress
 
-for mod in cifs nfsd usb-storage sd autofs4 vfat; do
+for mod in cifs autofs4 vfat; do
 	modprobe $mod 2> /dev/null ;
 done
 echo 18 > /proc/progress

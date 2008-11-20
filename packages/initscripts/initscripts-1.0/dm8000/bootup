@@ -10,7 +10,7 @@ echo 12 > /proc/progress
 depmod -Ae
 echo 13 > /proc/progress
 
-for mod in nfsd sd; do
+for mod in sd_mod; do
 	modprobe $mod 2> /dev/null ;
 done
 
