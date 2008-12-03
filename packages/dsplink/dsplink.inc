@@ -1,6 +1,6 @@
 DESCRIPTION = "DSP Link for TI ARM/DSP processors"
 
-DEPENDS = "virtual/kernel perl-native"
+DEPENDS = "virtual/kernel dsplink-module perl-native"
 RDEPENDS_${PN}-module = "update-modules"
 RRECOMMENDS_${PN} = "${PN}-module"
 
@@ -38,7 +38,10 @@ export GPPOS
 
 do_configure () {
 	# Run perl script to create appropriate makefiles (v1.60 and up)
+	(
+	cd ${DSPLINK}
 	perl config/bin/dsplinkcfg.pl --platform=${DSPLINKPLATFORM} --nodsp=1 --dspcfg_0=${DSPCFG} --dspos_0=DSPBIOS5XX  --gppos=${GPPOS} --comps=ponslrm
+	)
 }
 
 PARALLEL_MAKE = ""
@@ -70,10 +73,22 @@ do_compile () {
 	make -e -f ${WORKDIR}/Makefile.dsplink
 }
 
-do_install () {
-	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
-	cp ${S}/gpp/BUILD/EXPORT/RELEASE/dsplinkk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/
+dsplink-kbuild-compile() {	
+	mkdir -p ${S}/dsplink-kbuild-test	
+	cp ${WORKDIR}/Makefile-dsplink-kbuild  ${S}/dsplink-kbuild-test/Makefile
+    cd ${S}/dsplink-kbuild-test/
+	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+    oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
+           KERNEL_SRC=${STAGING_KERNEL_DIR}    \
+           KDIR=${STAGING_KERNEL_DIR}	\
+           KERNEL_VERSION=${KERNEL_VERSION}    \
+           CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
+           AR="${KERNEL_AR}" \
+           V=1        ${MAKE_TARGETS}
 
+}
+
+do_install () {
 	install -d ${D}/${bindir}
 #	install ${S}/gpp/BUILD/EXPORT/RELEASE/loopgpp           ${D}/${bindir}
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/messagegpp        ${D}/${bindir}

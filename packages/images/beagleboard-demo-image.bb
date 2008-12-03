@@ -1,11 +1,15 @@
 # Demo image for beagleboard
 
+IMAGE_LINGUAS = "de-de fr-fr en-gb en-us pt-br es-es kn-in ml-in ta-in"
+
 XSERVER ?= "xserver-xorg \
            xf86-input-evdev \
            xf86-input-mouse \
            xf86-video-fbdev \
            xf86-input-keyboard \
 "
+
+E_CONFIG ?= "e-wm-config-standard e-wm-config-default"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
 
@@ -23,7 +27,7 @@ IMAGE_INSTALL = "\
     angstrom-led-config \ 
     gpe-scap \
     psplash \
-    e-wm exhibit \
+    e-wm ${E_CONFIG} exhibit \
     xterm xmms \
     epiphany firefox midori \
     swfdec-mozilla \
@@ -41,6 +45,7 @@ IMAGE_INSTALL = "\
     stalonetray \
 	synergy \
 	x11vnc \
+	angstrom-gnome-icon-theme-enable \
 "
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"

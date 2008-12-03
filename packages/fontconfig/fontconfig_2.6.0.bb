@@ -3,6 +3,8 @@ LICENSE = "BSD"
 DESCRIPTION = "A library for configuring and customizing font access."
 DEPENDS = "expat freetype zlib"
 
+PR = "r1"
+
 SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
            file://fix-pkgconfig.patch;patch=1"
 
@@ -24,7 +26,7 @@ inherit autotools pkgconfig
 
 export HASDOCBOOK="no"
 
-EXTRA_OECONF = " --disable-docs --with-arch=${HOST_ARCH}"
+EXTRA_OECONF = " --disable-docs --with-arch=${HOST_ARCH} --with-cache-dir=/var/lib/fontconfig"
 EXTRA_OEMAKE = "FC_LANG=fc-lang FC_GLYPHNAME=fc-glyphname"
 
 # The tarball has some of the patched files as read only, which
