@@ -18,7 +18,7 @@ do_install_append() {
 }
 
 do_compile_append() {
-	${STAGING_BINDIR}/${TARGET_ARCH}-linux-klcc ${S}/boottool-${MACHINE}.c -o ${S}/boottool
+	${STAGING_DIR_HOST}/bin/klcc ${S}/boottool-${MACHINE}.c -o ${S}/boottool
 }
 
 PACKAGE_ARCH := "${MACHINE_ARCH}"
