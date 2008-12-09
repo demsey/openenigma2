@@ -1,0 +1,152 @@
+diff -auNr busybox-1.11.3/console-tools/Config.in busybox-1.11.3_getkey/console-tools/Config.in
+--- busybox-1.11.3/console-tools/Config.in	2008-06-25 14:51:18.000000000 +0200
++++ busybox-1.11.3_getkey/console-tools/Config.in	2008-12-05 19:13:40.000000000 +0100
+@@ -37,6 +37,14 @@
+ 	help
+ 	  This program reports and sets keyboard mode.
+ 
++config GETKEY
++	bool "getkey"
++	default n
++	help
++	  This program displays a configurable message and waits
++	  a dedicated number of seconds for a keypress. It sets
++	  the exit code accordingly, i.e. SUCCESS if there was a keypress.
++
+ config LOADFONT
+ 	bool "loadfont"
+ 	default n
+diff -auNr busybox-1.11.3/console-tools/Kbuild busybox-1.11.3_getkey/console-tools/Kbuild
+--- busybox-1.11.3/console-tools/Kbuild	2008-06-25 14:51:18.000000000 +0200
++++ busybox-1.11.3_getkey/console-tools/Kbuild	2008-12-05 19:12:35.000000000 +0100
+@@ -18,3 +18,4 @@
+ lib-$(CONFIG_RESIZE)		+= resize.o
+ lib-$(CONFIG_SETKEYCODES)	+= setkeycodes.o
+ lib-$(CONFIG_SETLOGCONS)	+= setlogcons.o
++lib-$(CONFIG_GETKEY)		+= getkey.o
+diff -auNr busybox-1.11.3/console-tools/getkey.c busybox-1.11.3_getkey/console-tools/getkey.c
+--- busybox-1.11.3/console-tools/getkey.c	1970-01-01 01:00:00.000000000 +0100
++++ busybox-1.11.3_getkey/console-tools/getkey.c	2008-12-05 19:11:01.000000000 +0100
+@@ -0,0 +1,94 @@
++/* vi: set sw=4 ts=4: */
++/*
++ * getkey.c - Michael 'Mickey' Lauer
++ *
++ * Version 0.1
++ *
++ * A simple keygrapper. Displays a configurable message and waits a dedicated number
++ * of seconds for a keypress. Sets the exit code accordingly (SUCCESS on keypress).
++ */
++#include <stdio.h>
++#include <fcntl.h>
++#include <memory.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <sys/types.h>
++#include <errno.h>
++#include <sys/ioctl.h>
++#include <sys/kd.h>
++#include "busybox.h"
++
++extern int getkey_main(int argc, char **argv)
++{
++    int status = EXIT_FAILURE;
++
++    if ( argc < 2 )
++    {
++	bb_show_usage();
++    }
++
++    /*
++     * If no terminal is attached it is quite useless
++     * to treat it like one.
++     */
++    if( !isatty(STDIN_FILENO) )
++    {
++	goto error_hard;
++    }
++
++    //bb_printf( "DEBUG: time = '%s'\n", argv[1] );
++    //bb_printf( "DEBUG: mesg = '%s'\n", argv[2] );
++
++    struct termios orig;
++    struct termios attr;
++
++    if ( tcgetattr(STDIN_FILENO, &orig) == -1 )
++    {
++	goto error_hard;
++    }
++
++    attr = orig;
++    attr.c_cc[VMIN] = 0;
++    attr.c_cc[VTIME] = 0;
++    attr.c_iflag |= INLCR;
++    attr.c_oflag |= OPOST|ONLCR;
++    attr.c_cflag &= ~PARENB;
++    attr.c_lflag &= ~(ICANON/*|ECHO*/);
++    if ( tcsetattr(STDIN_FILENO,TCSANOW,&attr) == -1 )
++    {
++	goto error_hard;
++    }
++
++    fd_set rfds;
++    struct timeval tv;
++    int retval;
++
++    FD_ZERO(&rfds);
++    FD_SET(0, &rfds);
++
++    tv.tv_sec = atoi( argv[1] );
++    tv.tv_usec = 0;
++
++    if ( argc == 3 )
++    {
++	bb_printf( argv[2], tv.tv_sec );
++	bb_printf( "\n" );
++	fflush(stdout);
++    }
++    retval = select(1, &rfds, NULL, NULL, &tv);
++    if (retval > 0)
++    {
++	status = EXIT_SUCCESS;
++    }
++
++    if (tcsetattr(STDIN_FILENO,TCSANOW,&orig) == -1 )
++    {
++	goto error_hard;
++    }
++
++    return status;
++
++error_hard   :
++    return EXIT_FAILURE;
++};
++
+diff -auNr busybox-1.11.3/include/applets.h busybox-1.11.3_getkey/include/applets.h
+--- busybox-1.11.3/include/applets.h	2008-06-25 14:51:29.000000000 +0200
++++ busybox-1.11.3_getkey/include/applets.h	2008-12-05 19:16:30.000000000 +0100
+@@ -163,6 +163,7 @@
+ USE_FTPPUT(APPLET_ODDNAME(ftpput, ftpgetput, _BB_DIR_USR_BIN, _BB_SUID_NEVER, ftpput))
+ USE_FUSER(APPLET(fuser, _BB_DIR_USR_BIN, _BB_SUID_NEVER))
+ USE_GETENFORCE(APPLET(getenforce, _BB_DIR_USR_SBIN, _BB_SUID_NEVER))
++USE_GETKEY(APPLET(getkey, _BB_DIR_SBIN, _BB_SUID_NEVER))
+ USE_GETOPT(APPLET(getopt, _BB_DIR_BIN, _BB_SUID_NEVER))
+ USE_GETSEBOOL(APPLET(getsebool, _BB_DIR_USR_SBIN, _BB_SUID_NEVER))
+ USE_GETTY(APPLET(getty, _BB_DIR_SBIN, _BB_SUID_NEVER))
+diff -auNr busybox-1.11.3/include/usage.h busybox-1.11.3_getkey/include/usage.h
+--- busybox-1.11.3/include/usage.h	2008-09-28 20:04:12.000000000 +0200
++++ busybox-1.11.3_getkey/include/usage.h	2008-12-05 19:11:48.000000000 +0100
+@@ -1262,6 +1262,13 @@
+      "\n	-P	Port number" \
+ 	)
+ 
++#define getkey_trivial_usage \
++	"time [message]"
++#define getkey_full_usage \
++	"Display a message and wait for a keypress."
++#define getkey_example_usage \
++	"$ getkey 5 'Press a key within %d seconds to interrupt autoboot.'"
++
+ #define fuser_trivial_usage \
+        "[options] FILE or PORT/PROTO"
+ #define fuser_full_usage "\n\n" \
