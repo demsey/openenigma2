@@ -16,7 +16,7 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs \
 	base-files-doc"
 
 # experimental packages
-OPENDREAMBOX_EXPERIMENTAL = "python-twisted enigma2"
+OPENDREAMBOX_EXPERIMENTAL = "python-twisted enigma2 aio-grab"
 OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrade \
 	enigma2-plugin-systemplugins-softwareupdate \
 	enigma2-plugin-systemplugins-positionersetup \
@@ -30,9 +30,11 @@ OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrad
 	enigma2-plugin-extensions-pictureplayer \
 	enigma2-plugin-extensions-mediaplayer \
 	enigma2-plugin-systemplugins-hotplug \
-	enigma2-streamproxy \
+	enigma2-streamproxy ethtool \
 	python-twisted-web python-twisted python-crypt python-pycrypto \
-	python-netserver python-pickle dreambox-blindscan-utils"
+	python-netserver python-pickle python-pkgutil \
+	python-twisted-core python-twisted-protocols \
+	dreambox-blindscan-utils"
 
 #	enigma2-plugin-extensions-webinterface is disabled until we fixed it to use twisted-web instead of twisted-web2
 
@@ -101,6 +103,10 @@ WLAN_MADWIFI_R = "madwifi-ng-modules madwifi-ng-tools"
 
 DVDPLAYER_SUPPORT_R = "enigma2-plugin-extensions-dvdplayer"
 
+DVDBURN_SUPPORT_R = "enigma2-plugin-extensions-dvdburn dvd+rw-tools dvdauthor mjpegtools cdrkit python-imaging projectx"
+
+CDPLAYER_SUPPORT_R = "kernel-module-cdfs libcddb libcdio enigma2-plugin-extensions-cdinfo"
+
 # now machine specific:
 OPENDREAMBOX_COMMON_MACHINE_dm600pvr += "${OPENDREAMBOX_V2_ONLY} ${OPENDREAMBOX_TUXBOX} ${MODEM_SUPPORT}"
 OPENDREAMBOX_COMMON_MACHINE_R_dm600pvr += "${OPENDREAMBOX_TUXBOX_R} ${MODEM_SUPPORT_R} dreambox-blindscan-utils"
@@ -123,7 +129,10 @@ OPENDREAMBOX_COMMON_MACHINE_R_dm800 += "${OPENDREAMBOX_EXPERIMENTAL_R} ${WLAN_SU
 OPENDREAMBOX_COMMON_MACHINE_D_dm800 += ""
 
 OPENDREAMBOX_COMMON_MACHINE_dm8000 += "${OPENDREAMBOX_V3_ONLY} ${OPENDREAMBOX_EXPERIMENTAL} ${WLAN_SUPPORT} ${WLAN_MADWIFI}"
-OPENDREAMBOX_COMMON_MACHINE_R_dm8000 += "${OPENDREAMBOX_EXPERIMENTAL_R} ${WLAN_SUPPORT_R} ${DVDPLAYER_SUPPORT_R} ${WLAN_MADWIFI_R} enigma2-plugin-systemplugins-videomode"
+OPENDREAMBOX_COMMON_MACHINE_R_dm8000 += "${OPENDREAMBOX_EXPERIMENTAL_R} \
+	${WLAN_SUPPORT_R} ${WLAN_MADWIFI_R} ${DVDPLAYER_SUPPORT_R} \
+	${DVDBURN_SUPPORT_R}  enigma2-plugin-systemplugins-videomode \
+	${CDPLAYER_SUPPORT_R}"
 OPENDREAMBOX_COMMON_MACHINE_D_dm8000 += ""
 
 # collect the stuff into OPENDREAMBOX_COMMON
