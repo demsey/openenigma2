@@ -1,153 +1,6 @@
-Index: enigma2/lib/python/Components/UsageConfig.py
-===================================================================
---- enigma2/lib/python/Components/UsageConfig.py	(revision 5639)
-+++ enigma2/lib/python/Components/UsageConfig.py	(working copy)
-@@ -1,6 +1,6 @@
- from Components.Harddisk import harddiskmanager
- from config import ConfigSubsection, ConfigYesNo, config, ConfigSelection, ConfigText, ConfigNumber, ConfigSet
--from enigma import Misc_Options, setTunerTypePriorityOrder;
-+from enigma import Misc_Options, setTunerTypePriorityOrder, setEnableTtCachingOnOff;
- from SystemInfo import SystemInfo
- import os
- 
-@@ -17,6 +17,7 @@
- 	config.usage.show_infobar_on_zap = ConfigYesNo(default = True)
- 	config.usage.show_infobar_on_skip = ConfigYesNo(default = True)
- 	config.usage.show_infobar_on_event_change = ConfigYesNo(default = True)
-+	config.usage.enable_tt_caching = ConfigYesNo(default = True)
- 	config.usage.hdd_standby = ConfigSelection(default = "120", choices = [
- 		("0", _("no standby")), ("2", "10 " + _("seconds")), ("6", "30 " + _("seconds")),
- 		("12", "1 " + _("minute")), ("24", "2 " + _("minutes")),
-@@ -56,7 +56,11 @@
- 
- 	config.usage.blinking_display_clock_during_recording = ConfigYesNo(default = False)
- 	config.usage.load_length_of_movies_in_moviellist = ConfigYesNo(default = True)
--	
-+
-+	def EnableTtCachingChanged(configElement):
-+		setEnableTtCachingOnOff(int(configElement.value))
-+	config.usage.enable_tt_caching.addNotifier(EnableTtCachingChanged)
-+
- 	def TunerTypePriorityOrderChanged(configElement):
- 		setTunerTypePriorityOrder(int(configElement.value))
- 	config.usage.alternatives_priority.addNotifier(TunerTypePriorityOrderChanged)
-Index: enigma2/lib/python/enigma_python.i
-===================================================================
---- enigma2/lib/python/enigma_python.i	(revision 5639)
-+++ enigma2/lib/python/enigma_python.i	(working copy)
-@@ -87,6 +87,7 @@
- #include <lib/dvb/pmt.h>
- #include <lib/components/scan.h>
- #include <lib/components/file_eraser.h>
-+#include <lib/components/tuxtxtapp.h>
- #include <lib/driver/avswitch.h>
- #include <lib/driver/rfmod.h>
- #include <lib/driver/misc_options.h>
-@@ -160,6 +161,9 @@
- %immutable eAVSwitch::vcr_sb_notifier;
- %immutable ePythonMessagePump::recv_msg;
- %immutable eDVBLocalTimeHandler::m_timeUpdated;
-+%immutable eTuxtxtApp::appClosed;
-+%immutable eTuxtxtApp::dataAvail;
-+%immutable eTuxtxtApp::dataSent;
- %include <lib/base/message.h>
- %include <lib/base/console.h>
- %include <lib/base/nconfig.h>
-@@ -205,6 +209,7 @@
- %include <lib/dvb/pmt.h>
- %include <lib/components/scan.h>
- %include <lib/components/file_eraser.h>
-+%include <lib/components/tuxtxtapp.h>
- %include <lib/driver/avswitch.h>
- %include <lib/driver/rfmod.h>
- %include <lib/driver/misc_options.h>
-@@ -309,6 +314,15 @@
- }
- %}
- 
-+void setEnableTtCachingOnOff(int);
-+%{
-+void setEnableTtCachingOnOff(int onoff)
-+{
-+	eTuxtxtApp *tt = eTuxtxtApp::getInstance();
-+	if (tt) tt->setEnableTtCachingOnOff(onoff);
-+}
-+%}
-+
- /************** temp *****************/
- 
- 	/* need a better place for this, i agree. */
-Index: enigma2/lib/components/Makefile.am
-===================================================================
---- enigma2/lib/components/Makefile.am	(revision 5639)
-+++ enigma2/lib/components/Makefile.am	(working copy)
-@@ -3,4 +3,4 @@
- 
- noinst_LIBRARIES = libenigma_components.a
- 
--libenigma_components_a_SOURCES = scan.cpp file_eraser.cpp
-+libenigma_components_a_SOURCES = scan.cpp file_eraser.cpp tuxtxtapp.cpp
-Index: enigma2/lib/dvb/decoder.cpp
-===================================================================
---- enigma2/lib/dvb/decoder.cpp	(revision 5639)
-+++ enigma2/lib/dvb/decoder.cpp	(working copy)
-@@ -1,6 +1,7 @@
- #include <lib/base/ebase.h>
- #include <lib/base/eerror.h>
- #include <lib/dvb/decoder.h>
-+#include <lib/components/tuxtxtapp.h>
- #if HAVE_DVB_API_VERSION < 3 
- #define audioStatus audio_status
- #define videoStatus video_status
-@@ -880,14 +881,24 @@
- 	if (m_changed & changeText)
- 	{
- 		if (m_text)
-+		{
- 			m_text->stop();
-+			if ( m_decoder == 0 )	// Tuxtxt caching actions only on primary decoder
-+				eTuxtxtApp::getInstance()->stopCaching();
-+		}
- 		m_text = 0;
- 		if ((m_textpid >= 0) && (m_textpid < 0x1FFF) && !nott)
- 		{
- 			m_text = new eDVBTText(m_demux);
- 			if (m_text->startPid(m_textpid))
- 				res = -1;
-+
-+			if ( m_decoder == 0 )	// Tuxtxt caching actions only on primary decoder
-+				eTuxtxtApp::getInstance()->startCaching(m_textpid);
- 		}
-+		else if ( m_decoder == 0 )	// Tuxtxt caching actions only on primary decoder
-+			eTuxtxtApp::getInstance()->resetPid();
-+
- 		m_changed &= ~changeText;
- 	}
- #endif
-@@ -938,10 +949,16 @@
- 	demux->connectEvent(slot(*this, &eTSMPEGDecoder::demux_event), m_demux_event_conn);
- 	CONNECT(m_showSinglePicTimer.timeout, eTSMPEGDecoder::finishShowSinglePic);
- 	m_is_ff = m_is_sm = m_is_trickmode = 0;
-+	
-+	if ( m_decoder == 0 )	// Tuxtxt caching actions only on primary decoder
-+		eTuxtxtApp::getInstance()->initCache();
- }
- 
- eTSMPEGDecoder::~eTSMPEGDecoder()
- {
-+	if ( m_decoder == 0 )	// Tuxtxt caching actions only on primary decoder
-+		eTuxtxtApp::getInstance()->freeCache();
-+
- 	finishShowSinglePic();
- 	m_vpid = m_apid = m_pcrpid = m_textpid = pidNone;
- 	m_changed = -1;
-Index: data/setup.xml
-===================================================================
-RCS file: /cvs/enigma2/data/setup.xml,v
-retrieving revision 1.48
-diff -u -r1.48 setup.xml
---- enigma2/data/setup.xml	5 Oct 2008 22:37:19 -0000	1.48
-+++ enigma2/data/setup.xml	21 Oct 2008 22:54:10 -0000
+diff -auNr git/data/setup.xml tuxtxt/data/setup.xml
+--- git/data/setup.xml	2008-11-17 09:11:43.000000000 +0100
++++ tuxtxt/data/setup.xml	2008-11-17 09:13:20.000000000 +0100
 @@ -23,6 +23,7 @@
  			<item level="0" text="Margin after record">config.recording.margin_after</item>
  			<item level="0" text="Show blinking clock in display during recording">config.usage.blinking_display_clock_during_recording</item>
@@ -156,21 +9,18 @@ diff -u -r1.48 setup.xml
  			<item level="1" text="Show positioner movement">config.usage.showdish</item>
  			<item level="1" text="Enable multiple bouquets">config.usage.multibouquet</item>
  			<item level="1" text="Change bouquets in quickzap">config.usage.quickzap_bouquet_change</item>
-Index: enigma2/main/Makefile.am
-===================================================================
---- enigma2/main/Makefile.am	(revision 5639)
-+++ enigma2/main/Makefile.am	(working copy)
-@@ -52,7 +52,7 @@
- 	@LIBUNGIF_LIBS@ \
- 	@XML2_LIBS@ \
- 	@XMLCCWRAP_LIBS@ \
--	-ldl -lpthread -lcrypt -lresolv -lrt
-+	-ldl -lpthread -lcrypt -lresolv -lrt -ltuxtxt32bpp
+diff -auNr git/lib/components/Makefile.am tuxtxt/lib/components/Makefile.am
+--- git/lib/components/Makefile.am	2008-11-17 09:11:43.000000000 +0100
++++ tuxtxt/lib/components/Makefile.am	2008-11-17 09:13:20.000000000 +0100
+@@ -3,4 +3,4 @@
  
- enigma2$(EXEEXT): $(enigma2_OBJECTS) $(enigma2_DEPENDENCIES) $(enigma2_LDADD_WHOLE)
- #	@rm -f enigma2$(EXEEXT)
---- enigma2_orig/lib/components/tuxtxtapp.cpp	1970-01-01 00:00:00.000000000 +0000
-+++ enigma2/lib/components/tuxtxtapp.cpp	2008-10-04 18:26:04.000000000 +0200
+ noinst_LIBRARIES = libenigma_components.a
+ 
+-libenigma_components_a_SOURCES = scan.cpp file_eraser.cpp
++libenigma_components_a_SOURCES = scan.cpp file_eraser.cpp tuxtxtapp.cpp
+diff -auNr git/lib/components/tuxtxtapp.cpp tuxtxt/lib/components/tuxtxtapp.cpp
+--- git/lib/components/tuxtxtapp.cpp	1970-01-01 01:00:00.000000000 +0100
++++ tuxtxt/lib/components/tuxtxtapp.cpp	2008-11-17 09:13:20.000000000 +0100
 @@ -0,0 +1,112 @@
 +#include <lib/components/tuxtxtapp.h>
 +#include <lib/base/init.h>
@@ -284,8 +134,9 @@ Index: enigma2/main/Makefile.am
 +		pid = savePid;
 +	}
 +}
---- enigma2_orig/lib/components/tuxtxtapp.h	1970-01-01 00:00:00.000000000 +0000
-+++ enigma2/lib/components/tuxtxtapp.h	2008-10-04 18:26:04.000000000 +0200
+diff -auNr git/lib/components/tuxtxtapp.h tuxtxt/lib/components/tuxtxtapp.h
+--- git/lib/components/tuxtxtapp.h	1970-01-01 01:00:00.000000000 +0100
++++ tuxtxt/lib/components/tuxtxtapp.h	2008-11-17 09:13:20.000000000 +0100
 @@ -0,0 +1,32 @@
 +#ifndef __LIB_COMPONENTS_TUXTXTAPP_H__
 +#define __LIB_COMPONENTS_TUXTXTAPP_H__
@@ -319,3 +170,145 @@ Index: enigma2/main/Makefile.am
 +};
 +
 +#endif // __LIB_COMPONENTS_TUXTXTAPP_H__
+diff -auNr git/lib/dvb/decoder.cpp tuxtxt/lib/dvb/decoder.cpp
+--- git/lib/dvb/decoder.cpp	2008-11-17 09:11:43.000000000 +0100
++++ tuxtxt/lib/dvb/decoder.cpp	2008-11-17 09:13:20.000000000 +0100
+@@ -1,6 +1,7 @@
+ #include <lib/base/ebase.h>
+ #include <lib/base/eerror.h>
+ #include <lib/dvb/decoder.h>
++#include <lib/components/tuxtxtapp.h>
+ #if HAVE_DVB_API_VERSION < 3 
+ #define audioStatus audio_status
+ #define videoStatus video_status
+@@ -855,7 +856,11 @@
+ 	if (m_changed & changeText)
+ 	{
+ 		if (m_text)
++		{
+ 			m_text->stop();
++			if ( m_decoder == 0 )   // Tuxtxt caching actions only on primary decoder
++				eTuxtxtApp::getInstance()->stopCaching();
++		}
+ 		m_text = 0;
+ 	}
+ 	if (m_changed & changePCR)
+@@ -896,7 +901,12 @@
+ 			m_text = new eDVBTText(m_demux);
+ 			if (m_text->startPid(m_textpid))
+ 				res = -1;
++
++			if ( m_decoder == 0 )   // Tuxtxt caching actions only on primary decoder
++				eTuxtxtApp::getInstance()->startCaching(m_textpid);
+ 		}
++		else if ( m_decoder == 0 )      // Tuxtxt caching actions only on primary decoder
++			eTuxtxtApp::getInstance()->resetPid();
+ 		m_changed &= ~changeText;
+ 	}
+ #endif
+@@ -947,10 +957,16 @@
+ 	demux->connectEvent(slot(*this, &eTSMPEGDecoder::demux_event), m_demux_event_conn);
+ 	CONNECT(m_showSinglePicTimer->timeout, eTSMPEGDecoder::finishShowSinglePic);
+ 	m_is_ff = m_is_sm = m_is_trickmode = 0;
++	
++	if ( m_decoder == 0 )	// Tuxtxt caching actions only on primary decoder
++		eTuxtxtApp::getInstance()->initCache();
+ }
+ 
+ eTSMPEGDecoder::~eTSMPEGDecoder()
+ {
++	if ( m_decoder == 0 )	// Tuxtxt caching actions only on primary decoder
++		eTuxtxtApp::getInstance()->freeCache();
++
+ 	finishShowSinglePic();
+ 	m_vpid = m_apid = m_pcrpid = m_textpid = pidNone;
+ 	m_changed = -1;
+diff -auNr git/lib/python/Components/UsageConfig.py tuxtxt/lib/python/Components/UsageConfig.py
+--- git/lib/python/Components/UsageConfig.py	2008-11-17 09:11:43.000000000 +0100
++++ tuxtxt/lib/python/Components/UsageConfig.py	2008-11-17 09:14:01.000000000 +0100
+@@ -1,6 +1,6 @@
+ from Components.Harddisk import harddiskmanager
+ from config import ConfigSubsection, ConfigYesNo, config, ConfigSelection, ConfigText, ConfigNumber, ConfigSet, ConfigLocations
+-from enigma import Misc_Options, setTunerTypePriorityOrder;
++from enigma import Misc_Options, setTunerTypePriorityOrder, setEnableTtCachingOnOff
+ from SystemInfo import SystemInfo
+ import os
+ 
+@@ -17,6 +17,7 @@
+ 	config.usage.show_infobar_on_zap = ConfigYesNo(default = True)
+ 	config.usage.show_infobar_on_skip = ConfigYesNo(default = True)
+ 	config.usage.show_infobar_on_event_change = ConfigYesNo(default = True)
++	config.usage.enable_tt_caching = ConfigYesNo(default = True)
+ 	config.usage.hdd_standby = ConfigSelection(default = "120", choices = [
+ 		("0", _("no standby")), ("2", "10 " + _("seconds")), ("6", "30 " + _("seconds")),
+ 		("12", "1 " + _("minute")), ("24", "2 " + _("minutes")),
+@@ -59,7 +60,11 @@
+ 
+ 	config.usage.blinking_display_clock_during_recording = ConfigYesNo(default = False)
+ 	config.usage.load_length_of_movies_in_moviellist = ConfigYesNo(default = True)
+-	
++
++	def EnableTtCachingChanged(configElement):
++		setEnableTtCachingOnOff(int(configElement.value))
++	config.usage.enable_tt_caching.addNotifier(EnableTtCachingChanged)
++
+ 	def TunerTypePriorityOrderChanged(configElement):
+ 		setTunerTypePriorityOrder(int(configElement.value))
+ 	config.usage.alternatives_priority.addNotifier(TunerTypePriorityOrderChanged)
+diff -auNr git/lib/python/enigma_python.i tuxtxt/lib/python/enigma_python.i
+--- git/lib/python/enigma_python.i	2008-11-17 09:11:44.000000000 +0100
++++ tuxtxt/lib/python/enigma_python.i	2008-11-17 09:13:20.000000000 +0100
+@@ -86,6 +86,7 @@
+ #include <lib/dvb/pmt.h>
+ #include <lib/components/scan.h>
+ #include <lib/components/file_eraser.h>
++#include <lib/components/tuxtxtapp.h>
+ #include <lib/driver/avswitch.h>
+ #include <lib/driver/rfmod.h>
+ #include <lib/driver/misc_options.h>
+@@ -154,6 +155,9 @@
+ %immutable eAVSwitch::vcr_sb_notifier;
+ %immutable ePythonMessagePump::recv_msg;
+ %immutable eDVBLocalTimeHandler::m_timeUpdated;
++%immutable eTuxtxtApp::appClosed;
++%immutable eTuxtxtApp::dataAvail;
++%immutable eTuxtxtApp::dataSent;
+ %include <lib/base/message.h>
+ %include <lib/base/nconfig.h>
+ %include <lib/driver/rc.h>
+@@ -198,6 +202,7 @@
+ %include <lib/dvb/pmt.h>
+ %include <lib/components/scan.h>
+ %include <lib/components/file_eraser.h>
++%include <lib/components/tuxtxtapp.h>
+ %include <lib/driver/avswitch.h>
+ %include <lib/driver/rfmod.h>
+ %include <lib/driver/misc_options.h>
+@@ -302,6 +307,15 @@
+ }
+ %}
+ 
++void setEnableTtCachingOnOff(int);
++%{
++void setEnableTtCachingOnOff(int onoff)
++{
++	eTuxtxtApp *tt = eTuxtxtApp::getInstance();
++	if (tt) tt->setEnableTtCachingOnOff(onoff);
++}
++%}
++
+ /************** temp *****************/
+ 
+ 	/* need a better place for this, i agree. */
+diff -auNr git/main/Makefile.am tuxtxt/main/Makefile.am
+--- git/main/Makefile.am	2008-11-17 09:11:44.000000000 +0100
++++ tuxtxt/main/Makefile.am	2008-11-17 09:13:20.000000000 +0100
+@@ -53,7 +53,7 @@
+ 	@LIBUNGIF_LIBS@ \
+ 	@XML2_LIBS@ \
+ 	@XMLCCWRAP_LIBS@ \
+-	-ldl -lpthread -lcrypt -lresolv -lrt
++	-ldl -lpthread -lcrypt -lresolv -lrt -ltuxtxt32bpp
+ 
+ enigma2$(EXEEXT): $(enigma2_OBJECTS) $(enigma2_DEPENDENCIES) $(enigma2_LDADD_WHOLE)
+ #	@rm -f enigma2$(EXEEXT)
