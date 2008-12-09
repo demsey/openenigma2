@@ -1,13 +1,19 @@
 DESCRIPTION = "Additional plugins for Enigma2"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
-SRCDATE = "20081023"
+SRCDATE = "20081209"
 
 PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
+# if you want experimental, use:
+#REL_MAJOR="2"
+#REL_MINOR="6"
+#TAG = ""
+
+# if you want a 2.5-based release, use
 REL_MAJOR="2"
 REL_MINOR="5"
-TAG = ""
+TAG = ";tag=${PN}_rel${REL_MAJOR}${REL_MINOR}"
 
 PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
 
@@ -18,8 +24,8 @@ inherit autotools
 
 S = "${WORKDIR}/enigma2-plugins"
 
-DEPENDS = "${@get_version_depends(bb, d)}"
-DEPENDS += "enigma2 python-gdata"
+DEPENDS = "${@get_version_depends(bb, d)} "
+DEPENDS += "enigma2 python-gdata "
 
 def get_version_depends(bb, d):
 	if bb.data.getVar('REL_MINOR', d, 1) > '4':
@@ -41,7 +47,12 @@ python populate_packages_prepend () {
 			if line.startswith('Package: '):
 				full_package = line[9:]
 			if line.startswith('Depends: '):
-				bb.data.setVar('RDEPENDS_' + full_package, ' '.join(line[9:].split(', ')), d)
+				depends = line[9:].split(', ')
+				# HACK: until enigma2-plugins made the switch we re-route some dependencies here
+				if 'twisted-web' in depends:
+					depends.remove('twisted-web')
+					depends.append('python-twisted-web')
+				bb.data.setVar('RDEPENDS_' + full_package, ' '.join(depends), d)
 			if line.startswith('Description: '):
 				bb.data.setVar('DESCRIPTION_' + full_package, line[13:], d)
 
