@@ -1,8 +1,8 @@
 require klibc-common.inc
 
-SRC_URI += "file://staging.patch;patch=1 \
-	    file://klibc_kexecsyscall.patch;patch=1 \
-	    "
+SRC_URI += "file://staging.patch;patch=1"
+SRC_URI_append = " file://klibc_kexecsyscall.patch;patch=1"
+SRC_URI_append_dm7025 = ""
 
 # we want only the shared programms and the lib so we chose them manually
 do_install() {
