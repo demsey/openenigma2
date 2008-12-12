@@ -52,6 +52,7 @@ DBG_PACKAGES += "${QT_BASE_LIB}core4-dbg \
 
 
 PACKAGES += "${DEV_PACKAGES} ${NONDEV_PACKAGES} ${DBG_PACKAGES}"
+PACKAGES_DYNAMIC = "${QT_BASE_NAME}-plugin-*"
 
 ALLOW_EMPTY_${PN} = "1"
 FILES_${PN}     = ""
@@ -180,6 +181,7 @@ python populate_packages_prepend() {
 	qtopia_split('imageformats','imageformat', '^libq(.*)\.so$')
 	qtopia_split('inputmethods','inputmethod', '^libq(.*)\.so$')
 	qtopia_split('sqldrivers',  'sqldriver',   '^libq(.*)\.so$')
+	qtopia_split('script',      'script',      '^libqtscript(.*)\.so$')
 	qtopia_split('styles',      'style',       '^libq(.*)\.so$')
 }
 

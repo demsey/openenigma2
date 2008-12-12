@@ -6,7 +6,7 @@ do_build() {
         if [ $DO_UCLIBC = 1 ]
         then
                 BUILD_MODE="uclibc"
-                echo 'ANGSTROM_MODE = "uclibc"' > conf/auto.conf
+                echo 'ANGSTROMLIBC = "uclibc"' > conf/auto.conf
 
                 if [ "$BUILD_CLEAN" != "" ]
                 then
@@ -20,7 +20,7 @@ do_build() {
         fi
 
 	BUILD_MODE="glibc"
-        echo 'ANGSTROM_MODE = "glibc"' > conf/auto.conf
+        echo 'ANGSTROMLIBC = "glibc"' > conf/auto.conf
 
 	if [ "$BUILD_CLEAN" != "" ]
 	then
@@ -125,3 +125,13 @@ do
 	BUILD_TARGETS="beagleboard-demo-image"
 	do_build
 done
+
+# Opie
+for machine in h2200 h3900 h4000 h5000 hx4700 htcuniversal akita c7x0 collie poodle spitz tosa simpad
+do
+        BUILD_CLEAN="base-files"
+        BUILD_MACHINE=$machine
+        BUILD_TARGETS="opie-image"
+        do_build
+done
+

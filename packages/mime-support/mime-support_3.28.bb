@@ -1,17 +1,17 @@
 SECTION = "base"
 DESCRIPTION = "MIME files 'mime.types' & 'mailcap', and support programs"
+LICENSE = "PD"
 
 DEPENDS = "file"
 RRECOMMENDS = "file"
-LICENSE = "PD"
-PACKAGE_ARCH = "all"
-PR = "r2"
+
+PR = "r3"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/m/mime-support/mime-support_${PV}-1.tar.gz"
 S = "${WORKDIR}/${PN}"
 
-PACKAGES = "${PN}-dbg ${PN} ${PN}-doc"
 FILES_${PN} += " ${libdir}/mime"
+PACKAGE_ARCH = "all"
 
 docdir_append = "/${PN}"
 
