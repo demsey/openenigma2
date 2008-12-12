@@ -15,6 +15,7 @@ INITSCRIPT_NAME = "samba"
 # in rc6.d, the shutdown must precede network shutdown).
 INITSCRIPT_PARAMS = "defaults"
 CONFFILES_${PN} = "${sysconfdir}/samba/smb.conf"
+CONFFILES_${PN}_opendreambox = ""
 
 # The file system settings --foodir=dirfoo and overridden unconditionally
 # in the samba config by --with-foodir=dirfoo - even if the --with is not

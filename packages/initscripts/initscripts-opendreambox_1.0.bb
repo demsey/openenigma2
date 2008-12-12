@@ -17,6 +17,7 @@ SRC_URI = "file://halt \
            file://sendsigs \
            file://rmnologin \
            file://umountnfs.sh \
+           file://netmount.sh \
            file://var.tar.gz.default \
            file://bootup"
 
@@ -56,6 +57,8 @@ do_install () {
 		ln -sf /usr/bin/showshutdownpic ${D}${sysconfdir}/rc0.d/S89showshutdownpic
 	else
 		install -m 0755 ${WORKDIR}/umountfs	${D}${sysconfdir}/init.d/umountfs
+		install -d ${D}${sysconfdir}/network/if-up.d
+		install -m 0755 ${WORKDIR}/netmount.sh  ${D}${sysconfdir}/network/if-up.d/02netmount
 	fi
 
 	ln -sf		../init.d/rmnologin	${D}${sysconfdir}/rc2.d/S99rmnologin

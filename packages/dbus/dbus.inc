@@ -2,7 +2,8 @@ DESCRIPTION = "A message bus system for inter-process communication"
 HOMEPAGE = "http://dbus.freedesktop.org"
 SECTION = "base"
 LICENSE = "GPL"
-DEPENDS = "expat glib-2.0 virtual/libintl libsm libice virtual/libx11"
+DEPENDS = "expat glib-2.0 virtual/libintl libsm libice"
+DEPENDS += "${@base_conditional('DISTRO', 'opendreambox', '', ' virtual/libx11', d)}"
 
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
@@ -26,9 +27,10 @@ EXTRA_OECONF = "\
   --disable-xml-docs \
   --disable-doxygen-docs \
   --with-xml=expat \
-  --with-x \
   --with-dbus-default-reply-timeout=60000 \
 "
+
+EXTRA_OECONF += "${@base_conditional('DISTRO', 'opendreambox', ' --without-x', ' --with-x', d)}"
 
 do_install_append() {
         install -d ${D}${sysconfdir}/init.d

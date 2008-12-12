@@ -13,6 +13,13 @@ SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://ifupdown.sh \
 	file://functions.sh"
 
+SRC_URI_append_opendreambox = " \
+	file://driver-zydas.patch;patch=1 \
+	file://driver-ralink.patch;patch=1"
+
+DEPENDS_dm8000_append = "madwifi-ng"
+TARGET_CFLAGS_dm8000_append = " -I${STAGING_INCDIR}/madwifi-ng"
+
 S = "${WORKDIR}/wpa_supplicant-${PV}"
 
 PACKAGES_prepend = "wpa-supplicant-passphrase "
@@ -31,6 +38,11 @@ do_configure () {
                 echo "CONFIG_DRIVER_MADWIFI=y" >> .config
                 echo "CFLAGS += -I${STAGING_INCDIR}/madwifi-ng" >> .config
         fi
+}
+
+do_configure_append_opendreambox() {
+	echo "CONFIG_DRIVER_RALINK=y" >> .config
+	echo "CONFIG_DRIVER_ZYDAS=y" >> .config
 }
 
 do_compile () {
