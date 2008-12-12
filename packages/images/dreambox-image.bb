@@ -30,19 +30,15 @@ OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrad
 	enigma2-plugin-extensions-pictureplayer \
 	enigma2-plugin-extensions-mediaplayer \
 	enigma2-plugin-systemplugins-hotplug \
+	enigma2-plugin-systemplugins-networkwizard \
 	enigma2-streamproxy ethtool \
+	enigma2-defaultservices \
 	python-twisted-web python-twisted python-crypt python-pycrypto \
 	python-netserver python-pickle python-pkgutil \
 	python-twisted-core python-twisted-protocols \
 	dreambox-blindscan-utils"
 
 #	enigma2-plugin-extensions-webinterface is disabled until we fixed it to use twisted-web instead of twisted-web2
-
-#this packages dont exist with enigma2, enigma2-plugins 2.4
-OPENDREAMBOX_EXPERIMENTAL_R_append_dm8000 = " \
-	enigma2-plugin-systemplugins-defaultservicesscanner \
-	enigma2-defaultservices \
-	enigma2-plugin-systemplugins-networkwizard"
 
 # legacy tuxbox stuff (enigma, plugins, ...)
 OPENDREAMBOX_TUXBOX = "enigma ipkgpl"
