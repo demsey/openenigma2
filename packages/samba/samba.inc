@@ -6,7 +6,6 @@ SRC_URI = "http://samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
            file://configure.patch;patch=1"
 
 SRC_URI_append_opendreambox = " \
-	file://smb.conf \
 	file://01samba-kill \
 	file://01samba-start"
 
