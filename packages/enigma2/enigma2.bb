@@ -34,7 +34,7 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-skinselector = "shows a menu wit
 DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced video modes"
 RDEPENDS_enigma2-plugin-systemplugins-hotplug = "python-pkgutil"
 RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
-RDEPENDS_enigma2-plugin-extensions-dvdburn = "cdrkit dvdauthor dvd+rw-tools mjpegtools projectx"
+RDEPENDS_enigma2-plugin-extensions-dvdburn = "cdrkit dvdauthor dvd+rw-tools mjpegtools projectx python-imaging"
 RDEPENDS_enigma2-plugin-systemplugins-nfiflash = "python-twisted-web"
 
 export LD="${CXX}"
