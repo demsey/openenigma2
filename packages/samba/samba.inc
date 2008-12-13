@@ -46,8 +46,10 @@ do_compile () {
 }
 
 do_install_append() {
-	mv ${D}${libdir}/libsmbclient.so ${D}${libdir}/libsmbclient.so.0
-	ln -sf libsmbclient.so.0 ${D}${libdir}/libsmbclient.so
+	if [ ! -e ${D}${libdir}/libsmbclient.so.0 ]; then
+		mv ${D}${libdir}/libsmbclient.so ${D}${libdir}/libsmbclient.so.0
+		ln -sf libsmbclient.so.0 ${D}${libdir}/libsmbclient.so
+	fi
 	mkdir -p ${D}${base_sbindir}
 	rm -f ${D}${sbindir}/mount.smbfs ${D}${base_sbindir}/mount.smbfs
 	ln -sf ${bindir}/smbmount ${D}${base_sbindir}/mount.smb
