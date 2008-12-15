@@ -1,5 +1,5 @@
 DESCRIPTION = "Mjpeg tools is a suite of programs which support video capture, editting, playback, and compression to MPEG of MJPEG video."
-MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>
+MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
 SECTION = "optional"
 
