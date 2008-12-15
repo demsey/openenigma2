@@ -2,7 +2,7 @@ DESCRIPTION = "tuxbox libs"
 DEPENDS = "zlib dreambox-dvbincludes"
 MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/misc/libs;method=ext \
-           file://acinclude.m4
+           file://acinclude.m4 \
            file://fix_includes_gcc4.patch;patch=1"
 SRCDATE = "20040928"
 
