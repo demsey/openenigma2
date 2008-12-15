@@ -1,5 +1,5 @@
 DESCRIPTION = "dvd+rw-tools makes it possible to burn DVD images"
-MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>
+MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
 SECTION = "optional"
 
