@@ -4,7 +4,7 @@ OPENDREAMBOX_COMMON = "task-boot \
 	ipkg opkg-nogpg dropbear \
 	ncurses joe mc vsftpd timezones-alternative \
 	netkit-base fakelocale less dreambox-bootlogo  \
-	dreambox-dccamd dreambox-keymaps tuxbox-image-info dvbsnoop \
+	dreambox-dccamd dreambox-keymaps dvbsnoop \
 	dreambox-compat tuxbox-common mrouted smartmontools hddtemp \
 	hotplug-ng autofs gdbserver dreambox-feed-configs"
 
@@ -144,3 +144,24 @@ IMAGE_INSTALL = "${OPENDREAMBOX_COMMON} ${OPENDREAMBOX_COMMON_R}"
 IMAGE_LINGUAS = " "
 
 inherit image
+
+opendreambox_rootfs_postprocess() {
+    curdir=$PWD
+    cd ${IMAGE_ROOTFS}
+
+    # generate /etc/image-version
+    IMAGE_VERSION=`echo ${DISTRO_VERSION} | sed  's/\(.\)\.\(.\).\(.\)/\1\2\3/' `
+    IMAGE_DATE="$(date +%Y%m%d%H%M)"
+    IMAGE_TYPE="0"
+    echo "version=${IMAGE_TYPE}${IMAGE_VERSION}${IMAGE_DATE}" > etc/image-version
+    echo "comment=${DISTRO_NAME}" >> etc/image-version
+    echo "target=9" >> etc/image-version
+    echo "creator=OpenEmbedded <oe@dreamboxupdate.com>" >> etc/image-version
+    echo "url=http://www.dreamboxupdate.com/" >> etc/image-version
+    echo "catalog=http://www.dreamboxupdate.com/" >> etc/image-version
+
+    cd $curdir
+}
+
+ROOTFS_POSTPROCESS_COMMAND += "opendreambox_rootfs_postprocess"
+
