@@ -1,7 +1,7 @@
 export IMAGE_BASENAME = "dreambox-image"
 
 OPENDREAMBOX_COMMON = "task-boot \
-	ipkg opkg-nogpg dropbear \
+	opkg-nogpg dropbear \
 	ncurses joe mc vsftpd timezones-alternative \
 	netkit-base fakelocale less dreambox-bootlogo  \
 	dreambox-dccamd dreambox-keymaps dvbsnoop \
@@ -159,6 +159,10 @@ opendreambox_rootfs_postprocess() {
     echo "creator=OpenEmbedded <oe@dreamboxupdate.com>" >> etc/image-version
     echo "url=http://www.dreamboxupdate.com/" >> etc/image-version
     echo "catalog=http://www.dreamboxupdate.com/" >> etc/image-version
+
+    # because we're so used to it
+    ln -s opkg usr/bin/ipkg || true
+    ln -s opkg-cl usr/bin/ipkg-cl || true
 
     cd $curdir
 }
