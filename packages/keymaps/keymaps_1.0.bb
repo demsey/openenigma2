@@ -1,6 +1,7 @@
 DESCRIPTION = "Keyboard map"
 SECTION = "base"
 RDEPENDS = "initscripts console-tools"
+RDEPENDS_opendreambox = "initscripts-opendreambox console-tools"
 LICENSE = "GPL"
 PACKAGE_ARCH = "${MACHINE}"
 PR = "r20"
