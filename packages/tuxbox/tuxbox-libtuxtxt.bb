@@ -1,5 +1,5 @@
 DESCRIPTION = "tuxbox libtuxtxt"
-DEPENDS = "dreambox-dvbincludes libpng"
+DEPENDS = "dreambox-dvbincludes libpng freetype"
 MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libs;method=ext \
            file://libtuxtxt-only-libtuxtxt.diff;patch=1 \
