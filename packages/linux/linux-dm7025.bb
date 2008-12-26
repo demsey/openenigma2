@@ -47,7 +47,7 @@ do_munge () {
 			patch -d ${WORKDIR} -p1 < ${WORKDIR}/$i
 		done
 	fi
-	set CUR = `pwd`
+	CUR=`pwd`
 	cd ${WORKDIR}
 	install -d ${WORKDIR}/squashfs-lzma
 	for i in `find -maxdepth 1 | grep -v linux | xargs`; 
