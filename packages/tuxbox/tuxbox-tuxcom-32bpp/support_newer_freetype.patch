@@ -1,0 +1,61 @@
+diff -auNr tuxcom/tuxcom.c tuxcom-freetpe/tuxcom.c
+--- tuxcom/tuxcom.c	2008-12-27 12:08:02.000000000 +0100
++++ tuxcom-freetpe/tuxcom.c	2008-12-27 12:12:07.000000000 +0100
+@@ -322,9 +322,9 @@
+ 
+ 		switch (size)
+ 		{
+-			case VERY_SMALL: desc.font.pix_width = desc.font.pix_height = FONTHEIGHT_VERY_SMALL; break;
+-			case SMALL     : desc.font.pix_width = desc.font.pix_height = FONTHEIGHT_SMALL     ; break;
+-		    case BIG       : desc.font.pix_width = desc.font.pix_height = FONTHEIGHT_BIG       ; break;
++			case VERY_SMALL: desc.width = desc.height = FONTHEIGHT_VERY_SMALL; break;
++			case SMALL     : desc.width = desc.height = FONTHEIGHT_SMALL     ; break;
++		    case BIG       : desc.width = desc.height = FONTHEIGHT_BIG       ; break;
+ 	 	}
+ 
+ 	//reset kerning
+@@ -354,9 +354,9 @@
+ 
+ 		switch (size)
+ 		{
+-			case VERY_SMALL: desc.font.pix_width = desc.font.pix_height = FONTHEIGHT_VERY_SMALL; break;
+-			case SMALL     : desc.font.pix_width = desc.font.pix_height = FONTHEIGHT_SMALL     ; break;
+-		    case BIG       : desc.font.pix_width = desc.font.pix_height = FONTHEIGHT_BIG       ; break;
++			case VERY_SMALL: desc.width = desc.height = FONTHEIGHT_VERY_SMALL; break;
++			case SMALL     : desc.width = desc.height = FONTHEIGHT_SMALL     ; break;
++		    case BIG       : desc.width = desc.height = FONTHEIGHT_BIG       ; break;
+ 	 	}
+ 
+ 	//set alignment
+@@ -608,16 +608,16 @@
+ 			return;
+ 		}
+ 		else
+-			desc.font.face_id = FONT2;
++			desc.face_id = FONT2;
+ 	}
+ 	else
+-		desc.font.face_id = FONT;
++		desc.face_id = FONT;
+ 
+ 
+ 	use_kerning = FT_HAS_KERNING(face);
+ 
+ 
+-	desc.image_type = ftc_image_mono;
++	desc.flags = FT_LOAD_MONOCHROME;
+ 
+ 
+ 
+diff -auNr tuxcom/tuxcom.h tuxcom-freetpe/tuxcom.h
+--- tuxcom/tuxcom.h	2008-12-27 12:08:02.000000000 +0100
++++ tuxcom-freetpe/tuxcom.h	2008-12-27 12:10:29.000000000 +0100
+@@ -206,7 +206,7 @@
+ FTC_Manager		manager;
+ FTC_SBitCache		cache;
+ FTC_SBit		sbit;
+-FTC_Image_Desc		desc;
++FTC_ImageTypeRec	desc;
+ FT_Face			face;
+ FT_UInt			prev_glyphindex;
+ FT_Bool			use_kerning;
