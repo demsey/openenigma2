@@ -169,3 +169,25 @@ opendreambox_rootfs_postprocess() {
 
 ROOTFS_POSTPROCESS_COMMAND += "opendreambox_rootfs_postprocess"
 
+export NFO = '${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.nfo'
+
+generate_nfo() {
+    VER=`grep Version: "${IMAGE_ROOTFS}/usr/lib/ipkg/info/enigma2.control" | cut -b 10-12`
+    echo "Enigma2: Experimental ${VER}" > ${NFO}
+    echo "Machine: Dreambox ${MACHINE}" >> ${NFO}
+    DATE=`date +%Y-%m-%d' '%H':'%M`
+    echo "Date: ${DATE}" >> ${NFO}
+    echo "Issuer: Dream Multimedia TV" >> ${NFO}
+    echo "Link: ${DISTRO_FEED_URI}" >> ${NFO}
+    if [ "${DESC}" != "" ]; then
+        echo "Description: ${DESC}" >> ${NFO}
+        echo "${DESC}" >> ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.desc
+    fi
+    MD5SUM=`md5sum ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.nfi | cut -b 1-32`
+    echo "MD5: ${MD5SUM}" >> ${NFO}
+}
+
+do_rootfs_append_dm8000() {
+    generate_nfo
+}
+
