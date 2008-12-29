@@ -13,7 +13,8 @@ inherit autotools update-rc.d
 EXTRA_OECONF = "--with-external-libupnp --with-fuse-prefix='/usr/lib/'"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/djmount/djmount-0.71.tar.gz \
-	file://init"
+	file://init \
+	file://filebuffer-fix_range.patch;patch=1"
 
 do_install_append() {
 	install -d ${D}/etc/init.d
