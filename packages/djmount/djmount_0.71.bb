@@ -8,8 +8,7 @@ PR = "r1"
 INITSCRIPT_NAME = "djmount"
 INITSCRIPT_PARAMS = "defaults"
 
-#inherit autotools update-rc.d
-inherit update-rc.d
+inherit autotools update-rc.d
 
 EXTRA_OECONF = "--with-external-libupnp --with-fuse-prefix='/usr/lib/'"
 
