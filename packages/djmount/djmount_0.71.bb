@@ -16,6 +16,11 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/djmount/djmount-0.71.tar.gz \
 	file://init \
 	file://filebuffer-fix_range.patch;patch=1"
 
+do_configure() {
+	cd ${S}
+	oe_runconf
+}
+
 do_install_append() {
 	install -d ${D}/etc/init.d
 	install -m 0755 ${WORKDIR}/init ${D}/etc/init.d/djmount
