@@ -17,6 +17,7 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/enigma;met
            file://enigma_leave_standby.sh \
            file://rotor_fix.diff;patch=1;pnum=1 \
            file://disable_boot.diff;patch=1;pnum=1 \
+           file://enigma-gcc4.patch;patch=1 \
 	   file://epgfix_backport.diff;patch=1;pnum=1 \
 	   file://timeshiftfix_backport.diff;patch=1;pnum=1 \
 	   file://subtitlefix_backport.diff;patch=1;pnum=1 \
