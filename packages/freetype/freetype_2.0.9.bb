@@ -30,6 +30,6 @@ do_stage () {
 	install -d ${STAGING_INCDIR}/freetype2
 	cp -a ${S}/include/freetype ${STAGING_INCDIR}/freetype2/
 
-	sed -e 's,${prefix},${STAGING_LIBDIR}/..,' < builds/unix/freetype-config > ${STAGING_BINDIR}/freetype-config
-	chmod u+x ${STAGING_BINDIR}/freetype-config
+	sed -e 's,${prefix},${STAGING_LIBDIR}/..,' < builds/unix/freetype-config > ${STAGING_BINDIR_CROSS}/freetype-config
+	chmod u+x ${STAGING_BINDIR_CROSS}/freetype-config
 }

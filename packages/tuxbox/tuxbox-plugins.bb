@@ -1,4 +1,4 @@
-DEPENDS = "curl libpng freetype dreambox-dvbincludes libtuxtxt"
+DEPENDS = "curl libpng freetype dreambox-dvbincludes libsigc++-1.2 libtuxtxt tuxbox-libs"
 DESCRIPTION = "tuxbox plugins"
 MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 

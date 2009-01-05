@@ -1,0 +1,11 @@
+diff -auNr libs/libconnection/basicsocket.h libs-gcc4/libconnection/basicsocket.h
+--- libs/libconnection/basicsocket.h	2003-02-24 22:14:15.000000000 +0100
++++ libs-gcc4/libconnection/basicsocket.h	2008-12-15 06:56:25.000000000 +0100
+@@ -27,6 +27,7 @@
+ #define __basicsocket__
+ 
+ #include <sys/time.h>
++#include <cstddef>
+ 
+ bool send_data(int fd, const void * data, const size_t size, const timeval timeout);
+ bool receive_data(int fd, void * data, const size_t size, const timeval timeout);

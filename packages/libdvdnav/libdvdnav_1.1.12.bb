@@ -11,7 +11,8 @@ S = "${WORKDIR}/libdvdnav-0.1.10"
 
 SRC_URI="${SOURCEFORGE_MIRROR}/dvd/libdvdnav-0.1.10.tar.gz \
 	file://dvdnav-xine-lib-1.1.12.patch;patch=1;pnum=1 \
-	file://dvdnav-fix-read-dvdlabel.patch;patch=1;pnum=1"
+	file://dvdnav-fix-read-dvdlabel.patch;patch=1;pnum=1 \
+	file://dvdnav-fix-clut-copy.patch;patch=1;pnum=1"
 
 inherit autotools
 

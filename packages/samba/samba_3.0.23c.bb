@@ -9,6 +9,8 @@ SRC_URI += "file://config-lfs.patch;patch=1 \
 	   file://cifs.patch;patch=1 \
 	   "
 
+SRC_URI_append_opendreambox = "file://smb.conf"
+
 INITSCRIPT_NAME = "samba"
 # No dependencies, goes in at level 20 (NOTE: take care with the
 # level, later levels put the shutdown later too - see the links

@@ -1,0 +1,108 @@
+diff -auNr tuxtxt/tuxtxt.c tuxtxt-advancedrc/tuxtxt.c
+--- tuxtxt/tuxtxt.c	2008-12-27 13:46:25.000000000 +0100
++++ tuxtxt-advancedrc/tuxtxt.c	2008-12-27 13:44:58.000000000 +0100
+@@ -329,7 +329,7 @@
+ {
+ 	char cvs_revision[] = "$Revision: 1.99 $";
+ 
+-	int cnt=0;
++	int cnt=0, rc_num=0;
+ #if !TUXTXT_CFG_STANDALONE
+ 	int initialized = tuxtxt_init();
+ 	if ( initialized )
+@@ -341,7 +341,7 @@
+ 	printf("TuxTxt %s\n", versioninfo);
+ 	printf("for 32bpp framebuffer\n");
+ 
+-	fb = lcd = rc = sx = ex = sy = ey = -1;
++	fb = lcd = rc[0] = rc[1] = sx = ex = sy = ey = -1;
+ 	tuxtxt_cache.vtxtpid = pid;
+ 
+ 	/* open Framebuffer */
+@@ -351,8 +351,7 @@
+ 		return 0;
+ 	}
+ 
+-	rc=-1;
+-	while(1)
++	while(rc_num < 2)
+ 	{
+ 		struct stat s;
+ 		char tmp[128];
+@@ -360,28 +359,26 @@
+ 		if (stat(tmp, &s))
+ 			break;
+ 		/* open Remote Control */
+-		if ((rc=open(tmp, O_RDONLY)) == -1)
++		if ((rc[rc_num]=open(tmp, O_RDONLY | O_EXCL | O_NONBLOCK)) == -1)
+ 		{
+ 			perror("TuxTxt <open remote control>");
+ 			return 0;
+ 		}
+-		if (ioctl(rc, EVIOCGNAME(128), tmp) < 0)
++		if (ioctl(rc[rc_num], EVIOCGNAME(128), tmp) < 0)
+ 			perror("EVIOCGNAME failed");
+-		if (strstr(tmp, "remote control"))
+-			break;
+-		close(rc);
+-		rc=-1;
++		if (!strstr(tmp, "remote control"))
++			close(rc[rc_num]);
++		else
++			++rc_num;
+ 		++cnt;
+ 	}
+ 	
+-	if (rc == -1)
++	if (rc[0] == -1)
+ 	{
+-		printf("couldnt find correct input device!!!\n");
++		printf("couldnt find usable input device!!!\n");
+ 		return -1;
+ 	}
+ 
+-	fcntl(rc, F_SETFL, fcntl(rc, F_GETFL) | O_EXCL | O_NONBLOCK);
+-
+ 	/* open LCD  */
+ 	if ((lcd=open("/dev/dbox/lcd0", O_RDWR)) == -1)
+ 	{
+@@ -1076,12 +1073,15 @@
+ 	close(lcd);
+ 	
+ 	/* close rc */
+-	close(rc);
++	if(rc[0] != -1)
++		close(rc[0]);
++	if(rc[1] != -1)
++		close(rc[1]);
+ 
+ 	/* close framebuffer */
+ 	close(fb);
+ 	
+-	lcd = rc = fb = -1;
++	lcd = rc[0] = rc[1] = fb = -1;
+  
+ 	if (hotlistchanged)
+ 		savehotlist();
+@@ -4256,7 +4256,8 @@
+ 			{
+ 				switch (RCCode)
+ #else
+-	if (read(rc, &ev, sizeof(ev)) == sizeof(ev))
++	if ((read(rc[0], &ev, sizeof(ev)) == sizeof(ev)) ||
++	    (rc[1] != -1 && read(rc[1], &ev, sizeof(ev)) == sizeof(ev)))
+ 	{
+ 		if (ev.value)
+ 		{
+diff -auNr tuxtxt/tuxtxt.h tuxtxt-advancedrc/tuxtxt.h
+--- tuxtxt/tuxtxt.h	2008-12-27 13:46:17.000000000 +0100
++++ tuxtxt-advancedrc/tuxtxt.h	2008-12-27 13:43:56.000000000 +0100
+@@ -260,7 +260,7 @@
+ int hotlist[10];
+ int maxhotlist;
+ 
+-int rc, fb, lcd;
++int rc[2], fb, lcd;
+ int sx, ex, sy, ey;
+ int PosX, PosY, StartX, StartY;
+ int lastpage;

@@ -1,0 +1,17 @@
+diff -auNr enigma/include/lib/dvb/dvb.h enigma-gcc4hack/include/lib/dvb/dvb.h
+--- enigma/include/lib/dvb/dvb.h	2007-03-16 19:25:43.000000000 +0100
++++ enigma-gcc4hack/include/lib/dvb/dvb.h	2009-01-01 20:10:47.000000000 +0100
+@@ -945,11 +945,13 @@
+ 		for (std::map<tsref,eTransponder>::iterator i(transponders.begin()); i!=transponders.end(); ++i)
+ 			ob(i->second);
+ 	}
++#if 0
+ 	template <class T> void forEachChannel(T ob)
+ 	{
+ 		for (std::map<int,eServiceDVB*>::iterator i(channel_number.begin()); i!=channel_number.end(); ++i)
+ 			ob(*i->second);
+ 	}
++#endif
+ 
+ 	eTransponder *getFirstTransponder(int state);
+ 	eSatellite *findSatellite(int orbital_position);

@@ -17,8 +17,7 @@ inherit pkgconfig autotools
 
 EXTRA_OECONF="--enable-cddb --disable-cpp-progs --disable-vcd-info --disable-maintainer-mode --without-cd-paranoia --without-cdda-player --disable-cxx --disable-example-progs --disable-joliet --without-cd-drive --without-cd-read --without-iso-info --without-iso-read --without-cd-info"
 
-RDEPEND = "cddb? ( >=media-libs/libcddb-1.0.1 ) virtual/libintl"
-DEPEND = "sys-devel/gettext dev-util/pkgconfig"
+DEPENDS = "libcddb virtual/libintl"
 
 do_compile_append () {
 	install -d ${D}${bindir}

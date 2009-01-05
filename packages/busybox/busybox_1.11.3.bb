@@ -11,6 +11,7 @@ SRC_URI = "\
   file://dhcp-hostname.patch;patch=1 \
   file://keymap_endianess.patch;patch=1 \
   file://add-getkey-applet.patch;patch=1 \
+  file://nptl_task.patch;patch=1 \
   file://busybox-cron \
   file://busybox-httpd \
   file://busybox-udhcpd \

@@ -2,18 +2,13 @@
 
 PACKAGE_EXTRA_ARCHS = "ppc405"
 
-PREFERRED_VERSION_glibc = "2.3.5+cvs20050627"
-PREFERRED_VERSION_glibc-initial = "2.3.2+cvs20040726"
-PREFERRED_VERSION_gcc-cross-initial = "3.4.4"
-PREFERRED_VERSION_gcc-cross = "3.4.4"
-PREFERRED_VERSION_gcc-cross-sdk = "3.4.4"
-PREFERRED_VERSION_gcc = "3.4.4"
 PREFERRED_VERSION_gdb = "6.5"
 PREFERRED_VERSION_gdb-cross = "6.5"
 PREFERRED_VERSION_binutils-cross = "2.15.94.0.1"
 PREFERRED_VERSION_binutils-cross-sdk = "2.15.94.0.1"
 PREFERRED_VERSION_binutils = "2.15.94.0.1"
-PREFERRED_VERSION_busybox = "1.01"
+#PREFERRED_VERSION_busybox = "1.01"
+PREFERRED_VERSION_freetype = "2.0.9"
 
 TARGET_ARCH = "powerpc"
 TARGET_CPU = "405"

@@ -12,13 +12,14 @@ RDEPENDS = "python-codecs python-core python-datetime python-elementtree \
 	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
 	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-fluendo-mpegdemux \
-	gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse"
+	gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse gst-plugin-subparse \
+	eglibc-gconv-iso8859-15"
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
 RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska \
-	gst-plugin-qtdemux gst-plugin-subparse eglibc-gconv-iso8859-15 gst-plugin-cdxaparse"
-RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf"
+	gst-plugin-qtdemux gst-plugin-cdxaparse"
+RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf gst-plugin-matroska gst-plugin-qtdemux"
 
 DESCRIPTION_append_enigma2-plugin-extensions-cutlisteditor = "enables you to cut your movies."
 RDEPENDS_enigma2-plugin-extensions-cutlisteditor = "aio-grab"
@@ -33,15 +34,15 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-skinselector = "shows a menu wit
 DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced video modes"
 RDEPENDS_enigma2-plugin-systemplugins-hotplug = "python-pkgutil"
 RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
-RDEPENDS_enigma2-plugin-extensions-dvdburn = "cdrkit dvdauthor dvd+rw-tools mjpegtools projectx"
+RDEPENDS_enigma2-plugin-extensions-dvdburn = "cdrkit dvdauthor dvd+rw-tools mjpegtools projectx python-imaging"
 RDEPENDS_enigma2-plugin-systemplugins-nfiflash = "python-twisted-web"
 
 export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20081209"
-SRCREV = "bb349d44c5c3e963d25f31c085e92407d2c2b0a9"
+SRCDATE = "20081212"
+SRCREV = "373d6a62bd8f2dcc03cb924f3dd988ac12a1d323"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
@@ -58,7 +59,8 @@ PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 SRC_URI = "git://git.opendreambox.org/git/enigma2.git;protocol=git;branch=${BRANCH} \
 	file://enigma2.sh"
 
-SRC_URI_append_dm7025 = " file://enigma2-disable-iframesearch.patch;patch=1;pnum=1"
+SRC_URI_append_dm7025 = " file://enigma2-disable-iframesearch.patch;patch=1;pnum=1 \
+	file://enigma2-disable-hardware-mp3-decode.patch;patch=1;pnum=1"
 
 S = "${WORKDIR}/git"
 
