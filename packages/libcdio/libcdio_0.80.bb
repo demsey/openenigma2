@@ -5,6 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 MAINTAINER = "Andreas Frisch <andreas.frisch@multimedia-labs.de>"
 PR="r1"
+DEPENDS = "libcddb"
 
 SRC_URI = "http://ftp.gnu.org/pub/gnu/libcdio/${PN}-${PV}.tar.gz\
 	    file://${PN}-${PV}-configure-crosscompile.patch;patch=1\
