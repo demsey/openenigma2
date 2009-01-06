@@ -7,7 +7,9 @@ PACKAGES_prepend = "ncurses-tools "
 PACKAGES_append = " ncurses-terminfo"
 FILES_ncurses_append = " ${datadir}/tabset"
 RSUGGESTS_${PN} = "ncurses-terminfo"
-RPROVIDES = "libncurses5"
+RPROVIDES_${PN} = "libncurses5"
+RCONFLICTS_${PN} = "libncurses5"
+RREPLACES_${PN} = "libncurses5"
 
 inherit autotools
 
@@ -75,6 +77,7 @@ do_install() {
 	then
 		ln -sf xterm-color ${D}${sysconfdir}/terminfo/x/xterm
 	fi
+	ln -sf rxvt ${D}${sysconfdir}/terminfo/r/rxvt-unicode
 
 	if [ "${PN}" = "ncurses" ]; then
 		mv ${D}${bindir}/clear ${D}${bindir}/clear.${PN}

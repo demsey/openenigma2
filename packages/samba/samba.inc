@@ -45,7 +45,7 @@ do_compile () {
 }
 
 do_install_append() {
-	mv ${D}${libdir}/libsmbclient.so ${D}${libdir}/libsmbclient.so.0
+	mv ${D}${libdir}/libsmbclient.so ${D}${libdir}/libsmbclient.so.0 || true
 	ln -sf libsmbclient.so.0 ${D}${libdir}/libsmbclient.so
 	mkdir -p ${D}${base_sbindir}
 	rm -f ${D}${sbindir}/mount.smbfs ${D}${base_sbindir}/mount.smbfs
@@ -73,4 +73,7 @@ do_install_append_opendreambox() {
 do_stage() {
 	install -m 0644 include/libsmbclient.h ${STAGING_INCDIR}
 	oe_libinstall -C bin -a -so libsmbclient ${STAGING_LIBDIR}
+	oe_libinstall -C bin -a -so libtdb ${STAGING_LIBDIR}
+	oe_libinstall -C bin -a -so libtalloc ${STAGING_LIBDIR}
+	oe_libinstall -C bin -so libwbclient ${STAGING_LIBDIR}
 }

@@ -1,6 +1,5 @@
-DESCRIPTION = "The Openmoko Address Book"
+DESCRIPTION = "Legacy Om address book application."
 SECTION = "openmoko/pim"
-PKG_TAGS_${PN} = "group::communication alias::Om_Contacts2"
 DEPENDS = "libmokoui2 libmokojournal2 dbus-glib"
 RDEPENDS = "libedata-book"
 PV = "0.1.0+svnr${SRCREV}"

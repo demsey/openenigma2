@@ -1,4 +1,4 @@
-DESCRIPTION = "Locations - a GPS location based communicative application"
+DESCRIPTION = "Locations is a GPS location based application that lets you save and send your favorite locations to friends."
 HOMEPAGE = "http://wiki.openmoko.org/wiki/Om2008.8_Locations"
 SECTION = "openmoko/applications"
 LICENSE = "GPL"
@@ -18,5 +18,3 @@ EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 do_configure_prepend() {
        autopoint --force
 }
-
-PKG_TAGS_${PN} = "group::communication alias::Om_Locations"

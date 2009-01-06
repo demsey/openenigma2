@@ -38,14 +38,10 @@ do_configure_prepend() {
                 echo -n "fixing up configuration for Openmoko GTA01..."
                 sed -i -e s,CONFIG_S3C_LOWLEVEL_UART_PORT=2,CONFIG_S3C_LOWLEVEL_UART_PORT=0, ${WORKDIR}/defconfig
                 sed -i -e s,CONFIG_DEBUG_S3C_UART=2,CONFIG_DEBUG_S3C_UART=0, ${WORKDIR}/defconfig
-                echo "# CONFIG_BATTERY_BQ27000_HDQ is not set" >>${WORKDIR}/defconfig
-                echo "CONFIG_BATTERY_GTA01=y" >>${WORKDIR}/defconfig
                 echo "done"
         fi
         if [ ${MACHINE} == "om-gta02" ]; then
                 echo -n "fixing up configuration for Openmoko GTA02..."
-                echo "CONFIG_BATTERY_BQ27000_HDQ=y" >>${WORKDIR}/defconfig
-                echo "# CONFIG_BATTERY_GTA01 is not set" >>${WORKDIR}/defconfig
                 echo "done"
         fi                                                                       
 }
@@ -60,9 +56,14 @@ do_deploy_append() {
 RDEPENDS_kernel-image += "mtd-utils"
 
 pkg_postinst_kernel-image () {
+
+# Get the lastest root file system value of boot args
+boot_arg=`cat /proc/cmdline |tr " " "\n"|grep "root=" |tail -n 1`
+has_mtdblock=`echo $boot_arg |grep mtdblock`
+
 if test "x$D" != "x"; then
         exit 1
-else
+elif test "empty$has_mtdblock" != "empty"; then
 	if [ -f ${sysconfdir}/default/flashkernel ] ; then
 		echo "Upgrading Kernel in Flash"
 		echo "DO NOT stop this process"
@@ -83,6 +84,8 @@ else
 	else
 		touch ${sysconfdir}/default/flashkernel
 	fi
+else
+        echo "You are not booting from NAND, don't flash kernel into mtdblock."
 fi
 }
 

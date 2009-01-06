@@ -1,5 +1,5 @@
 require evas.inc
-PR = "r0"
+PR = "r1"
 
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \
@@ -27,7 +27,7 @@ EXTRA_OECONF = "\
 		--enable-image-loader-jpeg	\
 		--enable-image-loader-tiff	\
 		--enable-image-loader-xpm	\
-		--enable-image-loader-svg	\
+		--disable-image-loader-svg	\
 		--enable-cpu-c				\
 		--enable-fontconfig			\
 		--enable-font-loader-eet	\

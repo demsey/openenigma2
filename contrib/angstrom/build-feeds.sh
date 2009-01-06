@@ -53,6 +53,7 @@ do_build
 # * arm-oabi:  simpad
 # * armv4t:    om-gta01
 # * armv5te:   c7x0
+# * armv5teb:  ixp4xxbe
 # * armv6:     nokia800
 # * armv6-novfp: htckaiser
 # * armv7a:    beagleboard
@@ -60,7 +61,7 @@ do_build
 # * ppc603e:   efika
 # * i586:      qemux86
 
-for machine in simpad om-gta01 c7x0 nokia800 htckaiser beagleboard dht-walnut efika qemux86
+for machine in simpad om-gta01 c7x0 ixp4xxbe nokia800 htckaiser beagleboard dht-walnut efika qemux86
 do
         BUILD_MACHINE=$machine
         BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
@@ -77,6 +78,7 @@ do
                       binutils \
                       bison \
                       bluez-gnome \
+                      bluez-hcidump \
                       boa \
                       camera-assistant \
                       checkers \
@@ -95,6 +97,7 @@ do
                       exo \
                       fakeroot \
                       fennec \
+                      flame \
                       ffmpeg \
                       fftw \
                       fftwf \
@@ -179,6 +182,7 @@ do
                       midori \
                       mileage \
                       mono \
+                      motion \
                       mousepad \
                       mpc \
                       mpd \
@@ -191,6 +195,7 @@ do
                       nautilus \
                       navit \
                       netsurf \
+                      news \
                       nmap \
                       nmm \
                       notecase \
@@ -203,6 +208,7 @@ do
                       openvpn \
                       opie-notes \
                       orage \
+                      palantir \
                       pairs \
                       pciutils \
                       pdamaze \
@@ -211,6 +217,7 @@ do
                       pine \
                       pipeman \
                       pkgconfig \
+                      places \
                       pocketcellar \
                       povray \
                       prboom \
@@ -226,6 +233,7 @@ do
                       quake2 \
                       quasar \
                       quetoo \
+                      rain \
                       rdesktop \
                       read-edid \
                       resistorui \
@@ -241,6 +249,7 @@ do
                       slcalc \
                       sliderulez \
                       sokoban \
+                      squeakvm \
                       strace \
                       subversion \
                       sugar \
@@ -314,7 +323,7 @@ done
 
 # machine packages (machine specific (sub)packages)
 
-for machine in beagleboard omap3evm neuros-osd2 efika dht-walnut omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700 nokia800 qemux86  
+for machine in beagleboard omap3evm neuros-osd2 efika dht-walnut palmt650 omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700 nokia800 qemux86  
 do
         BUILD_MACHINE=$machine
             BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"

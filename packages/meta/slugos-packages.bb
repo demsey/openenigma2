@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r59"
+PR = "r60"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -66,8 +66,6 @@ SLUGOS_PACKAGES = "\
 	cups \
 	curl \
 	cvs \
-	cyrus-imapd \
-	cyrus-sasl \
 	db \
 	devio \
 	devlabel \
@@ -131,7 +129,7 @@ SLUGOS_PACKAGES = "\
 	libpng \
 	libtool \
 	libupnp \
-	libusb \
+	libusb1 libusb-compat \
 	libvorbis \
 	libxml2 \
 	lighttpd \
@@ -191,7 +189,6 @@ SLUGOS_PACKAGES = "\
 	procps \
 	psmisc \
 	puppy \
-	pvrusb2-mci \
 	python \
 	quilt \
 	reiserfsprogs reiser4progs \
@@ -253,6 +250,8 @@ SLUGOS_PACKAGES = "\
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
 	ctorrent \
+	cyrus-imapd \
+	cyrus-sasl \
 	dsniff \
 	eciadsl \
 	gspcav1 \
@@ -263,6 +262,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	netatalk \
 	openldap \
 	postfix \
+	pvrusb2-mci \
 	pwc \
 	qc-usb-messenger \
 	task-native-sdk \

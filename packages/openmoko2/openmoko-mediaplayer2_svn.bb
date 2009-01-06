@@ -1,4 +1,4 @@
-DESCRIPTION = "A media player for Openmoko"
+DESCRIPTION = "Om application for playing media files."
 SECTION = "openmoko/tools"
 DEPENDS = "libmokoui2 expat gstreamer libspiff curl"
 RDEPENDS = "gst-meta-audio gconf gst-plugin-alsa"
@@ -23,4 +23,3 @@ fi
 export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
 gconftool-2 --makefile-install-rule ${sysconfdir}/gconf/schemas/openmoko-mediaplayer.schemas > /dev/null
 }
-PKG_TAGS_${PN} = "group::unknown alias::Om_Mediaplayer2"
