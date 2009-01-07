@@ -3,7 +3,7 @@ export IMAGE_BASENAME = "dreambox-image"
 OPENDREAMBOX_COMMON = "task-boot \
 	opkg-nogpg dropbear \
 	ncurses joe mc vsftpd timezones-alternative \
-	netkit-base fakelocale less dreambox-bootlogo  \
+	netkit-base fakelocale dreambox-bootlogo \
 	dreambox-dccamd dreambox-keymaps dvbsnoop \
 	dreambox-compat tuxbox-common mrouted smartmontools hddtemp \
 	hotplug-ng autofs gdbserver dreambox-feed-configs"
