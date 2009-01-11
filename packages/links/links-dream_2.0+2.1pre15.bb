@@ -18,3 +18,5 @@ inherit autotools pkgconfig
 
 bindir = "/usr/bin"
 sbindir = "/usr/sbin"
+prefix = ${STAGING_LIBDIR}
+
