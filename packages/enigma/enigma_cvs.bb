@@ -34,6 +34,7 @@ SRC_URI_append_dm500plus = " http://sources.dreamboxupdate.com/download/opendrea
 S = "${WORKDIR}/enigma"
 
 FILES_${PN} += " ${datadir}/tuxbox ${datadir}/fonts"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 PACKAGES_DYNAMIC = "enigma-locale-*"
 
