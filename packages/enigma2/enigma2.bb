@@ -65,6 +65,7 @@ SRC_URI_append_dm7025 = " file://enigma2-disable-iframesearch.patch;patch=1;pnum
 S = "${WORKDIR}/git"
 
 FILES_${PN} += "${datadir}/fonts"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 inherit autotools pkgconfig
 

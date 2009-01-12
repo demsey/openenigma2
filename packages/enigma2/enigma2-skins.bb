@@ -17,6 +17,7 @@ PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/enigma2-skins;module=enigma2-skins;method=pserver${TAG};date=${SRCDATE}"
 FILES_${PN} += " /usr/share/enigma2 /usr/share/fonts "
+PACKAGE_ARCH = "all"
 
 inherit autotools
 
