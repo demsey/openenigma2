@@ -3,7 +3,7 @@ SECTION = "multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
 DEPENDS = "gstreamer"
-PV = "0.10+${SRCDATE}"
+PV = "0.10+cvs${SRCDATE}"
 PR = "r0"
 PR_dm7025 = "r1"
 
@@ -17,6 +17,7 @@ SRC_URI = "cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/dvbmediasink;mod
 S = "${WORKDIR}/dvbmediasink"
 
 FILES_${PN} = "${libdir}/gstreamer-0.10/*.so*"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 do_stage() {
 	autotools_stage_all
