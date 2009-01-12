@@ -6,6 +6,7 @@ PV = "1.0"
 PR = "r0"
 
 FILES = "/lib/libgcc_s_nof.so.1"
+PACKAGE_ARCH = "all"
 
 do_install() {
 	install -d ${D}/lib

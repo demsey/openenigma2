@@ -5,6 +5,7 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
 PV = "1.0"
 PR = "r0"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/dreambox-blindscan-utils-${MACHINE}-1.0.tar.bz2"
 SRC_URI_dm600pvr = "http://sources.dreamboxupdate.com/download/opendreambox/dreambox-blindscan-utils-${MACHINE}-1.1.tar.bz2"
