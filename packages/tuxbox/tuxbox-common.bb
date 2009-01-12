@@ -5,7 +5,7 @@ MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 PN = "tuxbox-common"
 PR = "r10"
 SRCDATE = "20081120"
-PV = "cvs${SRCDATE}"
+PV = "0.0+cvs${SRCDATE}"
 
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox/;module=cdk/root/share/tuxbox;method=ext;tag=dreambox;date=${SRCDATE} \
 	http://dreamboxupdate.com/download/opendreambox/tuxbox-common-r8.tar.gz"
