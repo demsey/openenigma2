@@ -2,7 +2,7 @@ DESCRIPTION = "dvbtraffic is a tool to display all pids on a transport stream"
 SECTION = "console/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
-PV = "0.0cvs${SRCDATE}"
+PV = "0.0+cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@cvs.linuxtv.org/cvs/linuxtv;module=dvb-apps/util/dvbtraffic"
 
