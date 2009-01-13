@@ -8,7 +8,7 @@ LICENSE = "GPL"
 PR = "r17"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
-
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 SRC_URI = "file://halt \
            file://umountfs \
