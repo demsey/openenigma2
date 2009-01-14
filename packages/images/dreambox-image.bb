@@ -38,7 +38,7 @@ opendreambox_rootfs_postprocess() {
     cd $curdir
 }
 
-ROOTFS_POSTPROCESS_COMMAND += "opendreambox_rootfs_postprocess"
+ROOTFS_POSTPROCESS_COMMAND += "opendreambox_rootfs_postprocess; "
 
 export NFO = '${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.nfo'
 
