@@ -10,33 +10,33 @@ inherit task
 #
 DESCRIPTION_${PN} = "OpenDreambox: Basesystem utilities"
 RDEPENDS_${PN} = "\
-  opkg-nogpg \
+  autofs \
+  base-files-doc \
+  dreambox-bootlogo \
+  dreambox-compat \
+  dreambox-dccamd \
+  dreambox-feed-configs \
+  dreambox-keymaps \
   dropbear \
-  ncurses \
+  dvbsnoop \
+  e2fsprogs-e2fsck \
+  e2fsprogs-mke2fs \
+  fakelocale \
+  gdbserver \
+  hddtemp \
   joe \
   mc \
-  vsftpd \
-  timezones-alternative \
-  netkit-base \
-  fakelocale \
-  dreambox-bootlogo \
-  dreambox-dccamd \
-  dreambox-keymaps \
-  dvbsnoop \
-  dreambox-compat \
-  tuxbox-common \
-  mrouted \
-  smartmontools \
-  hddtemp \
-  autofs \
-  gdbserver \
-  dreambox-feed-configs \
-  util-linux-sfdisk \
-  util-linux-fdisk \
-  e2fsprogs-mke2fs \
-  e2fsprogs-e2fsck \
-  ppp \
   module-init-tools-depmod \
-  base-files-doc \
+  mrouted \
+  netkit-base \
+  ncurses \
+  opkg-nogpg \
+  ppp \
+  smartmontools \
+  timezones-alternative \
+  tuxbox-common \
+  vsftpd \
+  util-linux-fdisk \
+  util-linux-sfdisk \
 "
 
