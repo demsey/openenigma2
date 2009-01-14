@@ -6,7 +6,7 @@ OPENDREAMBOX_COMMON = "task-boot \
 	netkit-base fakelocale dreambox-bootlogo \
 	dreambox-dccamd dreambox-keymaps dvbsnoop \
 	dreambox-compat tuxbox-common mrouted smartmontools hddtemp \
-	gdbserver dreambox-feed-configs"
+	autofs gdbserver dreambox-feed-configs"
 
 OPENDREAMBOX_COMMON_D = "util-linux e2fsprogs \
 	ppp module-init-tools"
@@ -16,7 +16,7 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs \
 	base-files-doc"
 
 # experimental packages
-OPENDREAMBOX_EXPERIMENTAL = "python-twisted enigma2 aio-grab hotplug-ng autofs"
+OPENDREAMBOX_EXPERIMENTAL = "python-twisted enigma2 aio-grab hotplug-ng"
 OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrade \
 	enigma2-plugin-systemplugins-softwareupdate \
 	enigma2-plugin-systemplugins-positionersetup \
