@@ -50,7 +50,7 @@ RDEPENDS_task-opendreambox-enigma2 = "\
   python-twisted-core \
   python-twisted-protocols \
   python-twisted-web \
-  task-opendreambox-wlan \
+  ${@base_contains("MACHINE_FEATURES", "wifi", "task-opendreambox-wlan", "", d)} \
 "
 
 #  enigma2-plugin-extensions-webinterface is disabled until we fixed it to use twisted-web instead of twisted-web2
