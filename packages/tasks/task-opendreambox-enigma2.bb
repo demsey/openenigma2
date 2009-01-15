@@ -64,7 +64,6 @@ RDEPENDS_task-opendreambox-enigma2_append_dm8000 = "\
   task-opendreambox-cdplayer \
   task-opendreambox-dvdplayer \
   task-opendreambox-dvdburn \
-  task-opendreambox-madwifi \
 "
 
 PACKAGE_ARCH_task-opendreambox-enigma2 = "${MACHINE_ARCH}"
