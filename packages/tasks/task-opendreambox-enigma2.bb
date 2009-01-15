@@ -24,6 +24,11 @@ RDEPENDS_task-opendreambox-enigma2 = "\
   dreambox-blindscan-utils \
   enigma2 \
   enigma2-defaultservices \
+  enigma2-plugin-extensions-cutlisteditor \
+  enigma2-plugin-extensions-graphmultiepg \
+  enigma2-plugin-extensions-mediaplayer \
+  enigma2-plugin-extensions-mediascanner \
+  enigma2-plugin-extensions-pictureplayer \
   enigma2-plugin-systemplugins-configurationbackup \
   enigma2-plugin-systemplugins-frontprocessorupgrade \
   enigma2-plugin-systemplugins-hotplug \
@@ -33,11 +38,6 @@ RDEPENDS_task-opendreambox-enigma2 = "\
   enigma2-plugin-systemplugins-skinselector \
   enigma2-plugin-systemplugins-softwareupdate \
   enigma2-plugin-systemplugins-videotune \
-  enigma2-plugin-extensions-cutlisteditor \
-  enigma2-plugin-extensions-graphmultiepg \
-  enigma2-plugin-extensions-mediaplayer \
-  enigma2-plugin-extensions-mediascanner \
-  enigma2-plugin-extensions-pictureplayer \
   enigma2-streamproxy \
   ethtool \
   hotplug-ng \
