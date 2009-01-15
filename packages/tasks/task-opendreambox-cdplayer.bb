@@ -9,6 +9,7 @@ inherit task
 # task-opendreambox-cdplayer
 #
 DESCRIPTION_${PN} = "OpenDreambox: CD-Player Support"
+DEPENDS_${PN} = "enigma2-plugins"
 RDEPENDS_${PN} = "\
  enigma2-plugin-extensions-cdinfo \
  kernel-module-cdfs \
