@@ -46,7 +46,7 @@ Index: Python-2.6.1/configure.in
  dnl Check if system zlib has *Copy() functions
  dnl
  dnl On MacOSX the linker will search for dylibs on the entire linker path
-@@ -3649,45 +3617,6 @@ else
+@@ -3649,44 +3617,7 @@ else
    AC_MSG_RESULT(no)
  fi
  
@@ -88,7 +88,8 @@ Index: Python-2.6.1/configure.in
 -[AC_MSG_RESULT(yes)
 - AC_DEFINE(PY_FORMAT_SIZE_T, "z", [Define to printf format modifier for Py_ssize_t])],
 - AC_MSG_RESULT(no))
--
++AC_DEFINE(PY_FORMAT_SIZE_T, "z", [Define to print format modifier for Py_ssize_t])
+ 
  AC_CHECK_TYPE(socklen_t,,
    AC_DEFINE(socklen_t,int,
              Define to `int' if <sys/socket.h> does not define.),[
