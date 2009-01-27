@@ -41,8 +41,8 @@ export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20081212"
-SRCREV = "373d6a62bd8f2dcc03cb924f3dd988ac12a1d323"
+SRCDATE = "20090126"
+SRCREV = "04f12f4907ff314bba87f94c1aac0a97848e87ea"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
