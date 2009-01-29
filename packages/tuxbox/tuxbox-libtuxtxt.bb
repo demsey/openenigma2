@@ -1,27 +1,40 @@
 DESCRIPTION = "tuxbox libtuxtxt"
 DEPENDS = "dreambox-dvbincludes libpng freetype"
 MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
-SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libs;method=ext \
-           file://libtuxtxt-only-libtuxtxt.diff;patch=1 \
-           file://acinclude.m4"
 
-SRC_URI_append_dm7025 = " file://libtuxtxt_32bpp.diff;patch=1"
-SRC_URI_append_dm800 = " file://libtuxtxt_32bpp.diff;patch=1"
-SRC_URI_append_dm8000 = " file://libtuxtxt_32bpp.diff;patch=1"
-
-SRCDATE_dm600pvr = "20070307"
-SRCDATE_dm500plus = "20070307"
-SRCDATE_dm7025 = "20080814"
-SRCDATE_dm800 = "20080814"
-SRCDATE_dm8000 = "20080814"
-SRCDATE_dm7020 = "20070307"
+SRCDATE = "20090130"
 
 PN = "libtuxtxt"
-PR = "r2"
-
 PV = "0.0+cvs${SRCDATE}"
+PR = "r0"
+
+SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libs;method=ext \
+	file://acinclude.m4 \
+	file://ignorelibs.patch;patch=1 \
+	file://nolibtuxbox.diff;patch=1"
+
+SRC_URI_append_dm7025 = " \
+	file://32bpp.diff;patch=1 \
+	file://resize_framebuffer.diff;patch=1 \
+	file://allow_different_demux.diff;patch=1 \
+	file://fastclear.diff;patch=1"
+
+SRC_URI_append_dm800 = " \
+	file://32bpp.diff;patch=1 \
+	file://resize_framebuffer.diff;patch=1 \
+	file://allow_different_demux.diff;patch=1 \
+	file://fastclear.diff;patch=1"
+
+SRC_URI_append_dm8000 = " \
+	file://32bpp.diff;patch=1 \
+	file://resize_framebuffer.diff;patch=1 \
+	file://allow_different_demux.diff;patch=1 \
+	file://fastclear.diff;patch=1"
+
 S = "${WORKDIR}/libs"
 EXTRA_OECONF = "--with-target=native"
+
+CFLAGS_append = " -DHAVE_DREAMBOX_HARDWARE -DDREAMBOX"
 
 inherit autotools pkgconfig
 

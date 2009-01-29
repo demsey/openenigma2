@@ -2,21 +2,21 @@ DEPENDS = "freetype dreambox-dvbincludes libtuxtxt"
 DESCRIPTION = "tuxbox tuxtxt for 32bit framebuffer"
 MAINTAINER = "Sven Karschewski <seddi@i-have-a-dreambox.com>"
 
-SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/plugins/tuxtxt;method=ext \
-	file://makefiles.diff;patch=1;pnum=1 \
-	file://32bpp.diff;patch=1;pnum=1 \
-	file://add_new_default_conf.diff;patch=1;pnum=1 \
-	file://makelib.diff;patch=1 \
-	file://plugin.py \
-	file://freetype2.patch;patch=1 \
-	file://hdres.patch;patch=1 \
-	file://add_advanced_rc.patch:patch=1;pnum=1"
-
-FILES_${PN} = "/usr/lib/libtuxtxt32bpp.so* /usr/share/fonts /usr/lib/enigma2/python/Plugins/Extensions/Tuxtxt /etc/tuxtxt"
-
-SRCDATE = "20080814"
+SRCDATE = "20090130"
 PV = "0.0+cvs${SRCDATE}"
 PR = "r0"
+
+SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/plugins/tuxtxt;method=ext \
+	file://makefiles.diff;patch=1;pnum=1 \
+	file://nonblocking.diff;patch=1 \
+	file://32bpp.diff;patch=1;pnum=1 \
+	file://add_new_default_conf.diff;patch=1;pnum=1 \
+	file://add_advanced_rc.diff;patch=1 \
+	file://makelib.diff;patch=1 \
+	file://allow_different_demux.diff;patch=1 \
+	file://plugin.py"
+
+FILES_${PN} = "/usr/lib/libtuxtxt32bpp.so* /usr/share/fonts /usr/lib/enigma2/python/Plugins/Extensions/Tuxtxt /etc/tuxtxt"
 
 S = "${WORKDIR}/tuxtxt"
 

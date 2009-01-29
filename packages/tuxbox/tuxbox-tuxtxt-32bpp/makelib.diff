@@ -1,21 +1,6 @@
-diff -ru tuxtxt.org/configure.ac tuxtxt/configure.ac
---- tuxtxt.org/configure.ac	2008-05-22 11:30:43.000000000 +0200
-+++ tuxtxt/configure.ac	2008-05-22 11:37:20.000000000 +0200
-@@ -1,5 +1,9 @@
--AC_INIT(tuxbox-tuxtxt-32bpp,1.96)
--AM_INIT_AUTOMAKE(tuxbox-tuxtxt-32bpp,1.96)
-+AC_INIT(libtuxtxt32bpp,1.96)
-+AM_INIT_AUTOMAKE(libtuxtxt32bpp,1.96)
-+
-+AM_PROG_LIBTOOL
-+
-+AC_DISABLE_STATIC
- 
- TUXBOX_APPS
- TUXBOX_APPS_DIRECTORY
-diff -ru tuxtxt.org/Makefile.am tuxtxt/Makefile.am
---- tuxtxt.org/Makefile.am	2008-05-22 11:30:43.000000000 +0200
-+++ tuxtxt/Makefile.am	2008-05-22 11:37:20.000000000 +0200
+diff -u tuxtxt_orig/Makefile.am tuxtxt/Makefile.am
+--- tuxtxt_orig/Makefile.am	2009-01-29 21:36:10.000000000 +0100
++++ tuxtxt/Makefile.am	2009-01-29 21:52:19.000000000 +0100
 @@ -6,13 +6,14 @@
  	@FREETYPE_CFLAGS@ \
  	-funsigned-char \
@@ -35,24 +20,38 @@ diff -ru tuxtxt.org/Makefile.am tuxtxt/Makefile.am
 +libtuxtxt32bpp_la_SOURCES = tuxtxt.c
  
  install_DATA = tuxtxt2.conf
-diff -ru tuxtxt.org/tuxtxt.c tuxtxt/tuxtxt.c
---- tuxtxt.org/tuxtxt.c	2008-05-23 10:32:31.000000000 +0200
-+++ tuxtxt/tuxtxt.c	2008-05-23 10:33:53.000000000 +0200
-@@ -317,7 +317,7 @@
-  * main loop                                                                  *
+diff -u tuxtxt_orig/configure.ac tuxtxt/configure.ac
+--- tuxtxt_orig/configure.ac	2009-01-29 21:36:10.000000000 +0100
++++ tuxtxt/configure.ac	2009-01-29 21:52:19.000000000 +0100
+@@ -1,5 +1,9 @@
+-AC_INIT(tuxbox-tuxtxt-32bpp,1.96)
+-AM_INIT_AUTOMAKE(tuxbox-tuxtxt-32bpp,1.96)
++AC_INIT(libtuxtxt32bpp,1.96)
++AM_INIT_AUTOMAKE(libtuxtxt32bpp,1.96)
++
++AM_PROG_LIBTOOL
++
++AC_DISABLE_STATIC
+ 
+ TUXBOX_APPS
+ TUXBOX_APPS_DIRECTORY
+diff -u tuxtxt_orig/tuxtxt.c tuxtxt/tuxtxt.c
+--- tuxtxt_orig/tuxtxt.c	2009-01-29 21:44:29.000000000 +0100
++++ tuxtxt/tuxtxt.c	2009-01-29 21:52:19.000000000 +0100
+@@ -168,7 +168,7 @@
+  * plugin_exec                                                                *
   ******************************************************************************/
  
 -int main(int argc, char **argv)
 +int tuxtxt_run_ui(int pid)
  {
- 	char cvs_revision[] = "$Revision: 1.99 $";
+ 	char cvs_revision[] = "$Revision: 1.108 $";
  
-@@ -333,18 +333,8 @@
- 	printf("TuxTxt %s\n", versioninfo);
- 	printf("for 32bpp framebuffer\n");
+@@ -187,17 +187,8 @@
  
--	/* get params */
--	tuxtxt_cache.vtxtpid = fb = lcd = rc = sx = ex = sy = ey = -1;
+ 	tuxtxt_SetRenderingDefaults(&renderinfo);
+ 	/* get params */
+-	tuxtxt_cache.vtxtpid = renderinfo.fb = lcd = renderinfo.sx = renderinfo.ex = renderinfo.sy = renderinfo.ey = -1;
 -	if (argc==1)
 -	{
 -		printf("\nUSAGE: tuxtxt vtpid\n");
@@ -63,9 +62,49 @@ diff -ru tuxtxt.org/tuxtxt.c tuxtxt/tuxtxt.c
 -	{
 -		tuxtxt_cache.vtxtpid = atoi(argv[1]);
 -	}
-+	fb = lcd = rc = sx = ex = sy = ey = -1;
++	renderinfo.fb = lcd = renderinfo.sx = renderinfo.ex = renderinfo.sy = renderinfo.ey = -1;
 +	tuxtxt_cache.vtxtpid = pid;
  
  	/* open Framebuffer */
- 	if ((fb=open("/dev/fb/0", O_RDWR)) == -1)
-Only in tuxtxt: tuxtxt.c.orig
+ 	if ((renderinfo.fb=open("/dev/fb/0", O_RDWR)) == -1)
+@@ -462,11 +453,13 @@
+ 
+ 
+  	//page_atrb[32] = transp<<4 | transp;
+-
+-	for (magazine = 1; magazine < 9; magazine++)
++	if (!tuxtxt_cache.thread_starting && !tuxtxt_cache.receiving)
+ 	{
+-		tuxtxt_cache.current_page  [magazine] = -1;
+-		tuxtxt_cache.current_subpage [magazine] = -1;
++		for (magazine = 1; magazine < 9; magazine++)
++		{
++			tuxtxt_cache.current_page  [magazine] = -1;
++			tuxtxt_cache.current_subpage [magazine] = -1;
++		}
+ 	}
+ #if TUXTXT_CFG_STANDALONE
+ /* init data */
+@@ -489,13 +482,16 @@
+ 	tuxtxt_cache.page       = 0x100;
+ #endif
+ 	lastpage   = tuxtxt_cache.page;
+-	tuxtxt_cache.subpage    = tuxtxt_cache.subpagetable[tuxtxt_cache.page];
+-	if (tuxtxt_cache.subpage == 0xff)
+-	tuxtxt_cache.subpage    = 0;
+-	
+-	tuxtxt_cache.pageupdate = 0;
++	if (!tuxtxt_cache.thread_starting && !tuxtxt_cache.receiving)
++	{
++		tuxtxt_cache.subpage    = tuxtxt_cache.subpagetable[tuxtxt_cache.page];
++		if (tuxtxt_cache.subpage == 0xff)
++			tuxtxt_cache.subpage    = 0;
+ 
+-	tuxtxt_cache.zap_subpage_manual = 0;
++		tuxtxt_cache.pageupdate = 0;
++
++		tuxtxt_cache.zap_subpage_manual = 0;
++	}
+ 
+ 	/* init lcd */
+ 	UpdateLCD();

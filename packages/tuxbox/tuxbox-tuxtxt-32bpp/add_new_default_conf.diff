@@ -4,7 +4,7 @@ diff -Naur tuxtxt_org/tuxtxt2.conf tuxtxt_32bpp/tuxtxt2.conf
 @@ -0,0 +1,23 @@
 +ScreenMode16x9Normal 1
 +ScreenMode16x9Divided 1
-+Brightness 10
++Brightness 16
 +MenuLanguage 1
 +AutoNational 1
 +NationalSubset 5
