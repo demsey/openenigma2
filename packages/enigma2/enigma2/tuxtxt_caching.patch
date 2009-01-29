@@ -1,6 +1,7 @@
-diff -auNr git/data/setup.xml tuxtxt/data/setup.xml
---- git/data/setup.xml	2008-11-17 09:11:43.000000000 +0100
-+++ tuxtxt/data/setup.xml	2008-11-17 09:13:20.000000000 +0100
+diff --git a/data/setup.xml b/data/setup.xml
+index e2ab09b..823fa6f 100644
+--- a/data/setup.xml
++++ b/data/setup.xml
 @@ -23,6 +23,7 @@
  			<item level="0" text="Margin after record">config.recording.margin_after</item>
  			<item level="0" text="Show blinking clock in display during recording">config.usage.blinking_display_clock_during_recording</item>
@@ -9,19 +10,22 @@ diff -auNr git/data/setup.xml tuxtxt/data/setup.xml
  			<item level="1" text="Show positioner movement">config.usage.showdish</item>
  			<item level="1" text="Enable multiple bouquets">config.usage.multibouquet</item>
  			<item level="1" text="Change bouquets in quickzap">config.usage.quickzap_bouquet_change</item>
-diff -auNr git/lib/components/Makefile.am tuxtxt/lib/components/Makefile.am
---- git/lib/components/Makefile.am	2008-11-17 09:11:43.000000000 +0100
-+++ tuxtxt/lib/components/Makefile.am	2008-11-17 09:13:20.000000000 +0100
-@@ -3,4 +3,4 @@
+diff --git a/lib/components/Makefile.am b/lib/components/Makefile.am
+index e377ab8..e45ae56 100644
+--- a/lib/components/Makefile.am
++++ b/lib/components/Makefile.am
+@@ -3,4 +3,4 @@ INCLUDES = \
  
  noinst_LIBRARIES = libenigma_components.a
  
 -libenigma_components_a_SOURCES = scan.cpp file_eraser.cpp
 +libenigma_components_a_SOURCES = scan.cpp file_eraser.cpp tuxtxtapp.cpp
-diff -auNr git/lib/components/tuxtxtapp.cpp tuxtxt/lib/components/tuxtxtapp.cpp
---- git/lib/components/tuxtxtapp.cpp	1970-01-01 01:00:00.000000000 +0100
-+++ tuxtxt/lib/components/tuxtxtapp.cpp	2008-11-17 09:13:20.000000000 +0100
-@@ -0,0 +1,112 @@
+diff --git a/lib/components/tuxtxtapp.cpp b/lib/components/tuxtxtapp.cpp
+new file mode 100644
+index 0000000..b08694b
+--- /dev/null
++++ b/lib/components/tuxtxtapp.cpp
+@@ -0,0 +1,113 @@
 +#include <lib/components/tuxtxtapp.h>
 +#include <lib/base/init.h>
 +#include <lib/base/init_num.h>
@@ -29,9 +33,9 @@ diff -auNr git/lib/components/tuxtxtapp.cpp tuxtxt/lib/components/tuxtxtapp.cpp
 +#include <lib/gdi/lcd.h>
 +#include <lib/gdi/fb.h>
 +
-+extern "C" int tuxtxt_run_ui(int pid);
++extern "C" int tuxtxt_run_ui(int pid, int demux);
 +extern "C" int tuxtxt_init();
-+extern "C" void tuxtxt_start(int tpid);
++extern "C" void tuxtxt_start(int tpid, int demux);
 +extern "C" int tuxtxt_stop();
 +extern "C" void tuxtxt_close();
 +
@@ -55,14 +59,13 @@ diff -auNr git/lib/components/tuxtxtapp.cpp tuxtxt/lib/components/tuxtxtapp.cpp
 +
 +int eTuxtxtApp::startUi()
 +{
-+	if (pid)
++	if (pid && fbClass::getInstance()->lock() >= 0)
 +	{
++		eDBoxLCD::getInstance()->lock();
++		eRCInput::getInstance()->lock();
 +		pthread_mutex_lock( &cacheChangeLock );
 +		uiRunning = true;
 +		pthread_mutex_unlock( &cacheChangeLock );
-+		eDBoxLCD::getInstance()->lock();
-+		eRCInput::getInstance()->lock();
-+		fbClass::getInstance()->lock();
 +		run();
 +	}
 +	return 0;
@@ -71,15 +74,16 @@ diff -auNr git/lib/components/tuxtxtapp.cpp tuxtxt/lib/components/tuxtxtapp.cpp
 +void eTuxtxtApp::thread()
 +{
 +	hasStarted();
-+	tuxtxt_run_ui(pid);
++	tuxtxt_run_ui(pid, demux);
 +}
 +
 +void eTuxtxtApp::thread_finished()
 +{
 +	uiRunning = false;
-+	fbClass::getInstance()->unlock();
 +	eRCInput::getInstance()->unlock();
 +	eDBoxLCD::getInstance()->unlock();
++	eDBoxLCD::getInstance()->update();
++	fbClass::getInstance()->unlock();
 +}
 +
 +void eTuxtxtApp::initCache()
@@ -99,11 +103,12 @@ diff -auNr git/lib/components/tuxtxtapp.cpp tuxtxt/lib/components/tuxtxtapp.cpp
 +	pthread_mutex_unlock( &cacheChangeLock );
 +}
 +
-+void eTuxtxtApp::startCaching( int tpid )
++void eTuxtxtApp::startCaching( int tpid, int tdemux)
 +{
 +	pid = tpid;
++	demux = tdemux;
 +	if (enableTtCaching)
-+		tuxtxt_start(tpid);
++		tuxtxt_start(pid, demux);
 +}
 +
 +void eTuxtxtApp::stopCaching()
@@ -123,7 +128,7 @@ diff -auNr git/lib/components/tuxtxtapp.cpp tuxtxt/lib/components/tuxtxtapp.cpp
 +		if (pid)
 +		{
 +			initCache();
-+			startCaching(pid);
++			startCaching(pid, demux);
 +		}
 +	}
 +	else if (!onoff && enableTtCaching)	// Switch caching off
@@ -134,10 +139,12 @@ diff -auNr git/lib/components/tuxtxtapp.cpp tuxtxt/lib/components/tuxtxtapp.cpp
 +		pid = savePid;
 +	}
 +}
-diff -auNr git/lib/components/tuxtxtapp.h tuxtxt/lib/components/tuxtxtapp.h
---- git/lib/components/tuxtxtapp.h	1970-01-01 01:00:00.000000000 +0100
-+++ tuxtxt/lib/components/tuxtxtapp.h	2008-11-17 09:13:20.000000000 +0100
-@@ -0,0 +1,32 @@
+diff --git a/lib/components/tuxtxtapp.h b/lib/components/tuxtxtapp.h
+new file mode 100644
+index 0000000..9cd8f0c
+--- /dev/null
++++ b/lib/components/tuxtxtapp.h
+@@ -0,0 +1,33 @@
 +#ifndef __LIB_COMPONENTS_TUXTXTAPP_H__
 +#define __LIB_COMPONENTS_TUXTXTAPP_H__
 +
@@ -149,6 +156,7 @@ diff -auNr git/lib/components/tuxtxtapp.h tuxtxt/lib/components/tuxtxtapp.h
 +{
 +#ifndef SWIG
 +	int pid;
++	int demux;
 +	bool enableTtCaching, uiRunning;
 +	static eTuxtxtApp *instance;
 +	pthread_mutex_t cacheChangeLock;
@@ -163,16 +171,17 @@ diff -auNr git/lib/components/tuxtxtapp.h tuxtxt/lib/components/tuxtxtapp.h
 +	int startUi();
 +	void initCache();
 +	void freeCache();
-+	void startCaching( int tpid );
++	void startCaching( int tpid, int tdemux );
 +	void stopCaching();
-+	void resetPid() { pid = 0; }
++	void resetPid() { pid = 0; demux = 0; }
 +	void setEnableTtCachingOnOff( int onoff );
 +};
 +
 +#endif // __LIB_COMPONENTS_TUXTXTAPP_H__
-diff -auNr git/lib/dvb/decoder.cpp tuxtxt/lib/dvb/decoder.cpp
---- git/lib/dvb/decoder.cpp	2008-11-17 09:11:43.000000000 +0100
-+++ tuxtxt/lib/dvb/decoder.cpp	2008-11-17 09:13:20.000000000 +0100
+diff --git a/lib/dvb/decoder.cpp b/lib/dvb/decoder.cpp
+index 065a49c..173f009 100644
+--- a/lib/dvb/decoder.cpp
++++ b/lib/dvb/decoder.cpp
 @@ -1,6 +1,7 @@
  #include <lib/base/ebase.h>
  #include <lib/base/eerror.h>
@@ -181,7 +190,7 @@ diff -auNr git/lib/dvb/decoder.cpp tuxtxt/lib/dvb/decoder.cpp
  #if HAVE_DVB_API_VERSION < 3 
  #define audioStatus audio_status
  #define videoStatus video_status
-@@ -855,7 +856,11 @@
+@@ -974,7 +975,11 @@ int eTSMPEGDecoder::setState()
  	if (m_changed & changeText)
  	{
  		if (m_text)
@@ -193,20 +202,24 @@ diff -auNr git/lib/dvb/decoder.cpp tuxtxt/lib/dvb/decoder.cpp
  		m_text = 0;
  	}
  	if (m_changed & changePCR)
-@@ -896,7 +901,12 @@
+@@ -1015,7 +1020,16 @@ int eTSMPEGDecoder::setState()
  			m_text = new eDVBTText(m_demux);
  			if (m_text->startPid(m_textpid))
  				res = -1;
 +
-+			if ( m_decoder == 0 )   // Tuxtxt caching actions only on primary decoder
-+				eTuxtxtApp::getInstance()->startCaching(m_textpid);
++			if ( m_decoder == 0 )	// Tuxtxt caching actions only on primary decoder
++			{
++				uint8_t demux = 0;
++				m_demux->getCADemuxID(demux);
++				eTuxtxtApp::getInstance()->startCaching(m_textpid, demux);
++			}
  		}
 +		else if ( m_decoder == 0 )      // Tuxtxt caching actions only on primary decoder
 +			eTuxtxtApp::getInstance()->resetPid();
  		m_changed &= ~changeText;
  	}
  #endif
-@@ -947,10 +957,16 @@
+@@ -1066,10 +1080,16 @@ eTSMPEGDecoder::eTSMPEGDecoder(eDVBDemux *demux, int decoder)
  	demux->connectEvent(slot(*this, &eTSMPEGDecoder::demux_event), m_demux_event_conn);
  	CONNECT(m_showSinglePicTimer->timeout, eTSMPEGDecoder::finishShowSinglePic);
  	m_is_ff = m_is_sm = m_is_trickmode = 0;
@@ -223,9 +236,10 @@ diff -auNr git/lib/dvb/decoder.cpp tuxtxt/lib/dvb/decoder.cpp
  	finishShowSinglePic();
  	m_vpid = m_apid = m_pcrpid = m_textpid = pidNone;
  	m_changed = -1;
-diff -auNr git/lib/python/Components/UsageConfig.py tuxtxt/lib/python/Components/UsageConfig.py
---- git/lib/python/Components/UsageConfig.py	2008-11-17 09:11:43.000000000 +0100
-+++ tuxtxt/lib/python/Components/UsageConfig.py	2008-11-17 09:14:01.000000000 +0100
+diff --git a/lib/python/Components/UsageConfig.py b/lib/python/Components/UsageConfig.py
+index 21e057f..f2c864e 100644
+--- a/lib/python/Components/UsageConfig.py
++++ b/lib/python/Components/UsageConfig.py
 @@ -1,6 +1,6 @@
  from Components.Harddisk import harddiskmanager
  from config import ConfigSubsection, ConfigYesNo, config, ConfigSelection, ConfigText, ConfigNumber, ConfigSet, ConfigLocations
@@ -234,15 +248,15 @@ diff -auNr git/lib/python/Components/UsageConfig.py tuxtxt/lib/python/Components
  from SystemInfo import SystemInfo
  import os
  
-@@ -17,6 +17,7 @@
+@@ -17,6 +17,7 @@ def InitUsageConfig():
  	config.usage.show_infobar_on_zap = ConfigYesNo(default = True)
  	config.usage.show_infobar_on_skip = ConfigYesNo(default = True)
  	config.usage.show_infobar_on_event_change = ConfigYesNo(default = True)
 +	config.usage.enable_tt_caching = ConfigYesNo(default = True)
- 	config.usage.hdd_standby = ConfigSelection(default = "120", choices = [
- 		("0", _("no standby")), ("2", "10 " + _("seconds")), ("6", "30 " + _("seconds")),
- 		("12", "1 " + _("minute")), ("24", "2 " + _("minutes")),
-@@ -59,7 +60,11 @@
+ 	config.usage.hdd_standby = ConfigSelection(default = "600", choices = [
+ 		("0", _("no standby")), ("10", "10 " + _("seconds")), ("30", "30 " + _("seconds")),
+ 		("60", "1 " + _("minute")), ("120", "2 " + _("minutes")),
+@@ -59,7 +60,11 @@ def InitUsageConfig():
  
  	config.usage.blinking_display_clock_during_recording = ConfigYesNo(default = False)
  	config.usage.load_length_of_movies_in_moviellist = ConfigYesNo(default = True)
@@ -255,10 +269,11 @@ diff -auNr git/lib/python/Components/UsageConfig.py tuxtxt/lib/python/Components
  	def TunerTypePriorityOrderChanged(configElement):
  		setTunerTypePriorityOrder(int(configElement.value))
  	config.usage.alternatives_priority.addNotifier(TunerTypePriorityOrderChanged)
-diff -auNr git/lib/python/enigma_python.i tuxtxt/lib/python/enigma_python.i
---- git/lib/python/enigma_python.i	2008-11-17 09:11:44.000000000 +0100
-+++ tuxtxt/lib/python/enigma_python.i	2008-11-17 09:13:20.000000000 +0100
-@@ -86,6 +86,7 @@
+diff --git a/lib/python/enigma_python.i b/lib/python/enigma_python.i
+index bdf1b14..358dcfb 100644
+--- a/lib/python/enigma_python.i
++++ b/lib/python/enigma_python.i
+@@ -86,6 +86,7 @@ is usually caused by not marking PSignals as immutable.
  #include <lib/dvb/pmt.h>
  #include <lib/components/scan.h>
  #include <lib/components/file_eraser.h>
@@ -266,7 +281,7 @@ diff -auNr git/lib/python/enigma_python.i tuxtxt/lib/python/enigma_python.i
  #include <lib/driver/avswitch.h>
  #include <lib/driver/rfmod.h>
  #include <lib/driver/misc_options.h>
-@@ -154,6 +155,9 @@
+@@ -155,6 +156,9 @@ typedef long time_t;
  %immutable eAVSwitch::vcr_sb_notifier;
  %immutable ePythonMessagePump::recv_msg;
  %immutable eDVBLocalTimeHandler::m_timeUpdated;
@@ -276,7 +291,7 @@ diff -auNr git/lib/python/enigma_python.i tuxtxt/lib/python/enigma_python.i
  %include <lib/base/message.h>
  %include <lib/base/nconfig.h>
  %include <lib/driver/rc.h>
-@@ -198,6 +202,7 @@
+@@ -199,6 +203,7 @@ typedef long time_t;
  %include <lib/dvb/pmt.h>
  %include <lib/components/scan.h>
  %include <lib/components/file_eraser.h>
@@ -284,7 +299,7 @@ diff -auNr git/lib/python/enigma_python.i tuxtxt/lib/python/enigma_python.i
  %include <lib/driver/avswitch.h>
  %include <lib/driver/rfmod.h>
  %include <lib/driver/misc_options.h>
-@@ -302,6 +307,15 @@
+@@ -303,6 +308,15 @@ void setTunerTypePriorityOrder(int order)
  }
  %}
  
@@ -300,10 +315,11 @@ diff -auNr git/lib/python/enigma_python.i tuxtxt/lib/python/enigma_python.i
  /************** temp *****************/
  
  	/* need a better place for this, i agree. */
-diff -auNr git/main/Makefile.am tuxtxt/main/Makefile.am
---- git/main/Makefile.am	2008-11-17 09:11:44.000000000 +0100
-+++ tuxtxt/main/Makefile.am	2008-11-17 09:13:20.000000000 +0100
-@@ -53,7 +53,7 @@
+diff --git a/main/Makefile.am b/main/Makefile.am
+index 891b646..fed03bf 100644
+--- a/main/Makefile.am
++++ b/main/Makefile.am
+@@ -53,7 +53,7 @@ enigma2_LDADD = \
  	@LIBUNGIF_LIBS@ \
  	@XML2_LIBS@ \
  	@XMLCCWRAP_LIBS@ \

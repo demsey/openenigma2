@@ -41,23 +41,24 @@ export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20081212"
-SRCREV = "373d6a62bd8f2dcc03cb924f3dd988ac12a1d323"
+SRCDATE = "20090130"
+SRCREV = "88b281557a05fb785a42274bf0f3bc328f9eebfd"
 
 # if you want experimental, use:
-#REL_MAJOR="2"
-#REL_MINOR="6"
-#BRANCH = "master"
+REL_MAJOR="2"
+REL_MINOR="6"
+BRANCH = "master"
 
 # if you want a 2.5-based release, use
-REL_MAJOR="2"
-REL_MINOR="5"
-BRANCH = "enigma2_rel${REL_MAJOR}${REL_MINOR}"
+#REL_MAJOR="2"
+#REL_MINOR="5"
+#BRANCH = "enigma2_rel${REL_MAJOR}${REL_MINOR}"
 
 PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 
 SRC_URI = "git://git.opendreambox.org/git/enigma2.git;protocol=git;branch=${BRANCH} \
-	file://enigma2.sh"
+	file://enigma2.sh \
+	file://tuxtxt_caching.patch;patch=1;pnum=1"
 
 SRC_URI_append_dm7025 = " file://enigma2-disable-iframesearch.patch;patch=1;pnum=1 \
 	file://enigma2-disable-hardware-mp3-decode.patch;patch=1;pnum=1"
