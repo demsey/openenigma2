@@ -7,8 +7,6 @@ LICENSE = "Apache 2.0"
 PROVIDES = "python-gdata"
 DEPENDS = "python-native"
 
-inherit package_ipk
-
 inherit distutils
 
 PR = "r0"
