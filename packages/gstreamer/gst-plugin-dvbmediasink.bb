@@ -17,6 +17,10 @@ SRC_URI = "cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/dvbmediasink;mod
 S = "${WORKDIR}/dvbmediasink"
 
 FILES_${PN} = "${libdir}/gstreamer-0.10/*.so*"
+FILES_${PN}-dev += "${libdir}/gstreamer-0.10/*.la \
+	${libdir}/gstreamer-0.10/*.a"
+FILES_${PN}-dbg += "${libdir}/gstreamer-0.10/.debug"
+
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 do_stage() {
