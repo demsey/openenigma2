@@ -4,6 +4,8 @@ SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
+PROVIDES = "initscripts"
+RPROVIDES = "initscripts"
 LICENSE = "GPL"
 PR = "r18"
 
