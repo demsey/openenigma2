@@ -23,11 +23,6 @@ DISTRO_INIT_MANAGER ?= "sysvinit sysvinit-pidof"
 DISTRO_LOGIN_MANAGER ?= "tinylogin"
 
 #
-# allow a distro-specific set of initscripts, if required
-#
-DISTRO_INITSCRIPTS ?= "initscripts"
-
-#
 # those ones can be set in machine config to supply packages needed to get machine booting
 #
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS ?= ""
@@ -44,7 +39,7 @@ RDEPENDS_task-boot = "\
     base-files \
     base-passwd \
     busybox \
-    ${DISTRO_INITSCRIPTS} \
+    initscripts \
     ${@base_contains("MACHINE_FEATURES", "keyboard", "keymaps", "", d)} \
     modutils-initscripts \
     netbase \
