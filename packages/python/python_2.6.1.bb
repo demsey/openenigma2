@@ -25,7 +25,6 @@ SRC_URI = "\
 "
 
 SRC_URI_append_opendreambox = " \
-  file://fix-ffi-mips-confusion.patch;patch=1 \
   file://some_configure_fixes.patch;patch=1;pnum=0 \
   file://strict_aliasing_site.patch;patch=0;pnum=0 \
   file://fix_pthread_site.patch;patch=0;pnum=0 \
