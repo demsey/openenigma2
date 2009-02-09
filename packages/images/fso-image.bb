@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "1.1"
-PR = "r1"
+PR = "r4"
 
 # no languages for now
 IMAGE_LINGUAS = ""
@@ -80,11 +80,11 @@ ZHONE_INSTALL = "\
 
 # additional apps
 APPS_INSTALL = "\
-#  tichy \
+  paroli \
   gpe-gallery \
   gpe-sketchbook \
   gpe-filemanager \
-  vagalume \
+  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'vagalume', d)} \
   starling \
 "
 
@@ -112,6 +112,8 @@ fso_rootfs_postprocess() {
     echo "alias pico=nano" >>./etc/profile
     echo "alias fso='cd /local/pkg/fso'" >>./etc/profile
     echo "alias ipkg='opkg'" >>./etc/profile
+    echo "alias vim=vi" >>./etc/profile
+    echo "alias ll='ls -al'" >>./etc/profile
     # nfs
     mkdir -p ./local/pkg
     echo >>./etc/fstab
@@ -133,6 +135,10 @@ fso_rootfs_postprocess() {
     echo "nameserver 208.67.220.220" >> ./etc/resolv.conf
     # remove autostart of gspd (if installed), we have fso-gpsd and this conflicts
     rm -f ./etc/init.d/gpsd
+    # silence printk
+    mkdir -p ./etc/profile.d/
+    echo "echo 0 0 0 0 >/proc/sys/kernel/printk" >./etc/profile.d/printk.sh
+    chmod a+rx ./etc/profile.d/printk.sh
     # back on track
     cd $curdir
 }

@@ -33,6 +33,7 @@ require conf/distro/include/angstrom-${ANGSTROMLIBC}.inc
 ANGSTROM_ARM_INSTRUCTION_SET ?= "arm"
 ANGSTROM_ARM_INSTRUCTION_SET_armv4t = "thumb"
 ANGSTROM_ARM_INSTRUCTION_SET_armv5te = "thumb"
+ANGSTROM_ARM_INSTRUCTION_SET_armv5teb = "thumb"
 
 
 ARM_INSTRUCTION_SET = "${ANGSTROM_ARM_INSTRUCTION_SET}"
@@ -89,7 +90,8 @@ require conf/distro/include/angstrom-package-${ANGSTROM_PKG_FORMAT}.inc
 # We don't want to keep OABI compat
 ARM_KEEP_OABI = "0"
 # Do keep OABI compat for om-gta01 to keep the gllin binary working
-ARM_KEEP_OABI_pn-linux-openmoko_om-gta01 = "1"
+ARM_KEEP_OABI_pn-linux-openmoko-2.6.24_om-gta01 = "1"
+ARM_KEEP_OABI_pn-linux-openmoko-2.6.28_om-gta01 = "1"
 
 
 #Generate locales on the buildsystem instead of on the target. Speeds up first boot, set to "1" to enable

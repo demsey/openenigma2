@@ -1,18 +1,15 @@
 DESCRIPTION = "Enlightenment DR17 theme for Angstrom"
 LICENSE = "MIT/BSD"
 DEPENDS = "edje-native eet-native"
+RDEPENDS = "e-wm"
+RRECOMMENDS_${PN} = "places"
+
+PR = "r4"
 
 SRC_URI = " \
           file://e.src \
           file://icon.png \
-          file://module.battery.src \
-          file://module.cpufreq.src \
-          file://module.dropshadow.src \
-          file://module.fileman.src \
-          file://module.ibar.src \
-          file://module.ibox.src \
-          file://module.pager.src \
-          file://module.temperature.src \
+          file://*.src \
           file://profile.desktop \
           "
 S = "${WORKDIR}/angstrom"

@@ -10,8 +10,7 @@ S = "${WORKDIR}/hal-${PV}"
 inherit autotools pkgconfig
 
 DEPENDS = "virtual/kernel dbus-glib udev intltool intltool-native expat libusb gperf-native"
-RDEPENDS += "udev hal-info"
-RRECOMMENDS = "udev-utils"
+RDEPENDS += "hal-info udev-utils"
 
 SRC_URI += "file://99_hal \
             file://20hal \
@@ -77,6 +76,8 @@ pkg_postrm_hal () {
 }
 
 FILES_${PN} = "${sysconfdir} \
+                ${bindir}/hal-disable-polling \
+                ${bindir}/hal-setup-keymap \
                 ${bindir}/lshal \
                 ${bindir}/hal-find-by-capability \
                 ${bindir}/hal-find-by-property \

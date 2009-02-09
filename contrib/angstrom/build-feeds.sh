@@ -80,16 +80,24 @@ do
                       bluez-gnome \
                       bluez-hcidump \
                       boa \
+                      bonjour \
                       camera-assistant \
+                      cdparanoia \
                       checkers \
                       cherokee \
                       claws-mail \
+                      connman \
+                      connman-gnome \
+                      contacts \
                       cvs \
+                      cwiid \
+                      dates \
                       distcc \
                       dsniff \
                       duke3d \
                       e-uae \
                       e-wm \
+                      ekiga \
                       empathy \ 
                       epdfview \
                       epiphany \
@@ -110,6 +118,7 @@ do
                       frameworkd \
                       freenote \
                       froot \
+                      frozen-bubble \
                       gcc \
                       gdal \
                       gdb \
@@ -162,13 +171,16 @@ do
                       iperf \
                       iptables \
                       irssi \
+                      iscsi-target \
                       jamvm \
                       kismet \
                       konqueror-embedded \
                       labyrinth \
+                      lcd4linux \
                       leafpad \
                       lighttpd \
                       links-x11 \
+                      lirc \
                       m4 \
                       madplay \
                       mahjongg \
@@ -215,6 +227,7 @@ do
                       perl \
                       pidgin \
                       pine \
+                      pingus \
                       pipeman \
                       pkgconfig \
                       places \
@@ -225,6 +238,7 @@ do
                       pushover \
                       python \
                       python-pybluez \
+                      python-coherence \
                       qfish2 \
                       qmatrix \
                       qpe-nmap \
@@ -244,12 +258,14 @@ do
                       screen \
                       scummvm \
                       sdlquake \
+                      sensors-applet \
                       setserial \
                       shisensho \
                       slcalc \
                       sliderulez \
                       sokoban \
                       squeakvm \
+                      stalonetray \
                       strace \
                       subversion \
                       sugar \
@@ -260,6 +276,7 @@ do
                       task-opie-apps \
                       task-opie-games \
                       task-proper-tools \
+                      tasks \
                       texinfo \
                       thttpd \
                       thunar \
@@ -267,6 +284,7 @@ do
                       timesleuth \
                       tofrodos \
                       totem \
+                      transmission \
                       tron \
                       tzdata \
                       ubahnnav \
@@ -280,6 +298,7 @@ do
                       wifi-radar \
                       win4 \
                       wpa-gui \
+                      wt \
                       x11vnc \
                       xf86-input-evdev \
                       xf86-input-keyboard \
@@ -323,10 +342,11 @@ done
 
 # machine packages (machine specific (sub)packages)
 
-for machine in beagleboard omap3evm neuros-osd2 efika dht-walnut palmt650 omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700 nokia800 qemux86  
+for machine in overo omap3-pandora beagleboard omap3evm neuros-osd2 efika dht-walnut palmt650 omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700 nokia800 dns323 mv2120 kuropro lspro tsx09 ts409 qemux86  
+
 do
         BUILD_MACHINE=$machine
-            BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
+            BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
         BUILD_TARGETS="task-base task-boot \
                        task-opie task-opie-all \
                        task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
@@ -337,3 +357,10 @@ do
         do_build
 done
 
+for machine in collie h2200 hx4700 spitz akita tosa poodle c7x0
+do
+        BUILD_MACHINE=$machine
+        BUILD_TARGETS="linux-kexecboot \
+		       "
+	do_build
+done	

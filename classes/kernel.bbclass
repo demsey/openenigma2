@@ -74,9 +74,6 @@ UBOOT_ENTRYPOINT ?= "20008000"
 UBOOT_LOADADDRESS ?= "${UBOOT_ENTRYPOINT}"
 
 kernel_do_compile() {
-	if [ ! -z "${INITRAMFS_IMAGE}" ]; then
-		cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE}-${MACHINE}.cpio.gz" initramfs.cpio.gz
-	fi
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
 	oe_runmake include/linux/version.h CC="${KERNEL_CC}" LD="${KERNEL_LD}"
 	if [ "${KERNEL_MAJOR_VERSION}" != "2.6" ]; then
@@ -117,7 +114,7 @@ kernel_do_stage() {
 	mkdir -p ${STAGING_KERNEL_DIR}/include/pcmcia
 	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
 
-	for entry in drivers/crypto include/media include/acpi include/sound include/video; do
+	for entry in drivers/crypto include/media include/acpi include/sound include/video include/scsi; do
 		if [ -d $entry ]; then
 			mkdir -p ${STAGING_KERNEL_DIR}/$entry
 			cp -fR $entry/* ${STAGING_KERNEL_DIR}/$entry/
@@ -188,7 +185,10 @@ kernel_do_install() {
 }
 
 kernel_do_configure() {
-        yes '' | oe_runmake oldconfig
+	yes '' | oe_runmake oldconfig
+	if [ ! -z "${INITRAMFS_IMAGE}" ]; then
+		cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE}-${MACHINE}.cpio.gz" initramfs.cpio.gz
+	fi 
 }
 
 do_menuconfig() {
@@ -293,8 +293,9 @@ module_conf_rfcomm = "alias bt-proto-3 rfcomm"
 
 python populate_packages_prepend () {
 	def extract_modinfo(file):
-		import os, re
-		tmpfile = os.tmpnam()
+		import tempfile, os, re
+		tempfile.tempdir = bb.data.getVar("WORKDIR", d, 1)
+		tmpfile = tempfile.mkstemp()[1]
 		cmd = "PATH=\"%s\" %sobjcopy -j .modinfo -O binary %s %s" % (bb.data.getVar("PATH", d, 1), bb.data.getVar("HOST_PREFIX", d, 1) or "", file, tmpfile)
 		os.system(cmd)
 		f = open(tmpfile)

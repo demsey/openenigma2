@@ -51,10 +51,9 @@ SRCDATE_gnome-vfs ?= "20060119"
 SRCDATE_gtkhtml2 ?= "20060323"
 
 # Misc packages, sorted by alphabet
-SRCDATE_aufs ?= "20080826"
+SRCDATE_aufs ?= "20081203"
 SRCDATE_avetanabt ?= "20060814"
 SRCDATE_bl ?= "20060814"
-SRCDATE_python-pydirectfb = "20071210"
 SRCDATE_dvbstream ?= "20060814"
 SRCDATE_dvbtraffic ?= "20060814"
 SRCDATE_dvbtune ?= "20060814"

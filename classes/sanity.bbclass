@@ -101,7 +101,7 @@ def check_sanity(e):
 		if os.path.exists("/proc/sys/vm/mmap_min_addr"):
 			f = file("/proc/sys/vm/mmap_min_addr", "r")
 			if (f.read().strip() != "0"):
-				messages = messages + "/proc/sys/vm/mmap_min_addr is not 0. This will cause problems with qemu so please fix the value (as root).\n"
+				messages = messages + "/proc/sys/vm/mmap_min_addr is not 0. This will cause problems with qemu so please fix the value (as root).\n\nTo fix this in later reboots, set vm.mmap_min_addr = 0 in /etc/sysctl.conf.\n"
 			f.close()
 
 	for util in required_utilities.split():
@@ -111,6 +111,9 @@ def check_sanity(e):
 	if missing != "":
 		missing = missing.rstrip(',')
 		messages = messages + "Please install following missing utilities: %s\n" % missing
+
+	if os.path.basename(os.readlink('/bin/sh')) == 'dash':
+		messages = messages + "Using dash as /bin/sh causes various subtle build problems, please use bash instead.\n"
 
 	omask = os.umask(022)
 	if omask & 0755:

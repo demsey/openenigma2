@@ -71,7 +71,13 @@ def base_chk_file(parser, pn, pv, src_uri, localpath, data):
         
         file.write("[%s]\nmd5=%s\nsha256=%s\n\n" % (src_uri, md5data, shadata))
         file.close()
-        return False
+        if not bb.data.getVar("OE_STRICT_CHECKSUMS",data, True):
+            bb.note("This package has no entry in checksums.ini, please add one")
+            bb.note("\n[%s]\nmd5=%s\nsha256=%s" % (src_uri, md5data, shadata))
+            return True
+        else:
+            bb.note("Missing checksum")
+            return False
 
     if not md5 == md5data:
         bb.note("The MD5Sums did not match. Wanted: '%s' and Got: '%s'" % (md5,md5data))
@@ -725,9 +731,20 @@ def oe_unpack_file(file, data, url = None):
 		if os.path.samefile(file, dest):
 			return True
 
+	# Change to subdir before executing command
+	save_cwd = os.getcwd();
+	parm = bb.decodeurl(url)[5]
+	if 'subdir' in parm:
+		newdir = ("%s/%s" % (os.getcwd(), parm['subdir']))
+		bb.mkdirhier(newdir)
+		os.chdir(newdir)
+
 	cmd = "PATH=\"%s\" %s" % (bb.data.getVar('PATH', data, 1), cmd)
 	bb.note("Unpacking %s to %s/" % (file, os.getcwd()))
 	ret = os.system(cmd)
+
+	os.chdir(save_cwd)
+
 	return ret == 0
 
 addtask unpack after do_fetch

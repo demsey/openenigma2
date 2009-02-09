@@ -16,7 +16,7 @@ RDEPENDS = ""
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.16"
+PR := "${PR}.19"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -27,7 +27,7 @@ SRC_URI += "file://domainname.sh"
 SRC_URI += "file://devices.patch;patch=1"
 SRC_URI += "file://bootclean.sh"
 
-# Without this it is not possible to patch checkroot.sh
+# Without this it is not possible to patch checkroot
 S = "${WORKDIR}"
 
 do_install_append() {
@@ -38,6 +38,7 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/alignment.sh ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/domainname.sh ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/bootclean.sh ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/checkroot ${D}${sysconfdir}/init.d
 
 	# Remove the do install links (this detects a change to the
 	# initscripts .bb file - it will cause a build failure here.)
@@ -59,14 +60,14 @@ do_install_append() {
 	rm	${D}${sysconfdir}/rc0.d/S40umountfs
 	rm	${D}${sysconfdir}/rc0.d/S90halt
 	rm	${D}${sysconfdir}/rcS.d/S02banner
-	rm	${D}${sysconfdir}/rcS.d/S10checkroot.sh
+	rm	${D}${sysconfdir}/rcS.d/S10checkroot
 #	rm	${D}${sysconfdir}/rcS.d/S30checkfs.sh
 	rm	${D}${sysconfdir}/rcS.d/S35mountall.sh
 	rm	${D}${sysconfdir}/rcS.d/S39hostname.sh
 	rm	${D}${sysconfdir}/rcS.d/S45mountnfs.sh
 	rm	${D}${sysconfdir}/rcS.d/S55bootmisc.sh
 #	rm	${D}${sysconfdir}/rcS.d/S55urandom
-	rm	${D}${sysconfdir}/rcS.d/S99finish
+	rm	${D}${sysconfdir}/rcS.d/S99finish.sh
 	rm	${D}${sysconfdir}/rcS.d/S05devices
 	# udev will run at S04 if installed
 	rm	${D}${sysconfdir}/rcS.d/S03sysfs
@@ -104,7 +105,7 @@ do_install_append() {
 	# busybox hwclock.sh (slugos-init) starts here (08)
 	# slugos-init umountinitrd runs here (09)
 
-	update-rc.d -r ${D} checkroot.sh	start 10 S .
+	update-rc.d -r ${D} checkroot		start 10 S .
 	# slugos buffer syslog starts here (11)
 	# sysconfsetup runs at S 12
 	# modutils.sh runs at S 20
@@ -130,7 +131,7 @@ do_install_append() {
 	# urandom is currently disabled from S 55 (and won't work with tmpfs /var)
 
 	# ipkg-cl configure runs at S 98
-	update-rc.d -r ${D} finish		start 99 S .
+	update-rc.d -r ${D} finish.sh		start 99 S .
 
 	#
 	# User (2-5) links - UNCHANGED

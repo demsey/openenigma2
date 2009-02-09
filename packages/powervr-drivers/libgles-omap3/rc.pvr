@@ -1,12 +1,12 @@
 #!/bin/sh
 
-rmmod bc_example
+#rmmod bc_example
 rmmod omaplfb
 rmmod pvrsrvkm
 
-insmod $(find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
-modprobe -f bc_example
-modprobe -f omaplfb
+insmod $(busybox find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
+#modprobe bc_example
+modprobe omaplfb
 
 pvr_maj=`grep "pvrsrvkm$" /proc/devices | cut -b1,2,3`
 

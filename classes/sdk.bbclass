@@ -20,6 +20,7 @@ HOST_OS = "${BUILD_OS}"
 HOST_PREFIX = "${BUILD_PREFIX}"
 HOST_CC_ARCH = "${BUILD_CC_ARCH}"
 #HOST_SYS = "${HOST_ARCH}${TARGET_VENDOR}-${HOST_OS}"
+HOST_EXEEXT = "${BUILD_EXEEXT}"
 
 CPPFLAGS = "${BUILD_CPPFLAGS}"
 CFLAGS = "${BUILD_CFLAGS}"
@@ -27,7 +28,7 @@ CXXFLAGS = "${BUILD_CFLAGS}"
 LDFLAGS = "${BUILD_LDFLAGS}"
 
 # Path prefixes
-prefix = "${SDK_PREFIX}"
+prefix = "${SDK_PATH}"
 exec_prefix = "${prefix}"
 base_prefix = "${prefix}"
 

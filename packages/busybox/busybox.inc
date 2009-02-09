@@ -174,3 +174,19 @@ pkg_prerm_${PN} () {
 		sh /usr/bin/update-alternatives --remove $bn $to
 	done </etc/busybox.links
 }
+
+PACKAGES =+ "${PN}-mdev"
+FILES_${PN}-mdev = "${sysconfdir}/mdev ${sysconfdir}/mdev.conf ${sysconfdir}/init.d/mdev"
+RDEPENDS_${PN}-mdev += "${PN}"
+
+pkg_postinst_${PN}-mdev() {
+if test "x$D" != "x"; then
+	OPT="-r $D"
+else
+	OPT="-s"
+fi
+	update-rc.d $OPT mdev start 06 S .
+}
+
+
+

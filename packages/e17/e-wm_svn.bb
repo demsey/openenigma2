@@ -2,7 +2,7 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
 DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 PV = "0.16.999.050+svnr${SRCREV}"
-PR = "r0"
+PR = "r3"
 
 inherit e update-alternatives
 
@@ -10,6 +10,7 @@ RDEPENDS_${PN} += "\
   shared-mime-info \
   mime-support \
   edje-utils \
+  ${PN}-utils \
 "
 
 # Uclibc build don't have 'glibc-utils'
@@ -35,6 +36,7 @@ PACKAGES =+ "\
   ${PN}-other \
   ${PN}-input-methods \
   ${PN}-sysactions \
+  ${PN}-utils \
 "
 
 RRECOMMENDS_${PN} = "\
@@ -68,6 +70,9 @@ SRC_URI = "\
   file://applications.menu \
   file://gsm-segfault-fix.patch;patch=1;maxrev=37617 \
 "
+
+SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch;patch=1 "
+
 S = "${WORKDIR}/e"
 
 EXTRA_OECONF = "\
@@ -127,6 +132,7 @@ FILES_${PN}-icons = "${datadir}/enlightenment/data/icons"
 FILES_${PN}-other = "${datadir}/enlightenment/data/other"
 FILES_${PN}-input-methods = "${datadir}/enlightenment/data/input_methods"
 FILES_${PN}-sysactions = "${sysconfdir}/enlightenment/sysactions.conf"
+FILES_${PN}-utils = "${libdir}/enlightenment/utils/*"
 
 RRECOMMENDS_${PN}-config-default = "${PN}-theme-default"
 RRECOMMENDS_${PN}-config-illume = "${PN}-theme-illume"

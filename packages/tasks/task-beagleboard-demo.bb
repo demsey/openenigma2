@@ -1,12 +1,13 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r2"
+PR = "r7"
 
 inherit task 
 
-ECONFIG ?= "e-wm-config-angstrom e-wm-config-default"
+ECONFIG ?= "places e-wm-config-angstrom e-wm-config-default"
 
 RDEPENDS_${PN} = "\
+    task-proper-tools \
     task-base-extended \
     angstrom-x11-base-depends \
     angstrom-gpe-task-base \
@@ -17,7 +18,7 @@ RDEPENDS_${PN} = "\
     psplash \
     mime-support e-wm ${ECONFIG} exhibit \
     xterm xmms \
-    epiphany firefox midori \
+    firefox midori \
     swfdec-mozilla \
     hicolor-icon-theme gnome-icon-theme \
     jaaa nmap iperf gnuplot \
@@ -32,9 +33,11 @@ RDEPENDS_${PN} = "\
     rt73-firmware zd1211-firmware \
     stalonetray \
 	synergy \
-	x11vnc \
+	x11vnc angstrom-x11vnc-xinit \
 	angstrom-gnome-icon-theme-enable \
 	openssh-scp openssh-ssh \
+	picodlp-control \
+	connman-gnome \
 "
 
 # Install all kernel modules

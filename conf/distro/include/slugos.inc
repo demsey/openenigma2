@@ -25,6 +25,25 @@ PREFERRED_VERSION_linux-ixp4xx = "2.6.27.8+svnr${SRCREV}"
 #===============================================================================#
 
 
+
+#===============================================================================#
+#===============================================================================#
+#===============================================================================#
+#                              NOTE NOTE NOTE
+#
+# Override the sane-srcrev file with regard to the opkg versions - this should
+# be removed as soon as opkg starts to work correctly again as newer opkg
+# versions fix a number of bugs and add some desireable features.
+#
+SRCREV_pn-opkg        = "160"
+SRCREV_pn-opkg-native = "160"
+SRCREV_pn-opkg-sdk    = "160"
+#
+#===============================================================================#
+#===============================================================================#
+#===============================================================================#
+
+
 #----------------------------------------------------------------------------------
 # STANDARD SLUGOS DEFINITIONS
 #----------------------------------------------------------------------------------
@@ -230,7 +249,7 @@ PREFERRED_PROVIDER_gconf  ?= "gconf"
 # be pulled from a separate include file.  But they can
 # go here for now.
 PREFERRED_VERSION_automake-native       ?= "1.10"
-PREFERRED_VERSION_busybox               ?= "1.11.3"
+PREFERRED_VERSION_busybox               ?= "1.13.2"
 PREFERRED_VERSION_dbus                  ?= "1.2.1"
 PREFERRED_VERSION_glib-2.0              ?= "2.18.3"
 PREFERRED_VERSION_glib-2.0-native       ?= "2.18.0"
@@ -248,6 +267,10 @@ PREFERRED_VERSION_pkgconfig-native      ?= "0.23"
 # still depends on libusb.  This is required because otherwise
 # libusb will overwrite libusb-compat in staging.
 PREFERRED_VERSION_libusb                ?= "0.0.0"
+
+# mtd-utils 1.2.0+git cannot be fetched, so SlugOS will stick
+# with 1.1.0 for now:
+PREFERRED_VERSION_mtd-utils             ?= "1.1.0"
 
 require conf/distro/include/sane-srcdates.inc
 require conf/distro/include/sane-srcrevs.inc

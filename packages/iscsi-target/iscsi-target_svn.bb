@@ -1,7 +1,9 @@
 DESCRIPTION = "iSCSI Enterprise Target is for building an iSCSI storage system on Linux"
 HOMEPAGE = "http://iscsitarget.sourceforge.net/"
 LICENSE = "GPL"
-PR = "r12"
+PR = "r13"
+
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "svn://svn.berlios.de/iscsitarget/;module=trunk;rev=HEAD \
 	   file://libs.patch;patch=1 \
@@ -10,7 +12,7 @@ SRC_URI = "svn://svn.berlios.de/iscsitarget/;module=trunk;rev=HEAD \
 		"
 
 DEPENDS = " openssl"
-RDEPENDS = "kernel-module-crc32c kernel-module-libcrc32c"
+RRECOMMENDS = "kernel-module-crc32c kernel-module-libcrc32c"
 
 S = "${WORKDIR}/trunk"
 

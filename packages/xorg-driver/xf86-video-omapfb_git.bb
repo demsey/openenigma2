@@ -2,13 +2,16 @@ require xorg-driver-video.inc
 
 DESCRIPTION = "X.Org X server -- OMAP display driver"
 
-PR ="r16"
+PR ="r20"
 
-SRCREV = "8915b62121b9528fbab55e0928028bce2b18b6e0"
+SRCREV = "ef0b41c332a710fb33f996df77bd4a96b56878da"
 PV = "0.0.1+${PR}+gitr${SRCREV}"
 PE = "1"
 
-SRC_URI = "git://git.pingu.fi/xf86-video-omapfb.git;protocol=http"
+SRC_URI = "git://git.pingu.fi/xf86-video-omapfb.git;protocol=http \
+          "
+
+SRC_URI_append_armv7a = " file://omapfb-neon.diff;patch=1"
 
 S = "${WORKDIR}/git"
 

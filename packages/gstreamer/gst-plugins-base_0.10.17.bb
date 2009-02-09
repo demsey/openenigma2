@@ -8,5 +8,5 @@ PROVIDES += "gst-plugins"
 # a missing alsa plugin
 DEPENDS += "alsa-lib freetype"
 
-PR = "r4"
+PR = "r5"
 
