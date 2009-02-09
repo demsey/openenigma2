@@ -42,3 +42,4 @@ do_install() {
 }
 
 FILES_${PN} = "${LOCALEDIR} ${LOCALEDIR2}"
+PACKAGE_ARCH = "all"

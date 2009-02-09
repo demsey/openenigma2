@@ -1,7 +1,10 @@
 require gst-plugins.inc
 
-SRC_URI += " file://disable_doc.patch;patch=1;pnum=1 \
-	file://samihack.patch;patch=1"
+do_configure_prepend() {
+	sed -i -e s:docs::g Makefile.am
+}
+
+SRC_URI += "file://samihack.patch;patch=1"
 
 PROVIDES += "gst-plugins"
 

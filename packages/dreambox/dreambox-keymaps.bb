@@ -7,6 +7,7 @@ SRC_URI = "file://dream-de.info file://dream-de.kmap file://eng.info file://eng.
 PR = "r1"
 
 FILES_${PN} = "/"
+PACKAGE_ARCH = "all"
 
 do_install() {
 	install -d ${D}/usr/share/keymaps

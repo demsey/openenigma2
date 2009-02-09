@@ -14,7 +14,7 @@ SRC_URI = "http://www.ant.uni-bremen.de/whomes/rinas/libxmlccwrap/download/libxm
 inherit autotools
 
 FILES_${PN} = "/usr/lib/*.so*"
-FILES_${PN}-dev = "/usr/include/*.h"
+FILES_${PN}-dev = "/usr/include/*.h /usr/include/xmlccwrap/*.h"
 
 do_stage () {
 	install -d ${STAGING_INCDIR}/xmlccwrap

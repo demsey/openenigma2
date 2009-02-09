@@ -16,5 +16,9 @@ S = "${WORKDIR}/links-2.1pre15"
 
 inherit autotools pkgconfig
 
+do_configure_prepend() {
+	sed -i -e s:-L$\(prefix\)/lib:-L${STAGING_LIBDIR}:g Makefile.am
+}
+
 bindir = "/usr/bin"
 sbindir = "/usr/sbin"

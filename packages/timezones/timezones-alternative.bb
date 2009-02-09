@@ -11,6 +11,7 @@ SRC_URI = "file://zoneinfo.tar.bz2"
 S = "${WORKDIR}/zoneinfo"
 
 FILES_${PN} = "usr/share/zoneinfo/[A-Z]*"
+PACKAGE_ARCH = "all"
 
 do_install() {
 	install -d ${D}/usr/share/zoneinfo/

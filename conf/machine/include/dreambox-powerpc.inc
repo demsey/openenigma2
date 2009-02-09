@@ -4,11 +4,9 @@ PACKAGE_EXTRA_ARCHS = "ppc405"
 
 PREFERRED_VERSION_gdb = "6.5"
 PREFERRED_VERSION_gdb-cross = "6.5"
-PREFERRED_VERSION_binutils-cross = "2.15.94.0.1"
-PREFERRED_VERSION_binutils-cross-sdk = "2.15.94.0.1"
-PREFERRED_VERSION_binutils = "2.15.94.0.1"
-#PREFERRED_VERSION_busybox = "1.01"
 PREFERRED_VERSION_freetype = "2.0.9"
+PREFERRED_PROVIDER_task-opendreambox-dvbapi = "task-opendreambox-dvbapi2"
+PREFERRED_PROVIDER_task-opendreambox-ui = "task-opendreambox-enigma"
 
 TARGET_ARCH = "powerpc"
 TARGET_CPU = "405"

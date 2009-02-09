@@ -18,3 +18,4 @@ do_install() {
 }
 
 FILES_${PN} = "/"
+PACKAGE_ARCH = "all"

@@ -7,11 +7,6 @@ SRC_URI = "\
   file://udhcpscript.patch;patch=1 \
   file://B921600.patch;patch=1 \
   file://fdisk_lineedit_segfault.patch;patch=1 \
-  file://hdparm_M.patch;patch=1 \
-  file://dhcp-hostname.patch;patch=1 \
-  file://keymap_endianess.patch;patch=1 \
-  file://add-getkey-applet.patch;patch=1 \
-  file://nptl_task.patch;patch=1 \
   file://busybox-cron \
   file://busybox-httpd \
   file://busybox-udhcpd \
@@ -24,6 +19,14 @@ SRC_URI = "\
   file://defconfig \
   file://mdev \
   file://mdev.conf \
+"
+
+SRC_URI_append_opendreambox = "\
+  file://hdparm_M.patch;patch=1 \
+  file://dhcp-hostname.patch;patch=1 \
+  file://keymap_endianess.patch;patch=1 \
+  file://add-getkey-applet.patch;patch=1 \
+  file://nptl_task.patch;patch=1 \
 "
 
 EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"

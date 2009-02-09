@@ -13,13 +13,13 @@ RDEPENDS = "python-codecs python-core python-datetime python-elementtree \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
 	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-fluendo-mpegdemux \
 	gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse gst-plugin-subparse \
-	eglibc-gconv-iso8859-15"
+	eglibc-gconv-iso8859-15 \
+	${@base_contains("MACHINE_FEATURES", "alsa", \
+		"gst-plugin-alsa alsa-conf", "gst-plugin-ossaudio", d)}"
 
-RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
-RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
-RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska \
-	gst-plugin-qtdemux gst-plugin-cdxaparse"
-RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf gst-plugin-matroska gst-plugin-qtdemux"
+RDEPENDS_append_dm8000 = " gst-plugin-avi gst-plugin-matroska gst-plugin-qtdemux \
+	gst-plugin-cdxaparse gst-plugin-cdxaparse gst-plugin-cdio gst-plugin-vcdsrc"
+RDEPENDS_append_dm800 = " gst-plugin-matroska gst-plugin-qtdemux"
 
 DESCRIPTION_append_enigma2-plugin-extensions-cutlisteditor = "enables you to cut your movies."
 RDEPENDS_enigma2-plugin-extensions-cutlisteditor = "aio-grab"
@@ -41,8 +41,8 @@ export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090130"
-SRCREV = "88b281557a05fb785a42274bf0f3bc328f9eebfd"
+SRCDATE = "20090206"
+SRCREV = "23d1b43e5d16d774efd57820334a7e76208c64c5"
 
 # if you want experimental, use:
 REL_MAJOR="2"
@@ -66,6 +66,7 @@ SRC_URI_append_dm7025 = " file://enigma2-disable-iframesearch.patch;patch=1;pnum
 S = "${WORKDIR}/git"
 
 FILES_${PN} += "${datadir}/fonts"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 inherit autotools pkgconfig
 
