@@ -16,8 +16,7 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/plugins/tu
 	file://allow_different_demux.diff;patch=1 \
 	file://plugin.py \
 	file://freetype2.patch;patch=1 \
-	file://hdres.patch;patch=1 \
-	file://add_advanced_rc.diff;patch=1;pnum=1"
+	file://hdres.patch;patch=1"
 
 FILES_${PN} = "/usr/lib/libtuxtxt32bpp.so* /usr/share/fonts /usr/lib/enigma2/python/Plugins/Extensions/Tuxtxt /etc/tuxtxt"
 
