@@ -5,7 +5,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 PROVIDES = "initscripts"
-RPROVIDES = "initscripts"
+RPROVIDES_${PN} = "initscripts"
 LICENSE = "GPL"
 PR = "r18"
 
