@@ -66,5 +66,5 @@ RDEPENDS_task-opendreambox-enigma2_append_dm8000 = "\
   task-opendreambox-dvdburn \
 "
 
-PACKAGE_ARCH_task-opendreambox-enigma2 = "${MACHINE_ARCH}"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 

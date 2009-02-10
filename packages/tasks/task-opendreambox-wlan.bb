@@ -22,5 +22,5 @@ RDEPENDS_${PN}_append_dm8000 = "\
   task-opendreambox-madwifi \
 "
 
-PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
