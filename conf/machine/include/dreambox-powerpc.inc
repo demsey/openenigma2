@@ -1,7 +1,5 @@
 # dreambox-powerpc.inc
 
-PACKAGE_EXTRA_ARCHS = "ppc405"
-
 PREFERRED_VERSION_gdb = "6.5"
 PREFERRED_VERSION_gdb-cross = "6.5"
 PREFERRED_VERSION_freetype = "2.0.9"
