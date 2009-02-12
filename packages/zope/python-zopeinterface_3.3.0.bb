@@ -9,4 +9,4 @@ SRC_URI = "http://www.zope.org/Products/ZopeInterface/${PV}/${SRCNAME}-${PV}.tar
 
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
-inherit distutils
+inherit setuptools
