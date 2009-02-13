@@ -7,7 +7,7 @@ RDEPENDS = "makedevs"
 PROVIDES = "initscripts"
 RPROVIDES_${PN} = "initscripts"
 LICENSE = "GPL"
-PR = "r18"
+PR = "r19"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 PACKAGE_ARCH = "${MACHINE_ARCH}"

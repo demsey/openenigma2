@@ -25,7 +25,6 @@ DESCRIPTION_append_enigma2-plugin-extensions-cutlisteditor = "enables you to cut
 RDEPENDS_enigma2-plugin-extensions-cutlisteditor = "aio-grab"
 DESCRIPTION_append_enigma2-plugin-extensions-graphmultiepg = "shows a graphical timeline EPG."
 DESCRIPTION_append_enigma2-plugin-extensions-pictureplayer = "displays photos on the TV."
-DESCRIPTION_append_enigma2-plugin-systemplugins-configurationbackup = "backs up your configuration and restores them optionally."
 DESCRIPTION_append_enigma2-plugin-systemplugins-frontprocessorupdate = "keeps your frontprocessor up to date."
 DESCRIPTION_append_enigma2-plugin-systemplugins-positionersetup = "helps you installing a motorized dish."
 DESCRIPTION_append_enigma2-plugin-systemplugins-satelliteequipmentcontrol = "allows you to fine-tune DiSEqC-settings."
@@ -41,8 +40,8 @@ export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090210"
-SRCREV = "eb6da808cc048f7a2e78c200094d290c5b3f2579"
+SRCDATE = "20090214"
+SRCREV = "935c5f9abeb0d6189c57f8406855d8437db8b0db"
 
 # if you want experimental, use:
 REL_MAJOR="2"
