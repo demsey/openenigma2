@@ -6,6 +6,9 @@ do_configure_prepend() {
 
 SRC_URI += "file://samihack.patch;patch=1"
 
+LIBTOOL = "${TARGET_SYS}-libtool"
+EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
+
 PROVIDES += "gst-plugins"
 
 # gst-plugins-base only builds the alsa plugin

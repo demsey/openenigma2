@@ -7,5 +7,7 @@ do_configure_prepend() {
 
 SRC_URI += "file://v4l2src_fixformats.patch;patch=1;pnum=0"
 
+LIBTOOL = "${TARGET_SYS}-libtool"
+EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
 EXTRA_OECONF += "--with-check=no "
 DEPENDS += "gst-plugins-base"

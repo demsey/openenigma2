@@ -9,5 +9,7 @@ SRC_URI += "file://gst-plugins-directfb-fix.patch;patch=1;pnum=2 \
 
 DEPENDS += "gst-plugins-base"
 
-EXTRA_OECONF_opendreambox += "--disable-apexsink "
+LIBTOOL = "${TARGET_SYS}-libtool"
+EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
+EXTRA_OECONF_opendreambox += "--disable-apexsink --disable-dvdnav "
 
