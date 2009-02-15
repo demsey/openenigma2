@@ -3,6 +3,9 @@ DEPENDS = "dreambox-dvbincludes libpng freetype"
 MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 
 SRCDATE = "20090130"
+SRCDATE_dm600pvr = "20070307"
+SRCDATE_dm500plus = "20070307"
+SRCDATE_dm7020 = "20070307"
 
 PN = "libtuxtxt"
 PV = "0.0+cvs${SRCDATE}"
@@ -10,8 +13,7 @@ PR = "r0"
 
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libs;method=ext \
 	file://acinclude.m4 \
-	file://ignorelibs.patch;patch=1 \
-	file://nolibtuxbox.diff;patch=1"
+	file://ignorelibs.patch;patch=1"
 
 SRC_URI_append_dm7025 = " \
 	file://32bpp.diff;patch=1 \
@@ -48,6 +50,7 @@ python populate_packages_prepend () {
 
 do_configure_prepend() {
 	install ${WORKDIR}/acinclude.m4 ${S}/acinclude.m4
+	sed -i -e s:@LIBTUXBOX_LIBS@::g ${S}/libtuxtxt/tuxbox-tuxtxt.pc.in
 }
 
 do_stage() {
