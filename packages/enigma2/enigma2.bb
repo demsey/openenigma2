@@ -31,7 +31,6 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-satelliteequipmentcontrol = "all
 DESCRIPTION_append_enigma2-plugin-systemplugins-satfinder = "helps you to align your dish."
 DESCRIPTION_append_enigma2-plugin-systemplugins-skinselector = "shows a menu with selectable skins."
 DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced video modes"
-RDEPENDS_append_enigma2-plugin-systemplugins-hotplug = " python-pkgutil"
 RDEPENDS_append_enigma2-plugin-extensions-dvdplayer = " libdreamdvd0"
 RDEPENDS_append_enigma2-plugin-extensions-dvdburn = " cdrkit dvdauthor dvd+rw-tools mjpegtools projectx python-imaging"
 RDEPENDS_append_enigma2-plugin-systemplugins-nfiflash = " python-twisted-web"
