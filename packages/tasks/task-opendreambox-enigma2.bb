@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenDreambox: Enigma2 Task for the OpenDreambox Distribution"
 SECTION = "opendreambox/base"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 
 inherit task
 
@@ -43,9 +43,6 @@ RDEPENDS_task-opendreambox-enigma2 = "\
   python-crypt \
   python-netserver \
   python-pickle \
-  python-pkgutil \
-  python-pycrypto \
-  python-twisted \
   python-twisted-core \
   python-twisted-protocols \
   python-twisted-web \
