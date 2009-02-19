@@ -1,0 +1,80 @@
+diff -auNr busybox-1.13.2/libbb/procps.c busybox-1.13.2-nptl/libbb/procps.c
+--- busybox-1.13.2/libbb/procps.c	2008-11-09 18:28:09.000000000 +0100
++++ busybox-1.13.2-nptl/libbb/procps.c	2009-02-19 10:43:01.000000000 +0100
+@@ -166,23 +166,27 @@
+ procps_status_t* FAST_FUNC procps_scan(procps_status_t* sp, int flags)
+ {
+ 	struct dirent *entry;
++	static DIR *taskdir;
+ 	char buf[PROCPS_BUFSIZE];
+ 	char filename[sizeof("/proc//cmdline") + sizeof(int)*3];
+ 	char *filename_tail;
+ 	long tasknice;
+ 	unsigned pid;
++	static unsigned parentpid;
+ 	int n;
+ 	struct stat sb;
+ 
+ 	if (!sp)
+ 		sp = alloc_procps_scan();
+ 
+-	for (;;) {
+-		entry = readdir(sp->dir);
+-		if (entry == NULL) {
+-			free_procps_scan(sp);
+-			return NULL;
+-		}
++	for(taskdir){
++		for(;;) {
++			entry = readdir(taskdir);
++			if(entry == NULL) {
++				closedir(taskdir);
++				taskdir = 0;
++				break;
++			}
+ 		pid = bb_strtou(entry->d_name, NULL, 10);
+ 		if (errno)
+ 			continue;
+@@ -203,7 +207,7 @@
+ 		}
+ #endif
+ 
+-		filename_tail = filename + sprintf(filename, "/proc/%d", pid);
++		filename_tail = filename + sprintf(filename, "/proc/%d/task/%d", parentpid, pid);
+ 
+ 		if (flags & PSSCAN_UIDGID) {
+ 			if (stat(filename, &sb))
+@@ -417,7 +421,32 @@
+ #endif
+ 		break;
+ 	}
+-	return sp;
++	if(taskdir)
++		return sp;
++	}
++
++	for (;;) {
++		entry = readdir(sp->dir);
++		if (entry == NULL) {
++			free_procps_scan(sp);
++			return NULL;
++		}
++		pid = bb_strtou(entry->d_name, NULL, 10);
++		if (errno)
++			continue;
++
++		filename_tail = filename + sprintf(filename, "/proc/%d", pid);
++
++		if (!taskdir) {
++			strcpy(filename_tail, "/task");
++			taskdir = xopendir(filename);
++			if(!taskdir)
++				// ignore processes without taskdir
++				continue;
++			parentpid = pid;
++			return procps_scan(sp, flags);
++		}
++	}
+ }
+ 
+ void FAST_FUNC read_cmdline(char *buf, int col, unsigned pid, const char *comm)
