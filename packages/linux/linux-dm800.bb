@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PN = "linux-dm800"
 KV = "2.6.12"
 PV = "2.6.12"
-PR = "r9"
+PR = "r10"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
 SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
@@ -27,7 +27,8 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	file://linuxmips-2.6.12-fix-fadvise.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-fix-futex.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-gcc4-compile-fix.patch;patch=1;pnum=1 \
-	file://linuxmips-2.6.12-gdb-fix.patch;patch=1;pnum=1"
+	file://linuxmips-2.6.12-gdb-fix.patch;patch=1;pnum=1 \
+	file://linux-2.6-trailing-whitespaces-in-params.patch;patch=1"
 
 S = "${WORKDIR}/stblinux-2.6.12"
 
