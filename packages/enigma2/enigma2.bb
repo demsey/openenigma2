@@ -6,7 +6,7 @@ DEPENDS = "jpeg libungif libmad libpng libsigc++-1.2 gettext-native \
 	gst-plugin-dvbmediasink gst-plugin-fluendo-mpegdemux \
 	libfribidi libxmlccwrap libdreamdvd tuxbox-tuxtxt-32bpp"
 RDEPENDS = "python-codecs python-core python-datetime python-elementtree \
-	python-fcntl python-io python-math python-lang python-re \
+	python-fcntl python-io python-math python-mime python-lang python-re \
 	python-stringold python-threading python-xml gst-plugin-decodebin \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
 	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
