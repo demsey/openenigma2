@@ -52,6 +52,9 @@ python populate_packages_prepend () {
 				if 'twisted-web' in depends:
 					depends.remove('twisted-web')
 					depends.append('python-twisted-web')
+				if 'twisted-mail' in depends:
+					depends.remove('twisted-mail')
+					depends.append('python-twisted-mail')
 				bb.data.setVar('RDEPENDS_' + full_package, ' '.join(depends), d)
 			if line.startswith('Description: '):
 				bb.data.setVar('DESCRIPTION_' + full_package, line[13:], d)
