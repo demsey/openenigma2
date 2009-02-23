@@ -7,9 +7,11 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/plugins;me
 	   file://tuxtxt_include_fix.patch;patch=1;pnum=1 \
            file://game_names.diff;patch=1;pnum=1"
 
+RPROVIDES = "tuxbox-plugins"
+
 SRCDATE = "20061009"
 PV = "0.0+cvs${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 CFLAGS_append = " -DOE"
 CFLAGS_append_dm7020 = " -DHAVE_DREAMBOX_HARDWARE -DDREAMBOX"
