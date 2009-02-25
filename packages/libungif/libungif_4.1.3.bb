@@ -6,7 +6,11 @@ PR = "r1"
 
 PACKAGES += "${PN}-utils"
 
-FILES_${PN} = "${libdir}"
+FILES_${PN} = "${libdir}/*.so*"
+FILES_${PN}-dev += "\
+	${libdir}/libungif.a \
+	${libdir}/libungif.la \
+"
 FILES_${PN}-utils = "${bindir}"
 
 inherit autotools
