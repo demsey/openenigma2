@@ -3,6 +3,8 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
 SRCDATE = "20090127"
 
+PACKAGES_DYNAMIC = "enigma2-skin-*"
+
 # if you want experimental, use:
 REL_MAJOR="2"
 REL_MINOR="6"
@@ -17,6 +19,7 @@ PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/enigma2-skins;module=enigma2-skins;method=pserver${TAG};date=${SRCDATE}"
 FILES_${PN} += " /usr/share/enigma2 /usr/share/fonts "
+ALLOW_EMPTY_${PN} = "1"
 PACKAGE_ARCH = "all"
 
 inherit autotools
