@@ -1,7 +1,7 @@
 DESCRIPTION = "Skins for Enigma2"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
-SRCDATE = "20090127"
+SRCDATE = "20090303"
 
 PACKAGES_DYNAMIC = "enigma2-skin-*"
 
