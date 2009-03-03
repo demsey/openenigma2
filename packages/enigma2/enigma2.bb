@@ -13,7 +13,7 @@ RDEPENDS = "python-codecs python-core python-datetime python-elementtree \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
 	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-fluendo-mpegdemux \
 	gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse gst-plugin-subparse \
-	eglibc-gconv-iso8859-15 \
+	glibc-gconv-iso8859-15 \
 	${@base_contains("MACHINE_FEATURES", "alsa", \
 		"gst-plugin-alsa alsa-conf", "gst-plugin-ossaudio", d)}"
 
