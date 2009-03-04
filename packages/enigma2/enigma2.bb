@@ -3,7 +3,7 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 DEPENDS = "jpeg libungif libmad libpng libsigc++-1.2 gettext-native \
 	dreambox-dvbincludes freetype libdvbsi++ python swig-native  \
 	gstreamer gst-plugins-good gst-plugins-bad gst-plugins-ugly \
-	gst-plugin-dvbmediasink gst-plugin-fluendo-mpegdemux \
+	gst-plugin-dvbmediasink \
 	libfribidi libxmlccwrap libdreamdvd tuxbox-tuxtxt-32bpp"
 RDEPENDS = "python-codecs python-core python-datetime python-elementtree \
 	python-fcntl python-io python-math python-mime python-lang python-re \
@@ -11,7 +11,7 @@ RDEPENDS = "python-codecs python-core python-datetime python-elementtree \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
 	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
-	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-fluendo-mpegdemux \
+	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-mpegdemux \
 	gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse gst-plugin-subparse \
 	glibc-gconv-iso8859-15 \
 	${@base_contains("MACHINE_FEATURES", "alsa", \
@@ -40,8 +40,8 @@ export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090302"
-SRCREV = "4a5818c82c71caa97447d4f91bd418a68c0bf174"
+SRCDATE = "20090304"
+SRCREV = "404743faf9cbf0c70d68ca047f2a8e914a0d94b5"
 
 # if you want experimental, use:
 REL_MAJOR="2"
