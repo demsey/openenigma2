@@ -1,5 +1,7 @@
 require gst-plugins.inc
 
+PR = "r1"
+
 do_configure_prepend() {
 	sed -i -e s:docs::g Makefile.am
 }
@@ -13,3 +15,5 @@ LIBTOOL = "${TARGET_SYS}-libtool"
 EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
 EXTRA_OECONF_opendreambox += "--disable-apexsink --disable-dvdnav "
 
+RCONFLICTS_gst-plugin-mpegdemux = "gst-plugin-fluendo-mpegdemux"
+RREPLACES_gst-plugin-mpegdemux = "gst-plugin-fluendo-mpegdemux"
