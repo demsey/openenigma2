@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PN = "linux-dm8000"
 KV = "2.6.12"
 PV = "2.6.12"
-PR = "r8"
+PR = "r9"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
 SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
