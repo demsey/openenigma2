@@ -40,8 +40,8 @@ export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090311"
-SRCREV = "8c68c9fd6273e5318755e42a9f650d850daebb94"
+SRCDATE = "20090401"
+SRCREV = "d892321813a7129f777ab69d05afb8a38cb737b0"
 
 # if you want experimental, use:
 REL_MAJOR="2"
@@ -59,8 +59,7 @@ SRC_URI = "git://git.opendreambox.org/git/enigma2.git;protocol=git;branch=${BRAN
 	file://enigma2.sh \
 	file://tuxtxt_caching.patch;patch=1;pnum=1"
 
-SRC_URI_append_dm7025 = " file://enigma2-disable-iframesearch.patch;patch=1;pnum=1 \
-	file://enigma2-disable-hardware-mp3-decode.patch;patch=1;pnum=1"
+SRC_URI_append_dm7025 = " file://enigma2-disable-hardware-mp3-decode.patch;patch=1;pnum=1"
 
 S = "${WORKDIR}/git"
 
