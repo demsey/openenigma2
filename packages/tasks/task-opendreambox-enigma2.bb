@@ -56,6 +56,7 @@ RDEPENDS_task-opendreambox-enigma2_append_dm800 = "\
 "
 
 RDEPENDS_task-opendreambox-enigma2_append_dm8000 = "\
+  enigma2-plugin-systemplugins-commoninterfaceassignment \
   enigma2-plugin-systemplugins-videomode \
   task-opendreambox-cdplayer \
   task-opendreambox-dvdplayer \
