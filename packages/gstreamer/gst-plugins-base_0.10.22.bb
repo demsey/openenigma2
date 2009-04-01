@@ -8,6 +8,7 @@ SRC_URI += "file://samihack.patch;patch=1"
 
 LIBTOOL = "${TARGET_SYS}-libtool"
 EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
+EXTRA_OECONF += "--with-audioresample-format=int"
 
 PROVIDES += "gst-plugins"
 
