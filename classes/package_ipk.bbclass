@@ -244,6 +244,10 @@ python do_package_ipk () {
 		rprovides = (bb.data.getVar("RPROVIDES", localdata, 1) or "").split()
 		rreplaces = (bb.data.getVar("RREPLACES", localdata, 1) or "").split()
 		rconflicts = (bb.data.getVar("RCONFLICTS", localdata, 1) or "").split()
+
+		if not '-locale-' and not '-dbg' and not '-dev' in pkgname:
+			rdepends.append('%s-locale*' % pkgname)
+
 		if rdepends:
 			ctrlfile.write("Depends: %s\n" % ", ".join(rdepends))
 		if rsuggests:
@@ -293,16 +297,7 @@ python do_package_ipk () {
 			bb.utils.unlockfile(lf)
 			raise bb.build.FuncFailed("ipkg-build execution failed")
 
-		for script in ["preinst", "postinst", "prerm", "postrm", "control" ]:
-			scriptfile = os.path.join(controldir, script)
-			try:
-				os.remove(scriptfile)
-			except OSError:
-				pass
-		try:
-			os.rmdir(controldir)
-		except OSError:
-			pass
+		bb.utils.prunedir(controldir)
 		bb.utils.unlockfile(lf)
 }
 

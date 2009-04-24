@@ -5,7 +5,8 @@ LICENSE = "GPL"
 DEPENDS = "curl gpgme"
 PV = "0.1.6+svnr${SRCREV}"
 
-SRC_URI = "svn://opkg.googlecode.com/svn;module=trunk;proto=http"
+SRC_URI = "svn://opkg.googlecode.com/svn;module=trunk;proto=http \
+	file://opkg_unarchive.patch;patch=1;maxrev=201"
 S = "${WORKDIR}/trunk"
 
 # We use an older version in opendreambox but the fix from r196 is important

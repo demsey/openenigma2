@@ -5,12 +5,20 @@ KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = 'om-gta01|om-gta02'
+COMPATIBLE_MACHINE = "om-gta01|om-gta02|om-3d7k"
 
-CONFIG_NAME_om-gta01 = "gta01"
-CONFIG_NAME_om-gta02 = "gta02"
+KERNEL_IMAGE_SYMLINK_NAME_om-gta01 = "uImage-GTA01.bin"
+KERNEL_IMAGE_SYMLINK_NAME_om-gta02 = "uImage-GTA02.bin"
+KERNEL_IMAGE_SYMLINK_NAME_om-3d7k  = "uImage-OM3D7K.bin"
 
 CMDLINE = "unused -- bootloader passes ATAG list"
+
+# Do keep OABI compat for om-gta01 to keep the gllin binary working
+ARM_KEEP_OABI_om-gta01 = "1"
+
+# Make sure not to use thumb[-interworking]
+ARM_INSTRUCTION_SET = "arm"
+THUMB_INTERWORKING = "no"
 
 ###############################################################
 # module configs specific to this kernel
@@ -24,6 +32,8 @@ module_autoload_g_ether = "g_ether"
 module_autoload_snd-soc-neo1973-wm8753 = "snd-soc-neo1973-wm8753"
 # audio (GTA02)
 module_autoload_snd-soc-neo1973-gta02-wm8753 = "snd-soc-neo1973-gta02-wm8753"
+# audio (GTA03)
+module_autoload_snd-soc-neo1973-gta02-wm8753 = ""
 # sd/mmc
 module_autoload_s3cmci = "s3cmci"
 

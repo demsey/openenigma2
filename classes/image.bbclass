@@ -2,11 +2,31 @@ inherit rootfs_${IMAGE_PKGTYPE}
 
 LICENSE = "MIT"
 PACKAGES = ""
-RDEPENDS += "${IMAGE_INSTALL}"
+
+#
+# udev, devfsd, busybox-mdev (from busybox) or none
+#
+IMAGE_DEV_MANAGER ?= "${@base_contains("MACHINE_FEATURES", "kernel26",  "udev","",d)} "
+#
+# sysvinit, upstart
+#
+IMAGE_INIT_MANAGER ?= "sysvinit sysvinit-pidof"
+IMAGE_INITSCRIPTS ?= "initscripts"
+#
+# tinylogin, getty
+#
+IMAGE_LOGIN_MANAGER ?= "tinylogin"
+
+IMAGE_VARS = "${IMAGE_INITSCRIPTS} \
+${IMAGE_DEV_MANAGER} \
+${IMAGE_INIT_MANAGER} \
+${IMAGE_LOGIN_MANAGER} "
+
+RDEPENDS += "${IMAGE_INSTALL} ${IMAGE_VARS}"
 
 # "export IMAGE_BASENAME" not supported at this time
 IMAGE_BASENAME[export] = "1"
-export PACKAGE_INSTALL ?= "${IMAGE_INSTALL}"
+export PACKAGE_INSTALL ?= "${IMAGE_INSTALL} ${IMAGE_VARS}"
 
 # We need to recursively follow RDEPENDS and RRECOMMENDS for images
 do_rootfs[recrdeptask] += "do_deploy do_populate_staging"

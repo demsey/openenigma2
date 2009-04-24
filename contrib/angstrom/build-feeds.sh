@@ -83,12 +83,14 @@ do
                       bonjour \
                       camera-assistant \
                       cdparanoia \
+                      cdstatus \
                       checkers \
                       cherokee \
                       claws-mail \
                       connman \
                       connman-gnome \
                       contacts \
+                      cron \
                       cvs \
                       cwiid \
                       dates \
@@ -136,6 +138,7 @@ do
                       gimp \
                       glider \
                       gmp \
+                      gmpc \
                       gnome-games \
                       gnome-mplayer \
                       gnome-panel \
@@ -172,6 +175,7 @@ do
                       iptables \
                       irssi \
                       iscsi-target \
+                      ivman \
                       jamvm \
                       kismet \
                       konqueror-embedded \
@@ -181,6 +185,7 @@ do
                       lighttpd \
                       links-x11 \
                       lirc \
+                      lowpan-utils \
                       m4 \
                       madplay \
                       mahjongg \
@@ -231,10 +236,12 @@ do
                       pipeman \
                       pkgconfig \
                       places \
+                      pmount \
                       pocketcellar \
                       povray \
                       prboom \
                       prelink \
+                      proftpd \
                       pushover \
                       python \
                       python-pybluez \
@@ -276,6 +283,7 @@ do
                       task-opie-apps \
                       task-opie-games \
                       task-proper-tools \
+                      task-xqtlauncher \
                       tasks \
                       texinfo \
                       thttpd \
@@ -295,10 +303,13 @@ do
                       viking \
                       vlc \
                       vpnc \
+                      w3cam \
                       wifi-radar \
                       win4 \
+                      wireshark \
                       wpa-gui \
                       wt \
+                      wt3 \
                       x11vnc \
                       xf86-input-evdev \
                       xf86-input-keyboard \
