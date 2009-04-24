@@ -27,7 +27,7 @@ EXTRA_OECONF = "\
   --disable-xml-docs \
   --disable-doxygen-docs \
   --with-xml=expat \
-  --with-dbus-default-reply-timeout=60000 \
+  --with-dbus-default-reply-timeout=200000 \
 "
 
 EXTRA_OECONF += " ${@base_conditional('DISTRO', 'opendreambox', '--without-x', '--with-x', d)}"

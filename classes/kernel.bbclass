@@ -64,6 +64,10 @@ export CMDLINE_CONSOLE = "console=${@bb.data.getVar("KERNEL_CONSOLE",d,1) or "tt
 KERNEL_VERSION = "${@get_kernelversion('${S}')}"
 KERNEL_MAJOR_VERSION = "${@get_kernelmajorversion('${KERNEL_VERSION}')}"
 
+# A machine.conf or local.conf can increase MACHINE_KERNEL_PR to force
+# rebuilds for kernel and external modules
+PR = "${MACHINE_KERNEL_PR}"
+
 KERNEL_LOCALVERSION ?= ""
 
 # kernels are generally machine specific
@@ -114,7 +118,7 @@ kernel_do_stage() {
 	mkdir -p ${STAGING_KERNEL_DIR}/include/pcmcia
 	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
 
-	for entry in drivers/crypto include/media include/acpi include/sound include/video include/scsi; do
+	for entry in drivers/crypto drivers/media include/media include/acpi include/sound include/video include/scsi; do
 		if [ -d $entry ]; then
 			mkdir -p ${STAGING_KERNEL_DIR}/$entry
 			cp -fR $entry/* ${STAGING_KERNEL_DIR}/$entry/

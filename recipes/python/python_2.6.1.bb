@@ -2,7 +2,7 @@ require python.inc
 DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl tk zlib"
 DEPENDS_opendreambox = "python-native db gdbm openssl readline sqlite3 zlib"
 DEPENDS_sharprom = "python-native db readline zlib gdbm openssl"
-PR = "ml4"
+PR = "ml5"
 
 SRC_URI = "\
   http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \

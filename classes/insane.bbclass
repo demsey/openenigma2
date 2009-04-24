@@ -31,6 +31,9 @@ PACKAGEFUNCS += " do_package_qa "
 #           TARGET_OS  TARGET_ARCH   MACHINE, OSABI, ABIVERSION, Little Endian, 32bit?
 def package_qa_get_machine_dict():
     return {
+            "darwin9" : { 
+                        "arm" :       (40,     0,    0,          True,          True),
+                      },
             "linux" : { 
                         "arm" :       (40,    97,    0,          True,          True),
                         "armeb":      (40,    97,    0,          False,         True),
@@ -171,6 +174,7 @@ def package_qa_get_elf(path, bits32):
 # 6 - .pc contains reference to /usr/include or workdir
 # 7 - the desktop file is not valid
 # 8 - .la contains reference to the workdir
+# 9 - LDFLAGS ignored
 
 def package_qa_clean_path(path,d):
     """ Remove the common prefix from the path. In this case it is the TMPDIR"""
@@ -183,7 +187,7 @@ def package_qa_make_fatal_error(error_class, name, path,d):
 
     TODO: Load a whitelist of known errors
     """
-    return not error_class in [0, 5, 7, 9]
+    return not error_class in [0, 5, 7]
 
 def package_qa_write_error(error_class, name, path, d):
     """
@@ -343,6 +347,8 @@ def package_qa_hash_style(path, name, d, elf):
     gnu_hash = "--hash-style=gnu" in bb.data.getVar('LDFLAGS', d, True)
     if not gnu_hash:
         gnu_hash = "--hash-style=both" in bb.data.getVar('LDFLAGS', d, True)
+    if not gnu_hash:
+        return True
 
     objdump = bb.data.getVar('OBJDUMP', d, True)
     env_path = bb.data.getVar('PATH', d, True)

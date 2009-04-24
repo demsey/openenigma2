@@ -3,7 +3,7 @@ SECTION = "base"
 DESCRIPTION = "The man page suite, including man, apropos, \
 and whatis consists of programs that are used to read most \
 of the documentation available on a Linux system."
-PR = "r3"
+PR = "r4"
 RDEPENDS_${PN} = "less groff"
 
 # Note: The default man.conf uses wrong names for GNU eqn and troff,
@@ -14,13 +14,14 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/man/man-${PV}.tar.bz2 \
 # Disable parallel make or it tries to link objects before they are built
 PARALLEL_MAKE = ""
 
-EXTRA_OEMAKE = ""
+EXTRA_OEMAKE = 'LFDLAGS="${LDFLAGS}"'
 GS = "-DGREPSILENT=\"q\""
 DEFS = "-DUSG -DDO_COMPRESS ${GS}"
 
 do_configure() {
 	# this doesn't support cross compilation, so it generates a
 	# bogus configuration
+	sed -i /^LDFLAGS/d src/Makefile.in
 	./configure -d -confdir ${sysconfdir}
 }
 
@@ -33,7 +34,7 @@ do_compile() {
 
 do_install() {
 	oe_runmake 'PREFIX=${D}' 'DEFS=${DEFS}' install
-	install -m 644 ${FILESDIR}/man.conf ${D}/etc
+	install -m 644 ${WORKDIR}/man.conf ${D}/etc
 }
 
 FILES_${PN} = "${bindir}/* ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \

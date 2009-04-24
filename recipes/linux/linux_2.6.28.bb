@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r6"
+PR = "r8"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -9,7 +9,6 @@ DEFAULT_PREFERENCE_at91sam9263ek = "28"
 DEFAULT_PREFERENCE_ronetix-pm9263 = "28"
 DEFAULT_PREFERENCE_stb225 = "28"
 DEFAULT_PREFERENCE_collie = "1"
-DEFAULT_PREFERENCE_tosa = "1"
 DEFAULT_PREFERENCE_gamecube = "1"
 DEFAULT_PREFERENCE_wrap = "1"
 

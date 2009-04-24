@@ -1,10 +1,6 @@
-require zope_${PV}.bb
-inherit native
+inherit native distutils-native-base
 
-DEPENDS = "python-native"
-
-inherit distutils-base
+require zope.inc
 
 export BUILD_SYS
 export HOST_SYS
-

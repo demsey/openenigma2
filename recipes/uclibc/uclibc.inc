@@ -2,11 +2,6 @@ DESCRIPTION = "C library for embedded systems"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
-
-# I added the line below before and someone removed, but without fixing thumb support
-# So please leave this in till thumb support has REALLY been fixed. ktnxbye, koen
-ARM_INSTRUCTION_SET = "arm"
-
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
 # and our build is not a uclibc one, and we skip a glibc one if our build
@@ -36,6 +31,8 @@ INHIBIT_DEFAULT_DEPS = "1"
 PARALLEL_MAKE = ""
 
 PACKAGES =+ "ldd uclibc-utils-dbg uclibc-utils uclibc-gconv uclibc-thread-db"
+
+LEAD_SONAME = "libc.so"
 
 # The last line (gdb and lib1) is for uclinux-uclibc builds 
 uclibc_baselibs = "/lib/libcrypt*.so* /lib/libdl*.so \
@@ -211,7 +208,7 @@ do_install() {
 		rmdir ${D}/usr/bin
 	fi
 
-        oe_runmake utils
+        oe_runmake "SSP_ALL_CFLAGS=${TARGET_LINK_HASH_STYLE}" utils
         oe_runmake STRIPTOOL=true PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
                 install_utils
 	
