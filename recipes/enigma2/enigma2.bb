@@ -10,10 +10,11 @@ RDEPENDS = "python-codecs python-core python-datetime python-elementtree \
 	python-stringold python-threading python-xml gst-plugin-decodebin \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
 	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
-	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
-	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-mpegdemux \
-	gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse gst-plugin-subparse \
-	glibc-gconv-iso8859-15 \
+	gst-plugin-wavparse python-netclient gst-plugin-mpegstream \
+	gst-plugin-selector gst-plugin-flac gst-plugin-dvbmediasink \
+	gst-plugin-mpegdemux gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse \
+	gst-plugin-subparse gst-plugin-decodebin2 gst-plugin-queue2 \
+	gst-plugin-app glibc-gconv-iso8859-15 \
 	${@base_contains("MACHINE_FEATURES", "alsa", \
 		"gst-plugin-alsa alsa-conf", "gst-plugin-ossaudio", d)}"
 
@@ -40,8 +41,8 @@ export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090401"
-SRCREV = "d892321813a7129f777ab69d05afb8a38cb737b0"
+SRCDATE = "20090424"
+SRCREV = "019ba406ed5ba46782951d501ed2d4c0a96e6096"
 
 # if you want experimental, use:
 REL_MAJOR="2"
