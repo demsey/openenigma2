@@ -3,7 +3,6 @@
 #@NAME: Angstrom <http://www.angstrom-distribution.org>
 #@DESCRIPTION: The Linux Distribution for Kernel 2.6 based devices
 #@MAINTAINER: Koen Kooi <koen@openembedded.org>
-#@MAINTAINER: Michael 'Mickey' Lauer <mickey@Vanille.de>
 #@--------------------------------------------------------------------
 
 DISTRO_VERSION = "2007.11RC3"
@@ -157,7 +156,6 @@ PREFERRED_PROVIDER_virtual/db           ?= "db"
 PREFERRED_PROVIDER_virtual/db-native    ?= "db-native"
 PREFERRED_PROVIDER_virtual/libsdl       ?= "libsdl-x11"
 PREFERRED_PROVIDER_virtual/libx11       ?= "libx11"
-PREFERRED_PROVIDER_virtual/libxine      ?= "libxine-x11"
 PREFERRED_PROVIDER_virtual/xserver      ?= "xserver-kdrive"
 
 # Others:

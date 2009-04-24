@@ -212,7 +212,8 @@ autotools_stage_all() {
 		for i in $las
 		do
 			sed -e 's/^installed=yes$/installed=no/' \
-			    -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${STAGING_LIBDIR}/\1,g' \
+			    -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*.la\),${STAGING_LIBDIR}/\1,g' \
+			    -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${STAGING_LIBDIR},g' \
 			    -e "/^dependency_libs=/s,\([[:space:]']\)${libdir},\1${STAGING_LIBDIR},g" \
 			    -i ${STAGE_TEMP}/${libdir}/$i
 		done
@@ -229,6 +230,10 @@ autotools_stage_all() {
 		if [ -e ${STAGE_TEMP}/${libdir}/pkgconfig/ ] ; then
 			echo "cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/"
 			cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/
+		fi
+		if [ -e ${STAGE_TEMP}/${datadir}/pkgconfig/ ] ; then
+			echo "cp -f ${STAGE_TEMP}/${datadir}/pkgconfig/*.pc ${STAGING_DATADIR}/pkgconfig/"
+			cp -f ${STAGE_TEMP}/${datadir}/pkgconfig/*.pc ${STAGING_DATADIR}/pkgconfig/
 		fi
 	fi
 	rm -rf ${STAGE_TEMP}/${mandir} || true

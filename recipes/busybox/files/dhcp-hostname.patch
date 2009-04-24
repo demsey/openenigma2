@@ -1,0 +1,25 @@
+diff -Naur busybox-1.11.3/networking/udhcp/dhcpc.c busybox-1.11.3_dhcp-hostname/networking/udhcp/dhcpc.c
+--- busybox-1.11.3/networking/udhcp/dhcpc.c	2008-06-25 14:51:14.000000000 +0200
++++ busybox-1.11.3_dhcp-hostname/networking/udhcp/dhcpc.c	2008-12-05 11:41:36.000000000 +0100
+@@ -145,6 +145,7 @@
+ 	struct timeval tv;
+ 	struct dhcpMessage packet;
+ 	fd_set rfds;
++	char hostbuf[256];      /* SUSv2: hostnames are <= 255 bytes */
+ 
+ #if ENABLE_GETOPT_LONG
+ 	static const char udhcpc_longopts[] ALIGN1 =
+@@ -210,6 +211,13 @@
+ 	USE_FEATURE_UDHCP_PORT(CLIENT_PORT = 68;)
+ 	client_config.interface = "eth0";
+ 	client_config.script = DEFAULT_SCRIPT;
++	if (gethostname (hostbuf, sizeof (hostbuf)) == 0) {
++		int len = strlen (hostbuf);
++		client_config.hostname = xmalloc (len + 2);
++		client_config.hostname[OPT_CODE] = DHCP_HOST_NAME;
++		client_config.hostname[OPT_LEN] = len;
++		strncpy(client_config.hostname + 2, hostbuf, len);
++	}
+ 
+ 	/* Parse command line */
+ 	/* Cc: mutually exclusive; O: list; -T,-t,-A take numeric param */

@@ -1,0 +1,42 @@
+diff -Naur busybox-1.11.3/console-tools/dumpkmap.c busybox-1.11.3_keymap-endianess/console-tools/dumpkmap.c
+--- busybox-1.11.3/console-tools/dumpkmap.c	2008-06-25 14:51:18.000000000 +0200
++++ busybox-1.11.3_keymap-endianess/console-tools/dumpkmap.c	2008-12-05 11:36:21.000000000 +0100
+@@ -10,6 +10,7 @@
+ /* no options, no getopt */
+ 
+ #include "libbb.h"
++#include <endian.h>
+ 
+ /* From <linux/kd.h> */
+ struct kbentry {
+@@ -56,6 +57,9 @@
+ 						(char *)&ke.kb_table,
+ 						&ke.kb_value)
+ 				) {
++#if __BYTE_ORDER == __LITTLE_ENDIAN
++					ke.kb_value = ((ke.kb_value&0xFF) << 8) | ((ke.kb_value&0xFF00) >> 8);
++#endif
+ 					write(STDOUT_FILENO, (void*)&ke.kb_value, 2);
+ 				}
+ 			}
+diff -Naur busybox-1.11.3/console-tools/loadkmap.c busybox-1.11.3_keymap-endianess/console-tools/loadkmap.c
+--- busybox-1.11.3/console-tools/loadkmap.c	2008-06-25 14:51:18.000000000 +0200
++++ busybox-1.11.3_keymap-endianess/console-tools/loadkmap.c	2008-12-05 11:36:53.000000000 +0100
+@@ -9,6 +9,7 @@
+  */
+ 
+ #include "libbb.h"
++#include <endian.h>
+ 
+ #define BINARY_KEYMAP_MAGIC "bkeymap"
+ 
+@@ -49,6 +50,9 @@
+ 			for (j = 0; j < NR_KEYS; j++) {
+ 				ke.kb_index = j;
+ 				ke.kb_table = i;
++#if __BYTE_ORDER == __LITTLE_ENDIAN
++				ibuff[j] = ((ibuff[j]&0xFF) << 8) | ((ibuff[j]&0xFF00) >> 8);
++#endif
+ 				ke.kb_value = ibuff[j];
+ 				ioctl(fd, KDSKBENT, &ke);
+ 			}

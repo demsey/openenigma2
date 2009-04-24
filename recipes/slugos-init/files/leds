@@ -1,0 +1,276 @@
+#!/bin/sh
+# leds
+#
+# utilities to manipulate the settings of the system leds
+#
+# load the utility functions unless this script is being called
+# just to load its own functions.
+case "$1" in
+leds)	;;
+*)	. /etc/default/rcS
+	. /etc/default/functions;;
+esac
+
+#
+# led_set led-dir off|on|slow|fast|panic|blink|flash|*
+#  set the given LED (expressed as a directory) to the 
+#  given status.
+#
+led_set(){
+	local setting
+	# expect led-dir state
+	if test -d "$1"
+	then
+		setting="$2"
+		case "$setting" in
+		off|on)		echo -n none
+
+				case "$setting" in
+				on)	echo -n 255;;
+				off)	echo -n 0;;
+				esac >"$1/brightness";;
+
+		slow|fast|panic|blink|flash)
+				modprobe ledtrig-timer > /dev/null 2>&1 || true
+
+				echo -n timer
+
+				case "$setting" in
+				flash)	echo -n 60;;
+				blink)	echo -n 540;;
+				slow)	echo -n 500;;
+				fast)	echo -n 1500;;
+				panic)	echo -n 3000;;
+				esac >"$1/delay_on"
+
+				case "$setting" in
+				flash)	echo -n 540;;
+				blink)	echo -n 60;;
+				slow)	echo -n 500;;
+				fast)	echo -n 1500;;
+				panic)	echo -n 3000;;
+				esac >"$1/delay_off";;
+
+		*)		echo -n "$setting";;
+		esac >"$1/trigger"
+	else
+		echo "leds: $1: no such directory" >&2
+		return 1
+	fi
+}
+
+#
+# sysled [boot] system|user|singleuser|shutdown [error|panic|*]
+#  set the system LEDs to indicate the given boot state, the function
+#  will temporarily mount sysfs is necessary (using /mnt)
+#
+# the cases for two LEDs (ready+status)
+sysled_readystatus(){
+	local ready status
+	# expect dir [boot](system|user) [error|panic]
+	case "$3" in
+	error)	ready=fast;	status=off;;
+	panic)	ready=fast;	status=fast;;
+	*)	case "$2" in
+		bootsystem)	ready=slow;	status=slow;;
+		system)		ready=on;	status=on;;
+		bootuser)	ready=on;	status=slow;;
+		user)		ready=user;	status=off;;
+		bootsingleuser)	ready=on;	status=slow;;
+		singleuser)	ready=user;	status=user;;
+		bootshutdown)	ready=on;	status=slow;;
+		shutdown)	ready=slow;	status=on;;
+		esac;;
+	esac
+
+	led_set "$1/$ready_led_name" "$ready"
+	led_set "$1/$status_led_name" "$status"
+}
+#
+# the cases for one LED (just ready)
+sysled_ready(){
+	local ready
+	# expect dir [boot](system|user) [error|panic]
+	case "$3" in
+	error)	ready=fast;;
+	panic)	ready=panic;;
+	*)	case "$2" in
+		bootsystem)	ready=flash;;
+		system)		ready=blink;;
+		bootuser)	ready=slow;;
+		user)		ready=user;;
+		bootsingleuser)	ready=flash;;
+		singleuser)	ready=blink;;
+		bootshutdown)	ready=slow;;
+		shutdown)	ready=blink;;
+		esac;;
+	esac
+
+	led_set "$1/$ready_led_name" "$ready"
+}
+#
+# the cases for one blue flashing LED (just power)
+sysled_power(){
+	local power
+	# expect dir [boot](system|user) [error|panic]
+	case "$3" in
+	error)	power=off;;
+	panic)	power=off;;
+	*)	case "$2" in
+		bootsystem)	power=off;; # blinking
+		system)		power=off;; # blinking
+		bootuser)	power=on;;
+		user)		power=on;;
+		bootsingleuser)	power=off;; # blinking
+		singleuser)	power=off;; # blinking
+		bootshutdown)	power=off;; # blinking
+		shutdown)	power=off;; # blinking
+		esac;;
+	esac
+
+	led_set "$1/$power_led_name" "$power"
+}
+#
+sysled(){
+	local mp st boot isst
+	mp=/sys
+	st=1
+	boot=
+
+	# validate arguments
+	if test "$1" = boot
+	then
+		shift
+		boot=boot
+	fi
+	case "$1" in
+	system|user|singleuser|shutdown) :;;
+	*)	echo "sysled: unknown option '$1'" >&2
+		echo " usage: sysled [boot] system|user|singleuser|shutdown [error|panic|*]" >&2
+		return 1;;
+	esac
+
+	if test ! -d "$mp/class/leds" && mount -t sysfs sysfs /mnt
+	then
+		mp=/mnt
+	fi
+	#
+	# check for the 'ready' LED - otherwise check for a 'power' LED
+	if test -d "$mp/class/leds/$ready_led_name"
+	then
+		if test -d "$mp/class/leds/$status_led_name"
+		then
+			sysled_readystatus "$mp/class/leds" $boot"$@"
+		else
+			sysled_ready "$mp/class/leds" $boot"$@"
+		fi
+	else
+		if test -d "$mp/class/leds/$power_led_name"
+		then
+			sysled_power "$mp/class/leds" $boot"$@"
+		fi
+	fi
+	#
+	# clean up
+	test "$mp" = /mnt && umount /mnt
+	return "$st"
+}
+
+#
+# beep {arguments}
+#  emit a beep
+#  does nothing if there is no beep executable, is very
+#  quiet in the presence of errors
+beep(){
+	local arg devices module
+	arg=
+	test "$1" = beep && shift
+	if test -x /bin/beep
+	then
+		devices=`ls -d /sys/class/input/event* 2>/dev/null`
+		for device in $devices
+		do
+			module=`egrep PHYSDEVDRIVER $device'/uevent' | cut -d '=' -f 2`
+			if test "$module" = "ixp4xx-beeper";
+			then
+				devnode=`echo "$device" | cut -d '/' -f 5`
+				arg="-e /dev/input/"$devnode
+				break
+			fi
+		done
+		# If udev hasn't run, then /dev/input doesn't exist, so
+		# fallback to /dev/buzzer if possible.
+		if test -e /dev/buzzer -a ! -d /dev/input; then
+			arg="-e /dev/buzzer"
+		fi
+		/bin/beep $arg "$@" 2>/dev/null
+	fi
+	return 0
+}
+
+#
+# leds_help
+#  be helpful
+# leds <led> off|on|slow|fast|panic|blink|flash|user|*
+# leds [boot] system|user|singleuser|shutdown [error|panic|*]
+leds_help(){
+	echo "leds: change the setting of the LEDs" >&2
+	echo " usage:" >&2
+	echo "  leds [boot] system|user|singleuser|shutdown [error|panic|*]" >&2
+	echo "    set leds during system boot to indicate a particular boot" >&2
+	echo "    state.  'boot' means that the system is transitioning to" >&2
+	echo "    the new state.  'error' or 'panic' means a (potentially)" >&2
+	echo "    recoverable error or an unrecoverable error ('panic') has" >&2
+	echo "    occured." >&2
+	echo "  <led> off|on|slow|fast|panic|blink|flash" >&2
+	echo "    set the named led to the given display." >&2
+	echo "  beep {args}" >&2
+	echo "    if possible cause the machine to emit a beep" >&2
+}
+
+# Define the LED names based on kernel version.
+version=$(uname -r | cut -c -6)
+if [ "$version" \< "2.6.25" ]; then
+	status_led_name="status"
+	ready_led_name="ready"
+	power_led_name="power"
+else
+	case "$(machine)" in
+	dsmg600)
+		status_led_name="none"
+		ready_led_name="none"
+		power_led_name="dsmg600:green:power"
+		;;
+	fsg3)
+		status_led_name="none"
+		ready_led_name="fsg:blue:sync"
+		power_led_name="none"
+		;;
+	nas100d)
+		status_led_name="none"
+		ready_led_name="none"
+		power_led_name="nas100d:blue:power"
+		;;
+	nslu2)
+		status_led_name="nslu2:red:status"
+		ready_led_name="nslu2:green:ready"
+		power_led_name="none"
+		;;
+	esac
+fi
+
+# the real command, if required
+case "$1" in
+boot|system|user|singleuser|shutdown)
+	sysled "$@";;
+
+beep)	beep "$@";;
+
+""|-*)	leds_help;;
+help)	leds_help;;
+
+leds)	# just load the functions
+	;;
+
+*)	led_set /sys/class/leds/"$@"
+esac

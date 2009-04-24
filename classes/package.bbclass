@@ -293,16 +293,6 @@ python package_do_split_locales() {
 		bb.data.setVar('DESCRIPTION_' + pkg, '%s translation for %s' % (l, pn), d)
 
 	bb.data.setVar('PACKAGES', ' '.join(packages), d)
-
-	# Disabled by RP 18/06/07
-	# Wildcards aren't supported in debian
-	# They break with ipkg since glibc-locale* will mean that 
-	# glibc-localedata-translit* won't install as a dependency
-	# for some other package which breaks meta-toolchain
-	# Probably breaks since virtual-locale- isn't provided anywhere
-	#rdep = (bb.data.getVar('RDEPENDS_%s' % mainpkg, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "").split()
-	#rdep.append('%s-locale*' % pn)
-	#bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
 }
 
 python populate_packages () {
@@ -394,8 +384,12 @@ python populate_packages () {
 			globbed = glob.glob(file)
 			if globbed:
 				if [ file ] != globbed:
-					files += globbed
-					continue
+					if not file in globbed:
+						files += globbed
+						continue
+					else:
+						globbed.remove(file)
+						files += globbed
 			if (not os.path.islink(file)) and (not os.path.exists(file)):
 				continue
 			if file[-4:] == '.pyc':
@@ -495,6 +489,11 @@ python emit_pkgdata() {
 		val = bb.data.getVar('%s_%s' % (var, pkg), d, 1)
 		if val:
 			f.write('%s_%s: %s\n' % (var, pkg, encode(val)))
+ 			return
+ 		val = bb.data.getVar('%s' % (var), d, 1)
+ 		if val:
+ 			f.write('%s: %s\n' % (var, encode(val)))
+ 		return
 
 	packages = bb.data.getVar('PACKAGES', d, True)
 	pkgdatadir = bb.data.getVar('PKGDATA_DIR', d, True)
@@ -515,6 +514,7 @@ python emit_pkgdata() {
 		subdata_file = pkgdatadir + "/runtime/%s" % pkg
 		sf = open(subdata_file, 'w')
 		write_if_exists(sf, pkg, 'PN')
+		write_if_exists(sf, pkg, 'PV')
 		write_if_exists(sf, pkg, 'PR')
 		write_if_exists(sf, pkg, 'DESCRIPTION')
 		write_if_exists(sf, pkg, 'RDEPENDS')

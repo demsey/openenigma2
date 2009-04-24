@@ -64,6 +64,10 @@ export CMDLINE_CONSOLE = "console=${@bb.data.getVar("KERNEL_CONSOLE",d,1) or "tt
 KERNEL_VERSION = "${@get_kernelversion('${S}')}"
 KERNEL_MAJOR_VERSION = "${@get_kernelmajorversion('${KERNEL_VERSION}')}"
 
+# A machine.conf or local.conf can increase MACHINE_KERNEL_PR to force
+# rebuilds for kernel and external modules
+PR = "${MACHINE_KERNEL_PR}"
+
 KERNEL_LOCALVERSION ?= ""
 
 # kernels are generally machine specific
@@ -114,7 +118,7 @@ kernel_do_stage() {
 	mkdir -p ${STAGING_KERNEL_DIR}/include/pcmcia
 	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
 
-	for entry in drivers/crypto include/media include/acpi include/sound include/video include/scsi; do
+	for entry in drivers/crypto drivers/media include/media include/acpi include/sound include/video include/scsi; do
 		if [ -d $entry ]; then
 			mkdir -p ${STAGING_KERNEL_DIR}/$entry
 			cp -fR $entry/* ${STAGING_KERNEL_DIR}/$entry/
@@ -295,12 +299,14 @@ python populate_packages_prepend () {
 	def extract_modinfo(file):
 		import tempfile, os, re
 		tempfile.tempdir = bb.data.getVar("WORKDIR", d, 1)
-		tmpfile = tempfile.mkstemp()[1]
+		tf = tempfile.mkstemp()
+		tmpfile = tf[1]
 		cmd = "PATH=\"%s\" %sobjcopy -j .modinfo -O binary %s %s" % (bb.data.getVar("PATH", d, 1), bb.data.getVar("HOST_PREFIX", d, 1) or "", file, tmpfile)
 		os.system(cmd)
 		f = open(tmpfile)
 		l = f.read().split("\000")
 		f.close()
+		os.close(tf[0])
 		os.unlink(tmpfile)
 		exp = re.compile("([^=]+)=(.*)")
 		vals = {}
