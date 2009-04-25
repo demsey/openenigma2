@@ -3,7 +3,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "ZPL"
 
-inherit distutils
+inherit setuptools
 
 PR = "r1"
 
