@@ -12,9 +12,6 @@ SRC_URI += "file://configure"
 
 S = "${WORKDIR}/trunk"
 
-# We use an older version in opendreambox but the fix from r196 is important
-SRC_URI_append_opendreambox = " file://r196.diff;patch=1"
-
 inherit autotools pkgconfig
 
 do_install_prepend() {
