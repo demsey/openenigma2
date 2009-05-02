@@ -41,8 +41,8 @@ export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090424"
-SRCREV = "019ba406ed5ba46782951d501ed2d4c0a96e6096"
+SRCDATE = "20090501"
+SRCREV = "842c6e0f841893ff2dfe5bac10316a341a42521e"
 
 # if you want experimental, use:
 REL_MAJOR="2"
@@ -59,8 +59,6 @@ PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 SRC_URI = "git://git.opendreambox.org/git/enigma2.git;protocol=git;branch=${BRANCH} \
 	file://enigma2.sh \
 	file://tuxtxt_caching.patch;patch=1;pnum=1"
-
-SRC_URI_append_dm7025 = " file://enigma2-disable-hardware-mp3-decode.patch;patch=1;pnum=1"
 
 S = "${WORKDIR}/git"
 
