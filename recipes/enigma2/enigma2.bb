@@ -14,7 +14,8 @@ RDEPENDS = "python-codecs python-core python-datetime python-elementtree \
 	gst-plugin-selector gst-plugin-flac gst-plugin-dvbmediasink \
 	gst-plugin-mpegdemux gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse \
 	gst-plugin-subparse gst-plugin-decodebin2 gst-plugin-queue2 \
-	gst-plugin-app glibc-gconv-iso8859-15 \
+	gst-plugin-app gst-plugin-apetag gst-plugin-icydemux \
+	gst-plugin-audioresample glibc-gconv-iso8859-15 \
 	${@base_contains("MACHINE_FEATURES", "alsa", \
 		"gst-plugin-alsa alsa-conf", "gst-plugin-ossaudio", d)}"
 
@@ -41,8 +42,8 @@ export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090501"
-SRCREV = "842c6e0f841893ff2dfe5bac10316a341a42521e"
+SRCDATE = "20090514"
+SRCREV = "59029b9605036df707b2ae5f3a22fb38a054e358"
 
 # if you want experimental, use:
 REL_MAJOR="2"
