@@ -12,5 +12,6 @@ EXTRA_OECONF += "--with-audioresample-format=int"
 # if alsa has been built and is present.  You will
 # not get an error if this is not present, just 
 # a missing alsa plugin
-DEPENDS += "libtheora alsa-lib freetype"
+DEPENDS += "libtheora alsa-lib"
+# libsm virtual/libx11 freetype gnome-vfs libxv"
 
