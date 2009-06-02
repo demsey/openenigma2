@@ -31,7 +31,8 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	file://linux-2.6.12-brcm-fix-minipci.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-fixup-memsize.patch;patch=1;pnum=1 \
 	http://trappist.elis.ugent.be/~mronsse/cdfs/download/cdfs-2.6.12.tar.bz2 \
-	file://linux-2.6-trailing-whitespaces-in-params.patch;patch=1"
+	file://linux-2.6-trailing-whitespaces-in-params.patch;patch=1 \
+	file://linuxmips-2.6.12-gcc433-compile-fix.patch;patch=1;pnum=1"
 
 S = "${WORKDIR}/stblinux-2.6.12"
 
