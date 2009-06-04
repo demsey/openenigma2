@@ -1,5 +1,6 @@
 require samba.inc
 require samba-basic.inc
+LICENSE = "GPLv3"
 
 # 3.3.0 and newer will upgrade your tdb database to a
 # new version that you can not downgrade to use with older
@@ -10,9 +11,9 @@ DEFAULT_PREFERENCE = "-1"
 SRC_URI += "file://configure-3.3.0.patch;patch=1 \
             file://config-h.patch;patch=1 \
             file://mtab.patch;patch=1 \
-	        "
+            file://tdbheaderfix.patch;patch=1 "
 
-PR = "r2"
+PR = "r3"
 
 EXTRA_OECONF += "\
 	SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes \

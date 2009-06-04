@@ -219,7 +219,7 @@ def package_qa_write_error(error_class, name, path, d):
 
 def package_qa_handle_error(error_class, error_msg, name, path, d):
     import bb
-    bb.error("QA Issue: %s" % error_msg)
+    bb.error("QA Issue with %s: %s" % (name, error_msg))
     package_qa_write_error(error_class, name, path, d)
     return not package_qa_make_fatal_error(error_class, name, path, d)
 
@@ -250,20 +250,34 @@ def package_qa_check_rpath(file,name,d, elf):
 
     return sane
 
-def package_qa_check_devdbg(path, name,d, elf):
+def package_qa_check_dev(path, name,d, elf):
     """
-    Check for debug remains inside the binary or
-    non dev packages containing
+    Check for ".so" library symlinks in non-dev packages
     """
 
     import bb, os
     sane = True
+
+    # SDK packages are special.
+    for s in ['sdk', 'canadian-sdk']:
+        if bb.data.inherits_class(s, d):
+            return True
 
     if not "-dev" in name:
         if path[-3:] == ".so" and os.path.islink(path):
             error_msg = "non -dev package contains symlink .so: %s path '%s'" % \
                      (name, package_qa_clean_path(path,d))
             sane = package_qa_handle_error(0, error_msg, name, path, d)
+
+    return sane
+
+def package_qa_check_dbg(path, name,d, elf):
+    """
+    Check for ".debug" files or directories outside of the dbg package
+    """
+
+    import bb, os
+    sane = True
 
     if not "-dbg" in name:
         if '.debug' in path:
@@ -485,7 +499,7 @@ def package_qa_check_rdepends(pkg, workdir, d):
 # The PACKAGE FUNC to scan each package
 python do_package_qa () {
     import bb
-    bb.note("DO PACKAGE QA")
+    bb.debug(2, "DO PACKAGE QA")
     workdir = bb.data.getVar('WORKDIR', d, True)
     packages = bb.data.getVar('PACKAGES',d, True)
 
@@ -493,17 +507,18 @@ python do_package_qa () {
     if not packages:
         return
 
-    checks = [package_qa_check_rpath, package_qa_check_devdbg,
+    checks = [package_qa_check_rpath, package_qa_check_dev,
               package_qa_check_perm, package_qa_check_arch,
-              package_qa_check_desktop, package_qa_hash_style]
+              package_qa_check_desktop, package_qa_hash_style,
+              package_qa_check_dbg]
     walk_sane = True
     rdepends_sane = True
     for package in packages.split():
         if bb.data.getVar('INSANE_SKIP_' + package, d, True):
-            bb.note("Package: %s (skipped)" % package)
+            bb.note("package %s skipped" % package)
             continue
 
-        bb.note("Checking Package: %s" % package)
+        bb.debug(1, "Checking Package: %s" % package)
         path = "%s/install/%s" % (workdir, package)
         if not package_qa_walk(path, checks, package, d):
             walk_sane  = False
@@ -512,14 +527,14 @@ python do_package_qa () {
 
     if not walk_sane or not rdepends_sane:
         bb.fatal("QA run found fatal errors. Please consider fixing them.")
-    bb.note("DONE with PACKAGE QA")
+    bb.debug(2, "DONE with PACKAGE QA")
 }
 
 
 # The Staging Func, to check all staging
 addtask qa_staging after do_populate_staging before do_build
 python do_qa_staging() {
-    bb.note("QA checking staging")
+    bb.debug(2, "QA checking staging")
 
     if not package_qa_check_staged(bb.data.getVar('STAGING_LIBDIR',d,True), d):
         bb.fatal("QA staging was broken by the package built above")
@@ -528,7 +543,7 @@ python do_qa_staging() {
 # Check broken config.log files
 addtask qa_configure after do_configure before do_compile
 python do_qa_configure() {
-    bb.note("Checking sanity of the config.log file")
+    bb.debug(1, "Checking sanity of the config.log file")
     import os
     for root, dirs, files in os.walk(bb.data.getVar('WORKDIR', d, True)):
         statement = "grep 'CROSS COMPILE Badness:' %s > /dev/null" % \

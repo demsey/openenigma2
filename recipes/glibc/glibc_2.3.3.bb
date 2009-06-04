@@ -1,6 +1,6 @@
 require glibc.inc
 
-PR = "r16"
+PR = "r17"
 
 DEFAULT_PREFERENCE_sh3 = "-99"
 
@@ -41,12 +41,18 @@ DEPENDS_catchsegv = "libsegfault"
 FILES_glibc-pcprofile = "/lib/libpcprofile.so"
 FILES_glibc-thread-db = "/lib/libthread_db*"
 FILES_localedef = "${bindir}/localedef"
-RPROVIDES_glibc-dev += "libc-dev"
+RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
+RPROVIDES_${PN}-dev += "libc-dev virtual-libc-dev"
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/glibc/glibc-${PV}.tar.gz \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-linuxthreads-${PV}.tar.gz \
 	   file://etc/ld.so.conf \
  	   file://generate-supported.mk"
+
+SRC_URI_append_mtx-1 = " file://mips-abio32.patch;patch=1 \
+                         file://allow-gcc.patch;patch=1 "
+SRC_URI_append_mtx-2 = " file://mips-abio32.patch;patch=1 \
+                         file://allow-gcc.patch;patch=1 "
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"

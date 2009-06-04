@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r63"
+PR = "r64"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -47,7 +47,6 @@ SLUGOS_PACKAGES = "\
 	bind \
 	binutils \
 	bison \
-	bluez-utils \
 	bluez-hcidump \
 	bluez4 \
 	bogofilter \
@@ -63,7 +62,6 @@ SLUGOS_PACKAGES = "\
 	coreutils \
 	cron \
 	cryptsetup \
-	ctrlproxy \
 	cups \
 	curl \
 	cvs \
@@ -250,7 +248,11 @@ SLUGOS_PACKAGES = "\
 	"
 
 # Packages currently broken on all platforms
+# Notes:
+#  ctrlproxy - dependency on tdb.h (part of samba but not packaged/staged).
+#
 SLUGOS_BROKEN_PACKAGES = "\
+	ctrlproxy \
 	ctorrent \
 	cyrus-imapd \
 	cyrus-sasl \

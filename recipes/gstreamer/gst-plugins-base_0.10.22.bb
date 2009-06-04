@@ -1,6 +1,7 @@
 require gst-plugins.inc
 
 SRC_URI += "file://samihack.patch;patch=1"
+PR = "${INC_PR}.1"
 
 PROVIDES += "gst-plugins"
 

@@ -14,7 +14,10 @@ DEFAULT_PREFERENCE = "-1"
 WACKELF_SRC_URI_ixp4xx =          " file://20-xscale-VFP-wackelf-v2.patch;patch=1"
 WACKELF_SRC_URI_compulab-pxa270 = " file://20-xscale-VFP-wackelf-v2.patch;patch=1"
 
+SRC_URI += "file://respect-ldflags.patch;patch=1"
+SRC_URI += "file://madwifi-fix-2.6.30.patch;patch=1"
+
 SRCNAME = "madwifi-trunk"
 
 # PR set after the include, to override what's set in the included file.
-PR = "r1"
+PR = "r2"

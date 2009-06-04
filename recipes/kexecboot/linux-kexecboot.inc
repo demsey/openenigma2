@@ -1,12 +1,12 @@
 # We set PR here, since a change in the kexecboot recipe will need to get picked up by *all* the kernels:
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "file://defconfig"
 
 LOGO_SIZE = '${@base_conditional("GUI_MACHINE_CLASS", "bigscreen", "vga", "qvga", d)}'
 SRC_URI += "file://${LOGO_SIZE}/logo_linux_clut224.ppm.bz2"
 
-require recipes/linux/linux.inc
+require ../linux/linux.inc
 
 DONT_CHECK_KERNELSIZE = ""
 INITRAMFS_IMAGE = "initramfs-kexecboot-image"
@@ -34,6 +34,7 @@ do_configure[depends] += "${INITRAMFS_IMAGE}:do_rootfs"
 
 do_configure_append() {
 sed -i -e /CONFIG_BLK_DEV_INITRD/d \
+       -e /CONFIG_KEXEC/d \
        -e /CONFIG_INITRAMFS_SOURCE/d \
        -e /=m/d \
        -e /CONFIG_MODULES/d \
@@ -46,7 +47,8 @@ sed -i -e /CONFIG_BLK_DEV_INITRD/d \
 sed -i -e /CONFIG_CMDLINE/s/quiet/loglevel=3/1 ${S}/.config
 sed -i -e /CONFIG_CMDLINE/s/debug/loglevel=3/1 ${S}/.config
 
-echo 'CONFIG_BLK_DEV_INITRD=y 
+echo 'CONFIG_BLK_DEV_INITRD=y
+CONFIG_KEXEC=y
 CONFIG_INITRAMFS_SOURCE="initramfs.cpio.gz"
 CONFIG_MODULES=n' >> ${S}/.config
 

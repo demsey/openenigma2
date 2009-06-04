@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.mysql.com/"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
@@ -13,8 +13,6 @@ SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
            file://mysqld.sh"
 
 S = "${WORKDIR}/mysql-${PV}"
-
-FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/mysql-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
 BINCONFIG_GLOB = "mysql_config"
 
@@ -38,6 +36,11 @@ do_stage() {
 	autotools_stage_all
 	oe_libinstall -a -so -C libmysql libmysqlclient ${STAGING_LIBDIR}
 	oe_libinstall -a -C libmysqld libmysqld ${STAGING_LIBDIR}
+}
+
+do_stage_append() {
+	sed -i -es,^pkgincludedir=\'/usr/include/mysql\',pkgincludedir=\'\', ${STAGING_BINDIR_CROSS}/mysql_config
+	sed -i -es,^pkglibdir=\'/usr/lib/mysql\',pkglibdir=\'\', ${STAGING_BINDIR_CROSS}/mysql_config
 }
 
 do_install() {
