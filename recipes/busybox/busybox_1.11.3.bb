@@ -1,5 +1,5 @@
 require busybox.inc
-PR = "r15"
+PR = "${INC_PR}.1"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
@@ -32,11 +32,6 @@ SRC_URI_append_opendreambox = "\
 "
 
 EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
-
-do_configure () {
-	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
-	cml1_do_configure
-}
 
 do_install_append() {
     install -m 0644 ${WORKDIR}/mdev.conf ${D}${sysconfdir}/
