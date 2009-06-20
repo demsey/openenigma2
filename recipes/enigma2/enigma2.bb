@@ -37,6 +37,8 @@ RDEPENDS_enigma2-plugin-extensions-dvdplayer_append = " libdreamdvd0"
 RDEPENDS_enigma2-plugin-extensions-dvdburn_append = " cdrkit dvdauthor dvd+rw-tools mjpegtools projectx python-imaging"
 RDEPENDS_enigma2-plugin-systemplugins-nfiflash_append = " python-twisted-web"
 RDEPENDS_enigma2-plugin-systemplugins-softwaremanager_append = " python-pickle"
+DESCRIPTION_enigma2-plugin-extenstions-modem_append = " opens a menu to connect to internet via builtin modem."
+RDEPENDS_enigma2-plugin-extensions-modem_append = " dreambox-modem-ppp-scripts"
 
 export LD="${CXX}"
 
