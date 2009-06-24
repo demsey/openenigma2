@@ -1,0 +1,67 @@
+diff -auNr mjpegtools-1.9.0rc3.orig/mpeg2enc/encodertypes.h mjpegtools-1.9.0rc3/mpeg2enc/encodertypes.h
+--- mjpegtools-1.9.0rc3.orig/mpeg2enc/encodertypes.h	2009-06-25 00:11:02.000000000 +0200
++++ mjpegtools-1.9.0rc3/mpeg2enc/encodertypes.h	2009-06-25 00:12:26.000000000 +0200
+@@ -25,6 +25,8 @@
+  */
+ 
+ 
++#include <cstdlib>
++
+ class Parity
+ {
+ public:
+diff -auNr mjpegtools-1.9.0rc3.orig/mpeg2enc/macroblock.cc mjpegtools-1.9.0rc3/mpeg2enc/macroblock.cc
+--- mjpegtools-1.9.0rc3.orig/mpeg2enc/macroblock.cc	2009-06-25 00:11:02.000000000 +0200
++++ mjpegtools-1.9.0rc3/mpeg2enc/macroblock.cc	2009-06-25 00:12:56.000000000 +0200
+@@ -21,6 +21,7 @@
+ 
+ #include <stdio.h>
+ #include <cassert>
++#include <limits.h>
+ 
+ #include "macroblock.hh"
+ #include "mpeg2syntaxcodes.h"
+diff -auNr mjpegtools-1.9.0rc3.orig/mplex/inputstrm.cpp mjpegtools-1.9.0rc3/mplex/inputstrm.cpp
+--- mjpegtools-1.9.0rc3.orig/mplex/inputstrm.cpp	2009-06-25 00:11:02.000000000 +0200
++++ mjpegtools-1.9.0rc3/mplex/inputstrm.cpp	2009-06-25 00:11:36.000000000 +0200
+@@ -23,6 +23,7 @@
+ 
+ #include <config.h>
+ #include <assert.h>
++#include "limits.h"
+ 
+ #include "mjpeg_types.h"
+ #include "inputstrm.hpp"
+diff -auNr mjpegtools-1.9.0rc3.orig/mplex/main.cpp mjpegtools-1.9.0rc3/mplex/main.cpp
+--- mjpegtools-1.9.0rc3.orig/mplex/main.cpp	2009-06-25 00:11:02.000000000 +0200
++++ mjpegtools-1.9.0rc3/mplex/main.cpp	2009-06-25 00:11:15.000000000 +0200
+@@ -31,6 +31,7 @@
+ #include <getopt.h>
+ #endif
+ #include <string>
++#include <cstring>
+ #include <memory>
+ #include <sys/stat.h>
+ #ifndef _WIN32
+diff -auNr mjpegtools-1.9.0rc3.orig/mplex/multiplexor.cpp mjpegtools-1.9.0rc3/mplex/multiplexor.cpp
+--- mjpegtools-1.9.0rc3.orig/mplex/multiplexor.cpp	2009-06-25 00:11:02.000000000 +0200
++++ mjpegtools-1.9.0rc3/mplex/multiplexor.cpp	2009-06-25 00:11:54.000000000 +0200
+@@ -22,6 +22,7 @@
+ #include <config.h>
+ #include <math.h>
+ #include <stdlib.h>
++#include <cstring>
+ 
+ #include <mjpeg_types.h>
+ #include <mjpeg_logging.h>
+diff -auNr mjpegtools-1.9.0rc3.orig/mplex/padstrm.cpp mjpegtools-1.9.0rc3/mplex/padstrm.cpp
+--- mjpegtools-1.9.0rc3.orig/mplex/padstrm.cpp	2009-06-25 00:11:02.000000000 +0200
++++ mjpegtools-1.9.0rc3/mplex/padstrm.cpp	2009-06-25 00:13:20.000000000 +0200
+@@ -23,6 +23,7 @@
+ #ifdef HAVE_CONFIG_H
+ #include "config.h"
+ #endif
++#include <cstring>
+ 
+ #include "padstrm.hpp"
+ 

@@ -5,7 +5,8 @@ SECTION = "optional"
 SRC_URI = "${SOURCEFORGE_MIRROR}/mjpeg/mjpegtools-${PV}.tar.gz \
 	file://mjpegtools-fix-include.patch;patch=1;pnum=1 \
 	file://mjpegtools-remove-sdl-dependency.patch;patch=1;pnum=1 \
-	file://mjpegtools-v4l-doesnt-mean-x11.patch;patch=1;pnum=1"
+	file://mjpegtools-v4l-doesnt-mean-x11.patch;patch=1;pnum=1 \
+	file://mjpegtools-gcc433-missing-includes.patch;patch=1;pnum=1"
 
 inherit autotools
 
