@@ -26,3 +26,10 @@ do_munge() {
 }
 
 addtask munge before do_compile after do_patch
+
+# We really must clear out LDFLAGS to get this to link.
+do_compile() {
+	unset LDFLAGS
+	oe_runmake all
+}
+
