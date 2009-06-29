@@ -65,3 +65,14 @@ diff -auNr mjpegtools-1.9.0rc3.orig/mplex/padstrm.cpp mjpegtools-1.9.0rc3/mplex/
  
  #include "padstrm.hpp"
  
+diff -auNr mjpegtools-1.9.0rc3.orig/mpeg2enc/picturereader.cc mjpegtools-1.9.0rc3/mpeg2enc/picturereader.cc
+--- mjpegtools-1.9.0rc3.orig/mpeg2enc/picturereader.cc 2009-06-29 11:19:27.000000000 +0200
++++ mjpegtools-1.9.0rc3/mpeg2enc/picturereader.cc      2009-06-29 11:20:55.000000000 +0200
+@@ -23,6 +23,7 @@
+ #include "picturereader.hh"
+ #include "mpeg2encoder.hh"
+ #include "imageplanes.hh"
++#include <limits.h>
+ //#include <stdio.h>
+ //#include <stdlib.h>
+ //#include <unistd.h>
