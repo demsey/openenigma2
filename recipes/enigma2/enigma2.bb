@@ -60,8 +60,7 @@ BRANCH = "master"
 PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 
 SRC_URI = "git://git.opendreambox.org/git/enigma2.git;protocol=git;branch=${BRANCH} \
-	file://enigma2.sh \
-	file://tuxtxt_caching.patch;patch=1;pnum=1"
+	file://enigma2.sh"
 
 S = "${WORKDIR}/git"
 
