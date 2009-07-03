@@ -5,7 +5,7 @@ DESCRIPTION="A set of tools for CD recording"
 HOMEPAGE="http://www.cdrkit.org"
 
 PARALLEL_MAKE = ""
-DEPENDS = "libcap"
+DEPENDS = "libcap bzip2"
 SRC_URI="http://cdrkit.org/releases/cdrkit-${PV}.tar.gz \
 	file://xconfig.patch;patch=1"
 
