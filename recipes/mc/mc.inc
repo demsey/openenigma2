@@ -33,8 +33,8 @@ export CC_FOR_BUILD = "${BUILD_CC}"
 export CFLAGS_FOR_BUILD = "${BUILD_CFLAGS}"
 export LD_FOR_BUILD = "${BUILD_CC}"
 do_compile_prepend() {
-	export GLIB_CFLAGS_FOR_BUILD="`${STAGING_BINDIR_NATIVE}/pkg-config --cflags glib-2.0`"
-	export GLIB_LIBS_FOR_BUILD="`${STAGING_BINDIR_NATIVE}/pkg-config --libs glib-2.0`"
+	export GLIB_CFLAGS_FOR_BUILD="`PKG_CONFIG_SYSROOT_DIR= PKG_CONFIG_PATH=${EXTRA_NATIVE_PKGCONFIG_PATH} ${STAGING_BINDIR_NATIVE}/pkg-config --cflags glib-2.0`"
+	export GLIB_LIBS_FOR_BUILD="`PKG_CONFIG_SYSROOT_DIR= PKG_CONFIG_PATH=${EXTRA_NATIVE_PKGCONFIG_PATH} ${STAGING_BINDIR_NATIVE}/pkg-config --libs glib-2.0`"
 }
 
 do_install_append() {
