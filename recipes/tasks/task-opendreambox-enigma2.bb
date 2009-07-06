@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenDreambox: Enigma2 Task for the OpenDreambox Distribution"
 SECTION = "opendreambox/base"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 
 inherit task
 
@@ -46,6 +46,7 @@ RDEPENDS_task-opendreambox-enigma2 = "\
   python-twisted-core \
   python-twisted-protocols \
   python-twisted-web \
+  tuxbox-tuxtxt-32bpp \
   ${@base_contains("MACHINE_FEATURES", "wifi", "task-opendreambox-wlan", "", d)} \
 "
 
