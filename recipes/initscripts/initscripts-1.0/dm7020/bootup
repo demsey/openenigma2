@@ -4,9 +4,6 @@ echo 4 > /proc/progress
 mount -t proc proc /proc
 echo 8 > /proc/progress
 
-mount -t sysfs sysfs /sys
-echo 12 > /proc/progress
-
 depmod -Ae
 echo 16 > /proc/progress
 

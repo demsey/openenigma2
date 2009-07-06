@@ -1,6 +1,5 @@
 modprobe lcd
 mount -t proc proc /proc
-mount -t sysfs sysfs /sys
 depmod -Ae
 mount -at nonfs,nosmbfs,noncpfs,nocifs 2>/dev/null
 swapon -a

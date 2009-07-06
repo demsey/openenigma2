@@ -1,9 +1,6 @@
 echo 10 > /proc/progress
 [ -e /dev/dbox/oled0 ] && ln -s /dev/dbox/oled0 /dev/dbox/lcd0
 
-mount -t sysfs sysfs /sys
-echo 11 > /proc/progress
-
 depmod -Ae
 echo 12 > /proc/progress
 
