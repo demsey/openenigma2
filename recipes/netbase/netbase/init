@@ -75,6 +75,18 @@ doopt () {
     fi
 }
 
+remote_rootfs() {
+    if sed -n 's/^[^ ]* \([^ ]*\) \([^ ]*\) .*$/\1 \2/p' /proc/mounts |
+      grep -q "^/ nfs$"; then
+        return 0
+    elif sed -n 's/^[^ ]* \([^ ]*\) \([^ ]*\) .*$/\1 \2/p' /proc/mounts |
+      grep -q "^/ smbfs$"; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 case "$1" in
     start)
 	# /etc/sysctl.conf is preferred
@@ -85,17 +97,17 @@ case "$1" in
 	fi
 
         echo -n "Configuring network interfaces... "
-				wpa_supplicantcheck
-        ifup -a
+	if remote_rootfs; then
+	    ifup lo
+	else
+	    wpa_supplicantcheck
+	    ifup -a
+	fi
 	echo "done."
 	;;
     stop)
-        if sed -n 's/^[^ ]* \([^ ]*\) \([^ ]*\) .*$/\1 \2/p' /proc/mounts | 
-          grep -q "^/ nfs$"; then
-            echo "NOT deconfiguring network interfaces: / is an NFS mount"
-        elif sed -n 's/^[^ ]* \([^ ]*\) \([^ ]*\) .*$/\1 \2/p' /proc/mounts |  
-          grep -q "^/ smbfs$"; then
-            echo "NOT deconfiguring network interfaces: / is an SMB mount"
+	if remote_rootfs; then
+	    echo "NOT deconfiguring network interfaces: / is a remote filesystem"
 	elif sed -n 's/^[^ ]* \([^ ]*\) \([^ ]*\) .*$/\2/p' /proc/mounts | 
           grep -qE '^(nfs|smbfs|ncp|coda)$'; then
             echo "NOT deconfiguring network interfaces: network shares still mounted."
