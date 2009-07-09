@@ -48,7 +48,7 @@ generate_nfo() {
     echo "Machine: Dreambox ${MACHINE}" >> ${NFO}
     DATE=`date +%Y-%m-%d' '%H':'%M`
     echo "Date: ${DATE}" >> ${NFO}
-    echo "Issuer: Dream Multimedia TV" >> ${NFO}
+    echo "Issuer: Dream Multimedia" >> ${NFO}
     echo "Link: ${DISTRO_FEED_URI}" >> ${NFO}
     if [ "${DESC}" != "" ]; then
         echo "Description: ${DESC}" >> ${NFO}
