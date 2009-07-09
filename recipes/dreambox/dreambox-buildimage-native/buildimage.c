@@ -305,6 +305,10 @@ int main(int argc, char **argv)
 		partition[0] = 0x40000;
 	}
 
+	fprintf(stderr, "2nd: %u of %u bytes\n", size_2nd, BADBLOCK_SAFE(partition[0]));
+	fprintf(stderr, "boot: %u of %u bytes\n", size_boot, BADBLOCK_SAFE(partition[1] - partition[0]));
+	fprintf(stderr, "root: %u of %u bytes\n", size_root, BADBLOCK_SAFE(partition[2] - partition[1]));
+
 	if (size_2nd > BADBLOCK_SAFE(partition[0]))
 		die("2nd stage is too big. did you gzip it before?");
 	if (size_boot > BADBLOCK_SAFE(partition[1] - partition[0]))
