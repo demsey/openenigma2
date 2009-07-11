@@ -1,0 +1,119 @@
+diff -Naur libgcrypt-1.4.4.orig/mpi/longlong.h libgcrypt-1.4.4/mpi/longlong.h
+--- libgcrypt-1.4.4.orig/mpi/longlong.h	2008-08-19 17:20:03.000000000 +0200
++++ libgcrypt-1.4.4/mpi/longlong.h	2009-07-11 02:06:58.000000000 +0200
+@@ -33,6 +33,14 @@
+    on a 64 bit machine, UWtype should typically be UDItype.
+ */
+ 
++/* Test for gcc >= maj.min, as per __GNUC_PREREQ in glibc */
++#if defined (__GNUC__) && defined (__GNUC_MINOR__)
++#define __GCRY_GNUC_PREREQ(maj, min) \
++  ((__GNUC__ << 16) + __GNUC_MINOR__ >= ((maj) << 16) + (min))
++#else
++#define __GCRY_GNUC_PREREQ(maj, min)  0
++#endif
++
+ #define __BITS4 (W_TYPE_SIZE / 4)
+ #define __ll_B ((UWtype) 1 << (W_TYPE_SIZE / 2))
+ #define __ll_lowpart(t) ((UWtype) (t) & (__ll_B - 1))
+@@ -714,14 +722,23 @@
+  **************  MIPS  *****************
+  ***************************************/
+ #if defined (__mips__) && W_TYPE_SIZE == 32
+-#if __GNUC__ > 2 || __GNUC_MINOR__ >= 7
++#if __GCRY_GNUC_PREREQ (4,4)
++#define umul_ppmm(w1, w0, u, v) \
++  do {									\
++    UDItype __ll = (UDItype)(u) * (v);					\
++    w1 = __ll >> 32;							\
++    w0 = __ll;								\
++  } while (0)
++#endif
++#if !defined (umul_ppmm) && __GCRY_GNUC_PREREQ (2,7)
+ #define umul_ppmm(w1, w0, u, v) \
+   __asm__ ("multu %2,%3"                                                \
+ 	   : "=l" ((USItype)(w0)),                                      \
+ 	     "=h" ((USItype)(w1))                                       \
+ 	   : "d" ((USItype)(u)),                                        \
+ 	     "d" ((USItype)(v)))
+-#else
++#endif
++#if !defined (umul_ppmm)
+ #define umul_ppmm(w1, w0, u, v) \
+   __asm__ ("multu %2,%3 \n" \
+ 	   "mflo %0 \n"     \
+@@ -739,14 +756,24 @@
+  **************  MIPS/64  **************
+  ***************************************/
+ #if (defined (__mips) && __mips >= 3) && W_TYPE_SIZE == 64
+-#if __GNUC__ > 2 || __GNUC_MINOR__ >= 7
++#if __GCRY_GNUC_PREREQ (4,4)
++#define umul_ppmm(w1, w0, u, v) \
++  do {									\
++    typedef unsigned int __ll_UTItype __attribute__((mode(TI)));	\
++    __ll_UTItype __ll = (__ll_UTItype)(u) * (v);			\
++    w1 = __ll >> 64;							\
++    w0 = __ll;								\
++  } while (0)
++#endif
++#if !defined (umul_ppmm) && __GCRY_GNUC_PREREQ (2,7)
+ #define umul_ppmm(w1, w0, u, v) \
+   __asm__ ("dmultu %2,%3"                                               \
+ 	   : "=l" ((UDItype)(w0)),                                      \
+ 	     "=h" ((UDItype)(w1))                                       \
+ 	   : "d" ((UDItype)(u)),                                        \
+ 	     "d" ((UDItype)(v)))
+-#else
++#endif
++#if !defined (umul_ppmm)
+ #define umul_ppmm(w1, w0, u, v) \
+   __asm__ ("dmultu %2,%3 \n"    \
+ 	   "mflo %0 \n"         \
+@@ -875,6 +902,15 @@
+ 	   : "r" ((USItype)(x)))
+ #define COUNT_LEADING_ZEROS_0 32
+ #if defined (_ARCH_PPC)
++#if __GCRY_GNUC_PREREQ (4,4)
++#define umul_ppmm(w1, w0, u, v) \
++  do {									\
++    UDItype __ll = (UDItype)(u) * (v);					\
++    w1 = __ll >> 32;							\
++    w0 = __ll;								\
++  } while (0)
++#endif
++#if !defined (umul_ppmm)
+ #define umul_ppmm(ph, pl, m0, m1) \
+   do {									\
+     USItype __m0 = (m0), __m1 = (m1);					\
+@@ -884,6 +920,7 @@
+ 	       "r" (__m1));                                             \
+     (pl) = __m0 * __m1; 						\
+   } while (0)
++#endif
+ #define UMUL_TIME 15
+ #define smul_ppmm(ph, pl, m0, m1) \
+   do {									\
+@@ -964,12 +1001,23 @@
+ #define count_leading_zeros(count, x) \
+   __asm__ ("cntlzd %0,%1" : "=r" (count) : "r" (x))
+ #define COUNT_LEADING_ZEROS_0 64
++#if __GCRY_GNUC_PREREQ (4,4)
++#define umul_ppmm(w1, w0, u, v) \
++  do {									\
++    typedef unsigned int __ll_UTItype __attribute__((mode(TI)));	\
++    __ll_UTItype __ll = (__ll_UTItype)(u) * (v);			\
++    w1 = __ll >> 64;							\
++    w0 = __ll;								\
++  } while (0)
++#endif
++#if !defined (umul_ppmm)
+ #define umul_ppmm(ph, pl, m0, m1) \
+   do {									\
+     UDItype __m0 = (m0), __m1 = (m1);					\
+     __asm__ ("mulhdu %0,%1,%2" : "=r" (ph) : "%r" (m0), "r" (m1));	\
+     (pl) = __m0 * __m1;							\
+   } while (0)
++#endif
+ #define UMUL_TIME 15
+ #define smul_ppmm(ph, pl, m0, m1) \
+   do {									\
