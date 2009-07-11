@@ -1,0 +1,38 @@
+diff -Naur libmad-0.15.1b.orig/fixed.h libmad-0.15.1b/fixed.h
+--- libmad-0.15.1b.orig/fixed.h	2004-02-17 03:02:03.000000000 +0100
++++ libmad-0.15.1b/fixed.h	2009-07-11 16:42:48.000000000 +0200
+@@ -22,6 +22,14 @@
+ # ifndef LIBMAD_FIXED_H
+ # define LIBMAD_FIXED_H
+ 
++/* Test for gcc >= maj.min, as per __GNUC_PREREQ in glibc */
++#if defined (__GNUC__) && defined (__GNUC_MINOR__)
++#define __MAD_GNUC_PREREQ(maj, min) \
++  ((__GNUC__ << 16) + __GNUC_MINOR__ >= ((maj) << 16) + (min))
++#else
++#define __MAD_GNUC_PREREQ(maj, min)  0
++#endif
++
+ # if SIZEOF_INT >= 4
+ typedef   signed int mad_fixed_t;
+ 
+@@ -303,10 +311,19 @@
+  * This MIPS version is fast and accurate; the disposition of the least
+  * significant bit depends on OPT_ACCURACY via mad_f_scale64().
+  */
++#if __MAD_GNUC_PREREQ (4,4)
++#  define MAD_F_MLX(hi, lo, x, y)  \
++    do {									\
++	    mad_fixed64_t __ll = (mad_fixed64_t)(x) * (y);			\
++	    hi = __ll >> 32;							\
++	    lo = __ll;								\
++    } while (0)
++#else
+ #  define MAD_F_MLX(hi, lo, x, y)  \
+     asm ("mult	%2,%3"  \
+ 	 : "=l" (lo), "=h" (hi)  \
+ 	 : "%r" (x), "r" (y))
++#endif
+ 
+ # if defined(HAVE_MADD_ASM)
+ #  define MAD_F_MLA(hi, lo, x, y)  \
