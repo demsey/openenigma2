@@ -24,7 +24,7 @@ PREFERRED_GCC_VERSION_xilinx-ml403   ?= "4.1.1"
 PREFERRED_GCC_VERSION_xilinx-ml403   ?= "4.1.1"
 
 # This is unrelated to the kernel version, but userspace apps (e.g. HAL) require a recent version to build against
-PREFERRED_VERSION_linux-libc-headers = "2.6.23"
+PREFERRED_VERSION_linux-libc-headers ?= "2.6.23"
 
 # Uncomment this if want need to build an armv7a kernel with CSL toolchain (<2.6.27 don't boot with mainline gcc)
 #KERNEL_CCSUFFIX_armv7a= "-4.2.1+csl-arm-2007q3-53"
@@ -61,7 +61,7 @@ PREFERRED_PROVIDER_linux-libc-headers = "linux-libc-headers"
 #############################################################################
 
 # Branding
-TARGET_VENDOR = "-oe"
+TARGET_VENDOR ?= "-oe"
 
 # ARM920T and up can use thumb mode to decrease binary size at the expense of speed
 # (the complete story is a bit more nuanced due to cache starvation)
