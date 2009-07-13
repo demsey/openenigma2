@@ -2,7 +2,7 @@ require linux-libc-headers.inc
 
 INHIBIT_DEFAULT_DEPS = "1"
 DEPENDS += "unifdef-native"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	  "
@@ -28,6 +28,15 @@ set_arch() {
 	        avr32*)   ARCH=avr32 ;;
                 bfin*)    ARCH=blackfin ;;
 	esac
+}
+
+do_unpack_append() {
+	bb.build.exec_func('do_replace_linux_types', d)
+}
+
+do_replace_linux_types() {
+	# linux/types.h conflicts with glibc headers
+	sed -i 's,^#include <linux/types.h>,#include <asm/types.h>,' ${S}/include/linux/dvb/*.h
 }
 
 do_configure() {
