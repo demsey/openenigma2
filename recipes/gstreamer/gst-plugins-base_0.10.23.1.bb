@@ -5,13 +5,14 @@ REL = "0.10.23"
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${REL}.tar.bz2 \
 	file://samihack.patch;patch=1 \
+	file://fix-uninitialized-variable.patch;patch=1 \
 	file://gst-plugins-base_${REL}_to_git${SRCDATE}.patch;patch=1;pnum=0"
 
 S = "${WORKDIR}/${PN}-${REL}" 
 
 PROVIDES += "gst-plugins"
 
-PR = "r0"
+PR = "${INC_PR}.1"
 
 EXTRA_OECONF += "--with-audioresample-format=int"
 
