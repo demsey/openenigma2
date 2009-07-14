@@ -114,7 +114,7 @@ def check_sanity(e):
 
 	try:
 	    if os.path.basename(os.readlink('/bin/sh')) == 'dash':
-		    messages = messages + "Using dash as /bin/sh causes various subtle build problems, please use bash instead.\n"
+		    print "WARNING: Using dash as /bin/sh causes various subtle build problems, please consider using bash instead."
 	except:
 		pass
 
