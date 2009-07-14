@@ -4,12 +4,14 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 SRCNAME = "pyOpenSSL"
 DEPENDS = "openssl"
-PR = "ml0"
+RDEPENDS = "python-threading"
+RDEPENDS_${PN}-tests = "${PN}"
+PR = "ml1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pyopenssl/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
 
-RDEPENDS = "python-threading"
-
+PACKAGES =+ "${PN}-tests"
+FILES_${PN}-tests = "${libdir}/${PYTHON_DIR}/site-packages/OpenSSL/test"
