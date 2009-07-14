@@ -1,8 +1,9 @@
 require opkg.inc
 
-PR = "r13"
+PR = "r14"
 
 PACKAGES =+ "libopkg-dev libopkg"
+RPROVIDES_${PN} += "update-alternatives"
 
 FILES_libopkg-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/*.so"
 FILES_libopkg = "${libdir}/*.so.*"
