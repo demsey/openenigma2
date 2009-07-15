@@ -1,5 +1,7 @@
 # dreambox-powerpc.inc
 
+OLDEST_KERNEL = "2.6.9"
+
 PREFERRED_VERSION_gdb = "6.5"
 PREFERRED_VERSION_gdb-cross = "6.5"
 PREFERRED_VERSION_freetype = "2.0.9"
