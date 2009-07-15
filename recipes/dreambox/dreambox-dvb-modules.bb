@@ -9,13 +9,8 @@ RDEPENDS_dm800 = "dreambox-secondstage"
 KV_dm7020 = "2.6.9"
 PV_dm7020 = "${KV}-20060622"
 
-def get_modules_extension(bb, d):
-	if 'nptl' in bb.data.getVar('GLIBC_ADDONS', d, 1):
-		return "-gcc4.1"
-	return ""
-
-KV_dm7025 = "2.6.12.6"
-PV_dm7025 = "${KV}-20090715${@get_modules_extension(bb, d)}"
+KV_dm7025 = "2.6.30-dm7025"
+PV_dm7025 = "${KV}-20090715"
 
 KV_dm600pvr = "2.6.12"
 PV_dm600pvr = "${KV}-20090430"
