@@ -44,7 +44,7 @@ export LD="${CXX}"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090514"
+SRCDATE = "20090716"
 SRCREV = "59029b9605036df707b2ae5f3a22fb38a054e358"
 
 # if you want experimental, use:
