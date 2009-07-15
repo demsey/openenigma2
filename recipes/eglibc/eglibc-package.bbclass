@@ -94,6 +94,10 @@ do_install() {
         rm -f ${D}${includedir}/scsi/scsi.h
 }
 
+do_install_append_opendreambox() {
+	rm -rf ${D}${datadir}/zoneinfo/*
+}
+
 TMP_LOCALE="/tmp/locale${libdir}/locale"
 
 locale_base_postinst() {
