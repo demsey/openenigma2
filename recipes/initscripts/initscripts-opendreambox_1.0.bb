@@ -2,14 +2,12 @@ DESCRIPTION = "SysV init scripts (stripped) for opendreambox"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 SECTION = "base"
 PRIORITY = "required"
-DEPENDS = "makedevs"
-RDEPENDS = "makedevs"
 PROVIDES = "initscripts"
 RPROVIDES_${PN} = "initscripts"
 LICENSE = "GPL"
-PR = "r20"
+PR = "r21"
 
-FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
+FILESPATHPKG = "initscripts-${PV}:initscripts:files"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 SRC_URI = "file://halt \
