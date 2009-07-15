@@ -43,7 +43,7 @@ RDEPENDS_enigma2-plugin-extensions-modem_append = " dreambox-modem-ppp-scripts"
 export LD="${CXX}"
 
 PN = "enigma2"
-PR = "r0"
+PR = "r1"
 SRCDATE = "20090716"
 SRCREV = "59029b9605036df707b2ae5f3a22fb38a054e358"
 
@@ -60,6 +60,7 @@ BRANCH = "master"
 PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 
 SRC_URI = "git://git.opendreambox.org/git/enigma2.git;protocol=git;branch=${BRANCH} \
+	file://udev_devices.patch;patch=1 \
 	file://enigma2.sh"
 
 S = "${WORKDIR}/git"

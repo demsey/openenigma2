@@ -1,0 +1,81 @@
+diff -Naur git.orig/lib/driver/rcconsole.cpp git/lib/driver/rcconsole.cpp
+--- git.orig/lib/driver/rcconsole.cpp	2009-07-03 16:14:13.000000000 +0200
++++ git/lib/driver/rcconsole.cpp	2009-07-06 01:40:30.000000000 +0200
+@@ -117,7 +117,7 @@
+ 	eRCConsoleDriver driver;
+ 	eRCConsole device;
+ public:
+-	eRCConsoleInit(): driver("/dev/vc/0"), device(&driver)
++	eRCConsoleInit(): driver("/dev/tty0"), device(&driver)
+ 	{
+ 	}
+ };
+diff -Naur git.orig/lib/dvb/frontend.cpp git/lib/dvb/frontend.cpp
+--- git.orig/lib/dvb/frontend.cpp	2009-07-03 16:14:13.000000000 +0200
++++ git/lib/dvb/frontend.cpp	2009-07-06 02:31:03.000000000 +0200
+@@ -1653,11 +1653,11 @@
+ 						int slotid = sec_fe->m_slotid;
+ 						// FIXMEEEEEE hardcoded i2c devices for dm7025 and dm8000
+ 						if (slotid < 2)
+-							sprintf(dev, "/dev/i2c/%d", slotid);
++							sprintf(dev, "/dev/i2c-%d", slotid);
+ 						else if (slotid == 2)
+-							sprintf(dev, "/dev/i2c/2"); // first nim socket on DM8000 use /dev/i2c/2
++							sprintf(dev, "/dev/i2c-2"); // first nim socket on DM8000 use /dev/i2c/2
+ 						else if (slotid == 3)
+-							sprintf(dev, "/dev/i2c/4"); // second nim socket on DM8000 use /dev/i2c/4
++							sprintf(dev, "/dev/i2c-4"); // second nim socket on DM8000 use /dev/i2c/4
+ 						int fd = ::open(dev, O_RDWR);
+ 
+ 						unsigned char data[2];
+diff -Naur git.orig/lib/gdi/fb.cpp git/lib/gdi/fb.cpp
+--- git.orig/lib/gdi/fb.cpp	2009-07-03 16:14:13.000000000 +0200
++++ git/lib/gdi/fb.cpp	2009-07-06 01:39:00.000000000 +0200
+@@ -82,12 +82,12 @@
+ 
+ int fbClass::showConsole(int state)
+ {
+-	int fd=open("/dev/vc/0", O_RDWR);
++	int fd=open("/dev/tty0", O_RDWR);
+ 	if(fd>=0)
+ 	{
+ 		if(ioctl(fd, KDSETMODE, state?KD_TEXT:KD_GRAPHICS)<0)
+ 		{
+-			eDebug("setting /dev/vc/0 status failed.");
++			eDebug("setting /dev/tty0 status failed.");
+ 		}
+ 		close(fd);
+ 	}
+diff -Naur git.orig/lib/gdi/fb.h git/lib/gdi/fb.h
+--- git.orig/lib/gdi/fb.h	2009-07-03 16:14:13.000000000 +0200
++++ git/lib/gdi/fb.h	2009-07-06 01:33:24.000000000 +0200
+@@ -18,7 +18,7 @@
+ 	int m_manual_blit;
+ 	int m_number_of_pages;
+ #ifdef SWIG
+-	fbClass(const char *fb="/dev/fb/0");
++	fbClass(const char *fb="/dev/fb0");
+ 	~fbClass();
+ public:
+ #else
+@@ -38,7 +38,7 @@
+ 	unsigned int Stride() { return stride; }
+ 	fb_cmap *CMAP() { return &cmap; }
+ 
+-	fbClass(const char *fb="/dev/fb/0");
++	fbClass(const char *fb="/dev/fb0");
+ 	~fbClass();
+ 	
+ 			// low level gfx stuff
+diff -Naur git.orig/lib/python/Tools/Directories.py git/lib/python/Tools/Directories.py
+--- git.orig/lib/python/Tools/Directories.py	2009-07-03 16:14:13.000000000 +0200
++++ git/lib/python/Tools/Directories.py	2009-07-06 01:41:06.000000000 +0200
+@@ -55,7 +55,7 @@
+ 		SCOPE_USERETC: ("", PATH_DONTCREATE), # user home directory
+ 		
+ 		SCOPE_DEFAULTDIR: ("/usr/share/enigma2/defaults/", PATH_CREATE),
+-		SCOPE_DEFAULTPARTITION: ("/dev/mtdblock/6", PATH_DONTCREATE),
++		SCOPE_DEFAULTPARTITION: ("/dev/mtdblock6", PATH_DONTCREATE),
+ 		SCOPE_DEFAULTPARTITIONMOUNTDIR: ("/usr/share/enigma2/dealer", PATH_CREATE),
+ 		SCOPE_METADIR: ("/usr/share/enigma2/meta", PATH_CREATE),
+ 	}
