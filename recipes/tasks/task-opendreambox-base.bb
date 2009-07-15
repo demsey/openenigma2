@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenDreambox: Base Task for the OpenDreambox Distribution"
 SECTION = "opendreambox/base"
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 inherit task
 
@@ -9,7 +9,8 @@ inherit task
 # task-opendreambox-base
 #
 DESCRIPTION_${PN} = "OpenDreambox: Basesystem utilities"
-RDEPENDS_${PN} = "\
+
+OPENDREAMBOX_BASE_ESSENTIAL = "\
   autofs \
   base-files-doc \
   dreambox-bootlogo \
@@ -22,21 +23,30 @@ RDEPENDS_${PN} = "\
   e2fsprogs-e2fsck \
   e2fsprogs-mke2fs \
   fakelocale \
+  netkit-base \
+  opkg-nogpg \
+  timezones-alternative \
+  tuxbox-common \
+  util-linux-sfdisk \
+  vsftpd \
+"
+
+OPENDREAMBOX_BASE_OPTIONAL = "\
   gdbserver \
   hddtemp \
   joe \
   mc \
-  module-init-tools-depmod \
   mrouted \
-  netkit-base \
-  ncurses \
-  opkg-nogpg \
   ppp \
   smartmontools \
-  timezones-alternative \
-  tuxbox-common \
-  vsftpd \
-  util-linux-fdisk \
-  util-linux-sfdisk \
+"
+
+RDEPENDS_${PN} = "\
+	${OPENDREAMBOX_BASE_ESSENTIAL} \
+	${OPENDREAMBOX_BASE_OPTIONAL} \
+"
+
+RDEPENDS_${PN}_dm7025 = "\
+	${OPENDREAMBOX_BASE_ESSENTIAL} \
 "
 
