@@ -3,19 +3,20 @@ SECTION = "base"
 PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
+RDEPENDS = "ncurses"
 PV = "1.0"
+PV_dm600pvr = "1.1"
+PV_dm7025 = "1.1"
 PR = "r0"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/dreambox-blindscan-utils-${MACHINE}-1.0.tar.bz2"
-SRC_URI_dm600pvr = "http://sources.dreamboxupdate.com/download/opendreambox/dreambox-blindscan-utils-${MACHINE}-1.1.tar.bz2"
-PR_dm600pvr = "r1"
+SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/dreambox-blindscan-utils-${MACHINE}-${PV}.tar.bz2"
 
 S = "${WORKDIR}/blindscan-utils"
 
 do_install() {
 	install -d ${D}/${bindir}/
-	for i in `find ${S} -type f -maxdepth 1`; do 
+	for i in `find ${S} -type f -maxdepth 1`; do
 		install -m 0755 $i ${D}/${bindir}/;
 	done;
 }
