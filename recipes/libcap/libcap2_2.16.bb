@@ -3,13 +3,13 @@ PRIORITY = "optional"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "bison-native flex-native libattr"
-PR = "r0"
+PR = "r1"
 
 CFLAGS_append = " -I${S}/libcap/include"
 LDFLAGS_prepend = "-L../libcap"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/security/linux-privs/libcap2/libcap-${PV}.tar.bz2 \
-	   file://make.patch;patch=1 \
+	   file://0001-build-system-fixes.patch;patch=1 \
 	"
 
 S = "${WORKDIR}/libcap-${PV}"
