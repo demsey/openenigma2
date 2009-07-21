@@ -11,3 +11,13 @@ diff -ruN libnl-1.1/lib/route/link/vlan.c libnl-1.1-new/lib/route/link/vlan.c
  
  /** @cond SKIP */
  #define VLAN_HAS_ID		(1<<0)
+--- libnl-1.1.orig/include/netlink-local.h	2008-01-14 16:48:45.000000000 +0100
++++ libnl-1.1/include/netlink-local.h	2009-07-21 16:05:29.000000000 +0200
+@@ -26,6 +26,7 @@
+ #include <sys/socket.h>
+ #include <inttypes.h>
+ #include <assert.h>
++#include <limits.h>
+ 
+ #include <arpa/inet.h>
+ #include <netdb.h>
