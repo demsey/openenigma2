@@ -3,6 +3,8 @@ SECTION = "network"
 LICENSE = "GPL"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "dbus gnutls ${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng", "",d)}"
+DEPENDS_opendreambox = "libnl openssl"
+PR = "r5"
 
 #we introduce MY_ARCH to get 'armv5te' as arch instead of the misleading 'arm' on armv5te builds
 MY_ARCH := "${PACKAGE_ARCH}"
@@ -14,8 +16,6 @@ SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://defconfig-0.6.0-gnutls \
 	file://ifupdown.sh \
 	file://functions.sh"
-
-#	file://gnutlsfix.patch;patch=1 \
 
 S = "${WORKDIR}/wpa_supplicant-${PV}/wpa_supplicant"
 
@@ -35,6 +35,10 @@ do_configure () {
                 echo "CONFIG_DRIVER_MADWIFI=y" >> .config
                 echo "CFLAGS += -I${STAGING_INCDIR}/madwifi-ng" >> .config
         fi
+}
+
+do_configure_opendreambox() {
+        install -m 0755 ${WORKDIR}/defconfig-0.6.0-gnutls .config
 }
 
 do_compile () {
@@ -60,11 +64,13 @@ do_install () {
 	install -m 755 ${WORKDIR}/ifupdown.sh ${D}${sysconfdir}/wpa_supplicant/
 	install -m 755 ${WORKDIR}/functions.sh ${D}${sysconfdir}/wpa_supplicant
 
-	install -d ${D}/${sysconfdir}/dbus-1/system.d
-	install -m 644 ${S}/dbus-wpa_supplicant.conf ${D}/${sysconfdir}/dbus-1/system.d
-	install -d ${D}/${datadir}/dbus-1/system-services
-	sed -i -e s:${base_sbindir}:${sbindir}:g ${S}/dbus-wpa_supplicant.service
-	install -m 644 ${S}/dbus-wpa_supplicant.service ${D}/${datadir}/dbus-1/system-services/fi.epitest.hostap.WPASupplicant.service
+	if grep "^CONFIG_CTRL_IFACE_DBUS=y" ${WORKDIR}/defconfig-0.6.0-gnutls; then
+		install -d ${D}/${sysconfdir}/dbus-1/system.d
+		install -m 644 ${S}/dbus-wpa_supplicant.conf ${D}/${sysconfdir}/dbus-1/system.d
+		install -d ${D}/${datadir}/dbus-1/system-services
+		sed -i -e s:${base_sbindir}:${sbindir}:g ${S}/dbus-wpa_supplicant.service
+		install -m 644 ${S}/dbus-wpa_supplicant.service ${D}/${datadir}/dbus-1/system-services/fi.epitest.hostap.WPASupplicant.service
+	fi
 
 	ln -s /etc/wpa_supplicant/ifupdown.sh ${D}${sysconfdir}/network/if-pre-up.d/wpasupplicant
 	ln -s /etc/wpa_supplicant/ifupdown.sh ${D}${sysconfdir}/network/if-post-down.d/wpasupplicant
