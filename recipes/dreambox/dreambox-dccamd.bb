@@ -6,6 +6,8 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
 PV = "1.1"
 PV_dm7025 = "1.2"
+PV_dm800 = "1.2"
+PV_dm8000 = "1.2"
 PR = "r3"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/7020/dccamd-${MACHINE}-${PV} \
