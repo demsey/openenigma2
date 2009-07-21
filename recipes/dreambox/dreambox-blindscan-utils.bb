@@ -7,6 +7,8 @@ RDEPENDS = "ncurses"
 PV = "1.0"
 PV_dm600pvr = "1.1"
 PV_dm7025 = "1.1"
+PV_dm800 = "1.1"
+PV_dm8000 = "1.1"
 PR = "r0"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
