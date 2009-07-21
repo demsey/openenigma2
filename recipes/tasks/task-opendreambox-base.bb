@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenDreambox: Base Task for the OpenDreambox Distribution"
 SECTION = "opendreambox/base"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 
 inherit task
 
@@ -36,7 +36,6 @@ OPENDREAMBOX_BASE_OPTIONAL = "\
   hddtemp \
   joe \
   mc \
-  mrouted \
   ppp \
   smartmontools \
 "
