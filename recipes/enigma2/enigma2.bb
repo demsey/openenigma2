@@ -43,9 +43,8 @@ RDEPENDS_enigma2-plugin-extensions-modem_append = " dreambox-modem-ppp-scripts"
 export LD="${CXX}"
 
 PN = "enigma2"
-PR = "r2"
-SRCDATE = "20090716"
-SRCREV = "f834b32700be1cde60218fea84756fdc91fddacd"
+SRCDATE = "20090723"
+SRCREV = "7cc28be2015e4ebb56d585c9cee2949138e4d67e"
 
 # if you want experimental, use:
 REL_MAJOR="2"
