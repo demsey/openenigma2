@@ -1,7 +1,7 @@
-DESCRIPTION = "Linux kernel for Dreambox DM8000"
+DESCRIPTION = "Linux kernel for Dreambox DM800"
 SECTION = "kernel"
 LICENSE = "GPL"
-SRCREV = "b8af0742b4088732b69a9212606ccf25ae8aae77"
+SRCREV = "47f4aecc6036c7cb584aa4a4fffffe9c4dd453be"
 PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
