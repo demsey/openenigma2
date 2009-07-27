@@ -1,6 +1,6 @@
 require gst-plugins.inc
 
-PR = "r0"
+PR = "${INC_PR}.0"
 
 DEPENDS += "gst-plugins-base libsidplay"
 

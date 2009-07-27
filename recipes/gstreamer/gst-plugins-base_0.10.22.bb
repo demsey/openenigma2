@@ -5,8 +5,6 @@ PR = "${INC_PR}.1"
 
 PROVIDES += "gst-plugins"
 
-PR = "r2"
-
 EXTRA_OECONF += "--with-audioresample-format=int"
 
 # gst-plugins-base only builds the alsa plugin
