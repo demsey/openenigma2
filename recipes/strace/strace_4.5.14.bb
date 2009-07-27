@@ -1,7 +1,7 @@
 DESCRIPTION = "strace is a system call tracing tool."
 SECTION = "console/utils"
 LICENSE = "GPL"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.bz2 \
            file://glibc-2.5.patch;patch=1 \
@@ -37,6 +37,7 @@ MIPS = "\
   file://strace-undef-syscall.patch;patch=1 \
   file://strace-arm-no-cachectl.patch;patch=1 \
   file://mips-sigcontext.patch;patch=1 \
+  file://strace-dont-include-linux-dirent-h.patch;patch=1 \
 "
 SRC_URI_mips = "${MIPS}"
 SRC_URI_mipsel = "${MIPS}"
