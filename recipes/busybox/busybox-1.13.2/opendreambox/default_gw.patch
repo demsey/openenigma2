@@ -1,0 +1,22 @@
+--- busybox-1.13.2/examples/udhcp/simple.script.orig	2009-07-28 01:23:40.000000000 +0200
++++ busybox-1.13.2/examples/udhcp/simple.script	2009-07-28 01:24:57.000000000 +0200
+@@ -31,9 +31,16 @@
+ 			fi
+ 
+ 			metric=0
+-			for i in $router ; do
+-				route add default gw $i dev $interface metric $((metric++)) 2>/dev/null
+-			done
++			if [ -e /etc/default_gw ]; then
++				default_gw=`cat /etc/default_gw`
++			else
++				default_gw=$interface
++			fi
++			if [ "$interface" = "$default_gw" ]; then
++				for i in $router ; do
++					route add default gw $i dev $interface metric $((metric++)) 2>/dev/null
++				done
++			fi
+ 		fi
+ 
+ 		echo -n > $RESOLV_CONF
