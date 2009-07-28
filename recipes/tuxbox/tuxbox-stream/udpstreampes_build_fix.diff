@@ -1,0 +1,114 @@
+Index: udpstreampes.cpp
+===================================================================
+RCS file: /cvs/tuxbox/apps/dvb/tools/stream/udpstreampes.cpp,v
+retrieving revision 1.2
+diff -u -r1.2 udpstreampes.cpp
+--- a/udpstreampes.cpp	7 Mar 2005 19:37:11 -0000	1.2
++++ b/udpstreampes.cpp	28 Jul 2009 01:38:56 -0000
+@@ -32,8 +32,24 @@
+ #include <sched.h>
+ #include <pthread.h>
+ #include <errno.h>
++#include "config.h"
+ 
+-#include <ost/dmx.h>
++#if HAVE_DVB_API_VERSION < 3
++	#include <ost/dmx.h>
++	#define dmx_pes_filter_params dmxPesFilterParams
++	#define pes_type pesType
++	#ifdef HAVE_DREAMBOX_HARDWARE
++		#define DVR "/dev/dvb/card0/dvr1"
++		#define DMX "/dev/dvb/card0/demux1"
++	#else
++		#define DVR "/dev/dvb/card0/dvr0"
++		#define DMX "/dev/dvb/card0/demux0"
++	#endif
++#else
++	#include <linux/dvb/dmx.h>
++	#define DVR "/dev/dvb/adapter0/dvr0"
++	#define DMX "/dev/dvb/adapter0/demux0"
++#endif
+ 
+ #include "udpstreampes.h"
+ 
+@@ -49,7 +65,7 @@
+    int Stopped;
+    int fd;
+    int fdvr;
+-   struct dmxPesFilterParams Filter;
++   struct dmx_pes_filter_params Filter;
+    void *Ptr;
+    pthread_t Thread;
+    pid_t ProcessID;
+@@ -62,7 +78,7 @@
+ pid_t mainProcessID;
+ int TSMode;
+ 
+-struct {
++struct Send_s {
+    int Socket;
+    unsigned Packet;
+    unsigned Watchdog;
+@@ -73,7 +89,7 @@
+    pid_t ProcessID;
+ } Send;
+ 
+-struct {
++struct SPkt_s {
+   unsigned char *Buf[MAX_SPKT_BUF_NUM];
+   unsigned char ReSend[MAX_SPKT_BUF_NUM][SPKT_BUF_PACKET_NUM];
+   unsigned char ReSendStatus[MAX_SPKT_BUF_NUM];
+@@ -196,7 +212,7 @@
+    int fd_dvr;
+ 	unsigned u;
+ 
+-   fd_dvr = open("/dev/dvb/card0/dvr1", O_RDONLY);
++   fd_dvr = open(DVR, O_RDONLY);
+    if (-1 == fd_dvr) {
+       perror("ERROR: main() - dvr1 open");
+       fprintf(stderr, "EXIT\n");
+@@ -205,7 +221,7 @@
+    }
+ 
+ 	for (u = 0; u < StreamNum; u++) {
+-		Stream[u].fd = open("/dev/dvb/card0/demux1", O_RDWR);
++		Stream[u].fd = open(DMX, O_RDWR);
+ 		if (-1 == Stream[u].fd) {
+ 			perror("ERROR: main() - demux1 open");
+ 			fprintf(stderr, "EXIT\n");
+@@ -230,7 +246,7 @@
+ 
+ 		Stream[u].Filter.input=DMX_IN_FRONTEND;
+ 		Stream[u].Filter.output=DMX_OUT_TS_TAP;
+-		Stream[u].Filter.pesType=DMX_PES_OTHER;
++		Stream[u].Filter.pes_type=DMX_PES_OTHER;
+ 		Stream[u].Filter.flags=0;
+ 		//Stream[u].Filter.flags=DMX_IMMEDIATE_START;
+ 		if (-1==ioctl(Stream[u].fd, DMX_SET_PES_FILTER, &(Stream[u].Filter)) ) {
+@@ -253,7 +269,7 @@
+ 
+ 		Stream[u].Filter.input=DMX_IN_FRONTEND;
+ 		Stream[u].Filter.output=DMX_OUT_TS_TAP;
+-		Stream[u].Filter.pesType=DMX_PES_OTHER;
++		Stream[u].Filter.pes_type=DMX_PES_OTHER;
+ 		Stream[u].Filter.flags=0;
+ 		//Stream[u].Filter.flags=DMX_IMMEDIATE_START;
+ 		if (-1==ioctl(Stream[u].fd, DMX_SET_PES_FILTER, &(Stream[u].Filter)) ) {
+@@ -328,7 +344,7 @@
+    CurStream = (StreamType*)Ptr;
+    BufSize = (CurStream->BufPacketNum) * NET_DATA_PER_PACKET;
+ 
+-   CurStream->fd = open("/dev/dvb/card0/demux1", O_RDWR);
++   CurStream->fd = open(DMX, O_RDWR);
+    if (-1 == CurStream->fd) {
+       perror("ERROR: main() - demux1 open");
+       fprintf(stderr, "EXIT\n");
+@@ -346,7 +362,7 @@
+ 
+    CurStream->Filter.input=DMX_IN_FRONTEND;
+    CurStream->Filter.output=DMX_OUT_TAP;
+-   CurStream->Filter.pesType=DMX_PES_OTHER;
++   CurStream->Filter.pes_type=DMX_PES_OTHER;
+    //CurStream->Filter.flags=0;
+    CurStream->Filter.flags=DMX_IMMEDIATE_START;
+ 

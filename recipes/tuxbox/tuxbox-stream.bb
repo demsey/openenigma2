@@ -6,12 +6,13 @@ MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/dvb/tools/stream;method=ext \
            file://acinclude.m4 \
            file://enable_transform.diff;patch=1;pnum=1 \
+           file://udpstreampes_build_fix.diff;patch=1;pnum=1 \
 	   file://add_configfiles.diff;patch=1;pnum=1"
 
 SRCDATE = "20050802"
 S = "${WORKDIR}/stream"
 PV = "1.0+${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig
 
