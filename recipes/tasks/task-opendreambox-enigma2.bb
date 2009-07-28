@@ -47,6 +47,7 @@ RDEPENDS_task-opendreambox-enigma2 = "\
   python-twisted-protocols \
   python-twisted-web \
   tuxbox-tuxtxt-32bpp \
+  ${@base_contains("MACHINE_FEATURES", "modem", "task-opendreambox-modem", "", d)} \
   ${@base_contains("MACHINE_FEATURES", "wifi", "task-opendreambox-wlan", "", d)} \
 "
 
