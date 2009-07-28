@@ -13,6 +13,7 @@ SRCDATE_dm7025 = "20090517"
 
 SRC_URI="cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/libdreamdvd;module=libdreamdvd;method=pserver"
 
+CFLAGS_dm500hd_append = " -DHARDWARE_SUPPORT_LPCM"
 CFLAGS_dm8000_append = " -DHARDWARE_SUPPORT_LPCM"
 CFLAGS_dm800_append = " -DHARDWARE_SUPPORT_LPCM"
 
