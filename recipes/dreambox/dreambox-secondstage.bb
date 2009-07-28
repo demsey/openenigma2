@@ -2,6 +2,7 @@ DESCRIPTION = "Dreambox second stage bootloader"
 SECTION = "base"
 PRIORITY = "required"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
+PV_dm500hd = "73"
 PV_dm7020 = "35"
 PV_dm7025 = "61"
 PV_dm600pvr = "66"
@@ -27,7 +28,11 @@ do_stage() {
 	gzip -c ${S}/secondstage-${MACHINE}-${PV}.bin > ${STAGING_LIBDIR}/dreambox-secondstage/main.bin.gz
 }
 
-# the dm{800,8000} secondstage is already compressed (and encrypted)
+# the dm{800,8000,500hd} secondstage is already compressed (and encrypted)
+
+do_stage_dm500hd() {
+	do_stage_dm8000
+}
 
 do_stage_dm8000() {
 	install -d ${STAGING_LIBDIR}/dreambox-secondstage
