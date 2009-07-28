@@ -15,6 +15,12 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libs;metho
 	file://acinclude.m4 \
 	file://ignorelibs.patch;patch=1"
 
+SRC_URI_append_dm500hd = " \
+	file://32bpp.diff;patch=1 \
+	file://resize_framebuffer.diff;patch=1 \
+	file://allow_different_demux.diff;patch=1 \
+	file://fastclear.diff;patch=1"
+
 SRC_URI_append_dm7025 = " \
 	file://32bpp.diff;patch=1 \
 	file://resize_framebuffer.diff;patch=1 \
