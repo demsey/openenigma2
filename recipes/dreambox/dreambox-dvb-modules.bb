@@ -6,6 +6,9 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 RDEPENDS_dm8000 = "dreambox-secondstage"
 RDEPENDS_dm800 = "dreambox-secondstage"
 
+KV_dm500hd = "2.6.30-dm500hd"
+PV_dm500hd = "${KV}-20090727"
+
 KV_dm7020 = "2.6.9"
 PV_dm7020 = "${KV}-20060622"
 
@@ -33,28 +36,26 @@ SRC_URI_append_dm8000 = "http://sources.dreamboxupdate.com/download/7020/fpupgra
 
 S = "${WORKDIR}"
 
-do_install() {
+do_install_powerpc() {
 	install -d ${D}/lib/modules/${KV}/extra
 	for f in head; do
 		install -m 0644 $f.ko ${D}/lib/modules/${KV}/extra/$f.ko;
 	done
 }
 
-do_install_dm800() {
+do_install_mipsel() {
 	install -d ${D}/lib/modules/${KV}/extra
 	for f in *.ko LICENSE; do
 		install -m 0644 ${WORKDIR}/$f ${D}/lib/modules/${KV}/extra/$f;
 	done
 }
 
-do_install_dm7025() {
-	do_install_dm800
+do_install_append_dm7025() {
 	install -d ${D}${sbindir}
 	install -m 0755 ${WORKDIR}/fpupgrade-${MACHINE}-v7 ${D}${sbindir}/fpupgrade
 }
 
-do_install_dm8000() {
-	do_install_dm800
+do_install_append_dm8000() {
 	install -d ${D}${sbindir}
 	install -m 0755 ${WORKDIR}/fpupgrade-${MACHINE}-v5 ${D}${sbindir}/fpupgrade
 }
