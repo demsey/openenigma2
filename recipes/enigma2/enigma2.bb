@@ -19,6 +19,7 @@ RDEPENDS = "python-codecs python-core python-datetime python-elementtree \
 	${@base_contains("MACHINE_FEATURES", "alsa", \
 		"gst-plugin-alsa alsa-conf", "gst-plugin-ossaudio", d)}"
 
+RDEPENDS_append_dm500hd = " gst-plugin-avi gst-plugin-matroska gst-plugin-qtdemux"
 RDEPENDS_append_dm8000 = " gst-plugin-avi gst-plugin-matroska gst-plugin-qtdemux \
 	gst-plugin-cdxaparse gst-plugin-cdxaparse gst-plugin-cdio gst-plugin-vcdsrc"
 RDEPENDS_append_dm800 = " gst-plugin-matroska gst-plugin-qtdemux"
