@@ -53,6 +53,10 @@ RDEPENDS_task-opendreambox-enigma2 = "\
 
 #  enigma2-plugin-extensions-webinterface is disabled until we fixed it to use twisted-web instead of twisted-web2
 
+RDEPENDS_task-opendreambox-enigma2_append_dm500hd = "\
+  enigma2-plugin-systemplugins-videomode \
+"
+
 RDEPENDS_task-opendreambox-enigma2_append_dm800 = "\
   enigma2-plugin-systemplugins-videomode \
 "
