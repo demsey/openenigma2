@@ -20,6 +20,8 @@ SRC_URI = "http://sources.dreamboxupdate.com/download/7020/bootlogo-${MACHINE}-$
 
 SRC_URI_append_dm8000 = " http://sources.dreamboxupdate.com/download/7020/bootlogo-${MACHINE}-${IMAGES_VERSION}.jpg"
 
+SRC_URI_append_dm500hd = " http://sources.dreamboxupdate.com/download/7020/bootlogo-${MACHINE}-${IMAGES_VERSION}.jpg"
+
 SRC_URI_append_dm800 = " http://sources.dreamboxupdate.com/download/7020/bootlogo-${MACHINE}-${IMAGES_VERSION}.jpg \
 	http://sources.dreamboxupdate.com/download/7020/switchoff-${MACHINE}-${IMAGES_VERSION}.mvi"
 
@@ -45,6 +47,10 @@ do_install_dm800() {
 		install -m 0755 ${S}/$i-${MACHINE}-${IMAGES_VERSION}.mvi ${D}/usr/share/$i.mvi;
 		ln -sf /usr/share/$i.mvi ${D}/boot/$i.mvi;
 	done;
+}
+
+do_install_dm500hd() {
+	do_install_dm800
 }
 
 do_install_dm8000() {
