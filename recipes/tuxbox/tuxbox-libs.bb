@@ -6,7 +6,7 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/misc/libs;method=
            file://fix_includes_gcc4.patch;patch=1"
 SRCDATE = "20040928"
 
-PR = "r2"
+PR = "r3"
 
 PACKAGES_DYNAMIC = "libtuxbox-*"
 
