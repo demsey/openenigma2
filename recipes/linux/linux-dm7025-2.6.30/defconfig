@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.30
-# Thu Jul  9 18:18:01 2009
+# Tue Jul 28 23:11:26 2009
 #
 CONFIG_MIPS=y
 
@@ -46,6 +46,8 @@ CONFIG_ATI_XILLEON=y
 # CONFIG_WR_PPMC is not set
 # CONFIG_CAVIUM_OCTEON_SIMULATOR is not set
 # CONFIG_CAVIUM_OCTEON_REFERENCE_BOARD is not set
+CONFIG_DREAMBOX=y
+CONFIG_DREAMBOX_DM7025=y
 CONFIG_RWSEM_GENERIC_SPINLOCK=y
 # CONFIG_ARCH_HAS_ILOG2_U32 is not set
 # CONFIG_ARCH_HAS_ILOG2_U64 is not set
