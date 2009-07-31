@@ -10,12 +10,15 @@ LDFLAGS_prepend = "-L../libcap"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/security/linux-privs/libcap2/libcap-${PV}.tar.bz2 \
 	   file://0001-build-system-fixes.patch;patch=1 \
+	   file://0002-pam-includes-fix.patch;patch=1 \
 	"
 
 S = "${WORKDIR}/libcap-${PV}"
 
 FILES_${PN} = "${libdir}"
 FILES_${PN}-dev = "${includedir}"
+
+export inc_dir=${STAGING_INCDIR}
 
 do_install() {
 	install -d ${D}${includedir}/sys

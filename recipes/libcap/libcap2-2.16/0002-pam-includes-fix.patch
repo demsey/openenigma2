@@ -1,0 +1,12 @@
+diff -Naur libcap-2.16-org/Make.Rules libcap-2.16/Make.Rules
+--- libcap-2.16-org/Make.Rules	2009-07-31 09:36:20.000000000 +0200
++++ libcap-2.16/Make.Rules	2009-07-31 09:31:29.000000000 +0200
+@@ -63,7 +63,7 @@
+ LDFLAGS += -L$(topdir)/libcap
+ CPPFLAGS += -Dlinux
+ CFLAGS += $(WARNINGS)
+-PAM_CAP := $(shell if [ -f /usr/include/security/pam_modules.h ]; then echo yes ; else echo no ; fi)
++PAM_CAP := $(shell if [ -f $(inc_dir)/include/security/pam_modules.h ]; then echo yes ; else echo no ; fi)
+ INDENT := $(shell if [ -n "$(which indent 2>/dev/null)" ]; then echo "| indent -kr" ; fi)
+ DYNAMIC := $(shell if [ ! -d "$(topdir)/.git" ]; then echo yes; fi)
+ LIBATTR := yes
