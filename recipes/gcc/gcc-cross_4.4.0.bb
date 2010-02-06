@@ -10,4 +10,4 @@ EXTRA_OECONF += " --disable-libunwind-exceptions --with-mpfr=${STAGING_DIR_NATIV
 
 ARCH_FLAGS_FOR_TARGET += "-isystem${STAGING_DIR_TARGET}${layout_includedir}"
 
-EXTRA_OECONF_append_mipsel = " --with-mips-plt "
+EXTRA_OECONF_append_mipsel = " --with-mips-plt --disable-multilib"
