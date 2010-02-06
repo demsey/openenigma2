@@ -181,7 +181,7 @@ RDEPENDS_python-mailbox="python-core python-mime"
 FILES_python-mailbox="${libdir}/python2.6/mailbox.* "
 
 DESCRIPTION_python-xml="Python basic XML support."
-RDEPENDS_python-xml="python-core python-re"
+RDEPENDS_python-xml="python-core python-re python-elementtree"
 FILES_python-xml="${libdir}/python2.6/lib-dynload/pyexpat.so ${libdir}/python2.6/xml ${libdir}/python2.6/xmllib.* "
 
 DESCRIPTION_python-mime="Python MIME Handling APIs"
