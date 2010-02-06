@@ -1,36 +1,31 @@
 DESCRIPTION = "Additional plugins for Enigma2"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
-SRCDATE = "20090723"
-
 PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
+SRCDATE = "20100104"
+
+# if you want the 2.7.0 release, use
+TAG = ";tag=enigma2-plugins_rel27"
+PV = "2.7cvs${SRCDATE}"
+
 # if you want experimental, use:
-REL_MAJOR="2"
-REL_MINOR="6"
-TAG = ""
-
-# if you want a 2.5-based release, use
-#REL_MAJOR="2"
-#REL_MINOR="5"
-#TAG = ";tag=${PN}_rel${REL_MAJOR}${REL_MINOR}"
-
-PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
+#TAG = ""
+#PV = "experimental-cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/enigma2-plugins;module=enigma2-plugins;method=pserver${TAG};date=${SRCDATE}"
+
 FILES_${PN} += " /usr/share/enigma2 /usr/share/fonts "
+FILES_${PN}-meta = "${datadir}/meta"
+PACKAGES += "${PN}-meta"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 inherit autotools
 
 S = "${WORKDIR}/enigma2-plugins"
 
-DEPENDS = "${@get_version_depends(bb, d)} "
-DEPENDS += "enigma2 python-gdata "
-
-def get_version_depends(bb, d):
-	if bb.data.getVar('REL_MINOR', d, 1) > '4':
-		return "python-pyopenssl"
-	return ""
+DEPENDS = "python-pyopenssl python-gdata streamripper"
+DEPENDS += "enigma2"
 
 python populate_packages_prepend () {
 	enigma2_plugindir = bb.data.expand('${libdir}/enigma2/python/Plugins', d)
@@ -40,6 +35,10 @@ python populate_packages_prepend () {
 	def getControlLines(mydir, d, package):
 		import os
 		try:
+			#ac3lipsync is renamed since 20091121 to audiosync.. but rename in cvs is not possible without lost of revision history..
+			#so the foldername is still ac3lipsync
+			if package == 'audiosync':
+				package = 'ac3lipsync'
 			src = open(mydir + package + "/CONTROL/control").read()
 		except IOError:
 			return
@@ -47,17 +46,16 @@ python populate_packages_prepend () {
 			if line.startswith('Package: '):
 				full_package = line[9:]
 			if line.startswith('Depends: '):
-				depends = line[9:].split(', ')
-				# HACK: until enigma2-plugins made the switch we re-route some dependencies here
-				if 'twisted-web' in depends:
-					depends.remove('twisted-web')
-					depends.append('python-twisted-web')
-				if 'twisted-mail' in depends:
-					depends.remove('twisted-mail')
-					depends.append('python-twisted-mail')
-				bb.data.setVar('RDEPENDS_' + full_package, ' '.join(depends), d)
+				bb.data.setVar('RDEPENDS_' + full_package, ' '.join(line[9:].split(', ')), d)
 			if line.startswith('Description: '):
 				bb.data.setVar('DESCRIPTION_' + full_package, line[13:], d)
+			if line.startswith('Replaces: '):
+				bb.data.setVar('RREPLACES_' + full_package, ' '.join(line[10:].split(', ')), d)
+			if line.startswith('Conflicts: '):
+				bb.data.setVar('RCONFLICTS_' + full_package, ' '.join(line[11:].split(', ')), d)
+			if line.startswith('Maintainer: '):
+				bb.data.setVar('MAINTAINER_' + full_package, line[12:], d)
+
 
 	mydir = bb.data.getVar('D', d, 1) + "/../enigma2-plugins/"
 	for package in bb.data.getVar('PACKAGES', d, 1).split():
