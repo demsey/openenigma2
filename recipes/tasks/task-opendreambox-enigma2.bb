@@ -29,6 +29,7 @@ RDEPENDS_task-opendreambox-enigma2 = "\
   enigma2-plugin-extensions-mediaplayer \
   enigma2-plugin-extensions-mediascanner \
   enigma2-plugin-extensions-pictureplayer \
+  enigma2-plugin-extensions-webinterface \
   enigma2-plugin-systemplugins-frontprocessorupgrade \
   enigma2-plugin-systemplugins-hotplug \
   enigma2-plugin-systemplugins-networkwizard \
@@ -39,7 +40,6 @@ RDEPENDS_task-opendreambox-enigma2 = "\
   enigma2-plugin-systemplugins-videotune \
   enigma2-streamproxy \
   ethtool \
-  hotplug-ng \
   python-crypt \
   python-netserver \
   python-pickle \
@@ -50,8 +50,6 @@ RDEPENDS_task-opendreambox-enigma2 = "\
   ${@base_contains("MACHINE_FEATURES", "modem", "task-opendreambox-modem", "", d)} \
   ${@base_contains("MACHINE_FEATURES", "wifi", "task-opendreambox-wlan", "", d)} \
 "
-
-#  enigma2-plugin-extensions-webinterface is disabled until we fixed it to use twisted-web instead of twisted-web2
 
 RDEPENDS_task-opendreambox-enigma2_append_dm500hd = "\
   enigma2-plugin-systemplugins-videomode \
@@ -70,4 +68,3 @@ RDEPENDS_task-opendreambox-enigma2_append_dm8000 = "\
 "
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-
