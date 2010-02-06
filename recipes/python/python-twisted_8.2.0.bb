@@ -175,6 +175,8 @@ ${bindir}/mailmail \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/plugins/twisted_mail.py* \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/mail \
 "
+RREPLACES_${PN}-mail = "twisted-mail"
+RCONFLICTS_${PN}-mail = "twisted-mail"
 
 FILES_${PN}-names = " \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/plugins/twisted_names.py* \
@@ -196,6 +198,8 @@ ${bindir}/websetroot \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/plugins/twisted_web.py* \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/web\
 "
+RREPLACES_${PN}-web = "twisted-web"
+RCONFLICTS_${PN}-web = "twisted-web"
 
 FILES_${PN}-words = " \
 ${bindir}/im \
@@ -216,3 +220,6 @@ FILES_${PN}-dbg += " \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/*/.debug \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/*/*/.debug \
 "
+
+RPROVIDES += "twisted-web twisted-mail"
+PROVIDES += "twisted-web twisted-mail"
