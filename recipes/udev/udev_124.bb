@@ -18,6 +18,11 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
 PACKAGE_ARCH_h2200 = "h2200"
 
+SRC_URI_append_opendreambox = " file://40-od-devfs-compatibility.rules \
+	   file://42-od-oled-compatibility.rules"
+
+SRC_URI_append_dm8000 = " ${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', 'file://41-od-linux-2.6.18-misc.rules', '', d)}"
+
 require udev.inc
 
 INITSCRIPT_PARAMS = "start 03 S ."
@@ -63,4 +68,8 @@ do_install () {
 
 do_install_append_h2200() {
 	install -m 0644 ${WORKDIR}/50-hostap_cs.rules         ${D}${sysconfdir}/udev/rules.d/50-hostap_cs.rules
+}
+
+do_install_append_opendreambox() {
+	install -m 0644 ${WORKDIR}/??-od-*.rules ${D}${sysconfdir}/udev/rules.d/
 }
