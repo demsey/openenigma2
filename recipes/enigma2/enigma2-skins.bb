@@ -1,25 +1,22 @@
 DESCRIPTION = "Skins for Enigma2"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
-SRCDATE = "20090303"
-
 PACKAGES_DYNAMIC = "enigma2-skin-*"
 
+SRCDATE = "20100106"
+
+# if you want the 2.7 release, use
+TAG = ";tag=enigma2-skins_rel27"
+PV = "2.7cvs${SRCDATE}"
+
 # if you want experimental, use:
-REL_MAJOR="2"
-REL_MINOR="6"
-TAG = ""
-
-# if you want a 2.5-based release, use
-#REL_MAJOR="2"
-#REL_MINOR="5"
-#TAG = ";tag=${PN}_rel${REL_MAJOR}${REL_MINOR}"
-
-PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
+#TAG = ""
+#PV = "experimental-cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/enigma2-skins;module=enigma2-skins;method=pserver${TAG};date=${SRCDATE}"
 FILES_${PN} += " /usr/share/enigma2 /usr/share/fonts "
-ALLOW_EMPTY_${PN} = "1"
+FILES_${PN}-meta = "${datadir}/meta"
+PACKAGES += "${PN}-meta"
 PACKAGE_ARCH = "all"
 
 inherit autotools
