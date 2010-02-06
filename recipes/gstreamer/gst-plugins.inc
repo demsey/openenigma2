@@ -4,7 +4,7 @@ DEPENDS = "gstreamer libmikmod liboil libogg tremor libvorbis libid3tag"
 DEPENDS += "${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag', d)}"
 DEPENDS += "${@base_conditional('DISTRO', 'opendreambox', 'libmad neon flac libmatroska libcdio', '', d)}"
 
-INC_PR = "r6"
+INC_PR = "r0"
 
 PACKAGES_DYNAMIC = "gst-plugin-*"
 
