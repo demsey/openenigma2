@@ -1,0 +1,56 @@
+--- a/lib/python/Plugins/Extensions/DVDBurn/DVDToolbox.py
++++ b/lib/python/Plugins/Extensions/DVDBurn/DVDToolbox.py
+@@ -68,7 +68,7 @@ class DVDToolbox(Screen):
+ 		self["info"].text = ""
+ 		self["details"].setText("")
+ 		self.Console = Console()
+-		cmd = "/bin/dvd+rw-mediainfo /dev/" + harddiskmanager.getCD()
++		cmd = "/usr/bin/dvd+rw-mediainfo /dev/" + harddiskmanager.getCD()
+ 		self.Console.ePopen(cmd, self.mediainfoCB)
+ 
+ 	def format(self):
+@@ -186,7 +186,7 @@ class DVDformatTask(Task):
+ 		Task.__init__(self, job, ("RW medium format"))
+ 		self.toolbox = job.toolbox
+ 		self.postconditions.append(DVDformatTaskPostcondition())
+-		self.setTool("/bin/dvd+rw-format")
++		self.setTool("/usr/bin/dvd+rw-format")
+ 		self.args += [ "/dev/" + harddiskmanager.getCD() ]
+ 		self.end = 1100
+ 		self.retryargs = [ ]
+--- a/lib/python/Plugins/Extensions/DVDBurn/Process.py
++++ b/lib/python/Plugins/Extensions/DVDBurn/Process.py
+@@ -292,7 +292,7 @@ class BurnTaskPostcondition(Condition):
+ 
+ class BurnTask(Task):
+ 	ERROR_NOTWRITEABLE, ERROR_LOAD, ERROR_SIZE, ERROR_WRITE_FAILED, ERROR_DVDROM, ERROR_ISOFS, ERROR_FILETOOLARGE, ERROR_ISOTOOLARGE, ERROR_MINUSRWBUG, ERROR_UNKNOWN = range(10)
+-	def __init__(self, job, extra_args=[], tool="/bin/growisofs"):
++	def __init__(self, job, extra_args=[], tool="/usr/bin/growisofs"):
+ 		Task.__init__(self, job, job.name)
+ 		self.weighting = 500
+ 		self.end = 120 # 100 for writing, 10 for buffer flush, 10 for closing disc
+@@ -882,7 +882,7 @@ class DVDJob(Job):
+ 			volName = self.project.settings.name.getValue()
+ 			if output == "dvd":
+ 				self.name = _("Burn DVD")
+-				tool = "/bin/growisofs"
++				tool = "/usr/bin/growisofs"
+ 				burnargs = [ "-Z", "/dev/" + harddiskmanager.getCD(), "-dvd-compat" ]
+ 				if self.project.size/(1024*1024) > self.project.MAX_SL:
+ 					burnargs += [ "-use-the-force-luke=4gms", "-speed=1", "-R" ]
+@@ -920,7 +920,7 @@ class DVDdataJob(Job):
+ 
+ 		output = self.project.settings.output.getValue()
+ 		volName = self.project.settings.name.getValue()
+-		tool = "/bin/growisofs"
++		tool = "/usr/bin/growisofs"
+ 		if output == "dvd":
+ 			self.name = _("Burn DVD")
+ 			burnargs = [ "-Z", "/dev/" + harddiskmanager.getCD(), "-dvd-compat" ]
+@@ -959,5 +959,5 @@ class DVDisoJob(Job):
+ 			if getSize(imagepath)/(1024*1024) > self.project.MAX_SL:
+ 				burnargs += [ "-use-the-force-luke=4gms", "-speed=1", "-R" ]
+ 			burnargs += [ "-dvd-video", "-publisher", "Dreambox", "-V", volName, imagepath ]
+-		tool = "/bin/growisofs"
++		tool = "/usr/bin/growisofs"
+ 		BurnTask(self, burnargs, tool)

@@ -1,0 +1,612 @@
+--- a/lib/python/Components/Harddisk.py
++++ b/lib/python/Components/Harddisk.py
+@@ -11,17 +11,17 @@ def readFile(filename):
+ 	file.close()
+ 	return data
+ 
+-class Harddisk:
+-	DEVTYPE_UDEV = 0
+-	DEVTYPE_DEVFS = 1
++DEVTYPE_UDEV = 0
++DEVTYPE_DEVFS = 1
+ 
++class Harddisk:
+ 	def __init__(self, device):
+ 		self.device = device
+ 
+ 		if access("/dev/.udev", 0):
+-			self.type = self.DEVTYPE_UDEV
++			self.type = DEVTYPE_UDEV
+ 		elif access("/dev/.devfsd", 0):
+-			self.type = self.DEVTYPE_DEVFS
++			self.type = DEVTYPE_DEVFS
+ 		else:
+ 			print "Unable to determine structure of /dev"
+ 
+@@ -33,11 +33,11 @@ class Harddisk:
+ 		self.disk_path = ''
+ 		self.phys_path = path.realpath(self.sysfsPath('device'))
+ 
+-		if self.type == self.DEVTYPE_UDEV:
++		if self.type == DEVTYPE_UDEV:
+ 			self.dev_path = '/dev/' + self.device
+ 			self.disk_path = self.dev_path
+ 
+-		elif self.type == self.DEVTYPE_DEVFS:
++		elif self.type == DEVTYPE_DEVFS:
+ 			tmp = readFile(self.sysfsPath('dev')).split(':')
+ 			s_major = int(tmp[0])
+ 			s_minor = int(tmp[1])
+@@ -60,9 +60,9 @@ class Harddisk:
+ 		return self.device < ob.device
+ 
+ 	def partitionPath(self, n):
+-		if self.type == self.DEVTYPE_UDEV:
++		if self.type == DEVTYPE_UDEV:
+ 			return self.dev_path + n
+-		elif self.type == self.DEVTYPE_DEVFS:
++		elif self.type == DEVTYPE_DEVFS:
+ 			return self.dev_path + '/part' + n
+ 
+ 	def sysfsPath(self, filename):
+@@ -75,9 +75,9 @@ class Harddisk:
+ 
+ 	def bus(self):
+ 		# CF (7025 specific)
+-		if self.type == self.DEVTYPE_UDEV:
++		if self.type == DEVTYPE_UDEV:
+ 			ide_cf = False	# FIXME
+-		elif self.type == self.DEVTYPE_DEVFS:
++		elif self.type == DEVTYPE_DEVFS:
+ 			ide_cf = self.device[:2] == "hd" and "host0" not in self.dev_path
+ 
+ 		internal = "pci" in self.phys_path
+@@ -136,7 +136,7 @@ class Harddisk:
+ 
+ 	def numPartitions(self):
+ 		numPart = -1
+-		if self.type == self.DEVTYPE_UDEV:
++		if self.type == DEVTYPE_UDEV:
+ 			try:
+ 				devdir = listdir('/dev')
+ 			except OSError:
+@@ -145,7 +145,7 @@ class Harddisk:
+ 				if filename.startswith(self.device):
+ 					numPart += 1
+ 
+-		elif self.type == self.DEVTYPE_DEVFS:
++		elif self.type == DEVTYPE_DEVFS:
+ 			try:
+ 				idedir = listdir(self.dev_path)
+ 			except OSError:
+@@ -394,24 +394,38 @@ class Partition:
+ 				return True
+ 		return False
+ 
+-DEVICEDB =  \
++DEVICEDB_SR = \
+ 	{"dm8000":
+ 		{
+-			# dm8000:
+-			"/devices/platform/brcm-ehci.0/usb1/1-1/1-1.1/1-1.1:1.0": "Front USB Slot",
+-			"/devices/platform/brcm-ehci.0/usb1/1-1/1-1.2/1-1.2:1.0": "Back, upper USB Slot",
+-			"/devices/platform/brcm-ehci.0/usb1/1-1/1-1.3/1-1.3:1.0": "Back, lower USB Slot",
+-			"/devices/platform/brcm-ehci-1.1/usb2/2-1/2-1:1.0/host1/target1:0:0/1:0:0:0": "DVD Drive",
++			"/devices/pci0000:01/0000:01:00.0/host0/target0:0:0/0:0:0:0": _("DVD Drive"),
++			"/devices/pci0000:01/0000:01:00.0/host1/target1:0:0/1:0:0:0": _("DVD Drive"),
++			"/devices/platform/brcm-ehci-1.1/usb2/2-1/2-1:1.0/host3/target3:0:0/3:0:0:0": _("DVD Drive"),
++		},
++	"dm800":
++	{
++	},
++	"dm7025":
++	{
++	}
++	}
++
++DEVICEDB = \
++	{"dm8000":
++		{
++			"/devices/platform/brcm-ehci.0/usb1/1-1/1-1.1/1-1.1:1.0": _("Front USB Slot"),
++			"/devices/platform/brcm-ehci.0/usb1/1-1/1-1.2/1-1.2:1.0": _("Back, upper USB Slot"),
++			"/devices/platform/brcm-ehci.0/usb1/1-1/1-1.3/1-1.3:1.0": _("Back, lower USB Slot"),
++			"/devices/platform/brcm-ehci.0/usb1/1-1/1-1.1/1-1.1:1.0": _("Front USB Slot"),
++			"/devices/platform/brcm-ehci-1.1/usb2/2-1/2-1:1.0/": _("Internal USB Slot"),
++			"/devices/platform/brcm-ohci-1.1/usb4/4-1/4-1:1.0/": _("Internal USB Slot"),
+ 		},
+ 	"dm800":
+ 	{
+-		# dm800:
+ 		"/devices/platform/brcm-ehci.0/usb1/1-2/1-2:1.0": "Upper USB Slot",
+ 		"/devices/platform/brcm-ehci.0/usb1/1-1/1-1:1.0": "Lower USB Slot",
+ 	},
+ 	"dm7025":
+ 	{
+-		# dm7025:
+ 		"/devices/pci0000:00/0000:00:14.1/ide1/1.0": "CF Card Slot", #hdc
+ 		"/devices/pci0000:00/0000:00:14.1/ide0/0.0": "Internal Harddisk"
+ 	}
+@@ -422,6 +436,7 @@ class HarddiskManager:
+ 		self.hdd = [ ]
+ 		self.cd = ""
+ 		self.partitions = [ ]
++		self.devices_scanned_on_init = [ ]
+ 
+ 		self.on_partition_list_change = CList()
+ 
+@@ -489,24 +504,23 @@ class HarddiskManager:
+ 	def enumerateBlockDevices(self):
+ 		print "enumerating block devices..."
+ 		for blockdev in listdir("/sys/block"):
+-			error, blacklisted, removable, is_cdrom, partitions, medium_found = self.getBlockDevInfo(blockdev)
+-			print "found block device '%s':" % blockdev, 
+-			if error:
+-				print "error querying properties"
+-			elif blacklisted:
+-				print "blacklisted"
+-			elif not medium_found:
+-				print "no medium"
+-			else:
+-				print "ok, removable=%s, cdrom=%s, partitions=%s, device=%s" % (removable, is_cdrom, partitions, blockdev)
+-
+-				self.addHotplugPartition(blockdev)
+-				for part in partitions:
+-					self.addHotplugPartition(part)
++			error, blacklisted, removable, is_cdrom, partitions, medium_found = self.addHotplugPartition(blockdev)
++			if not error and not blacklisted:
++				if medium_found:
++					for part in partitions:
++						self.addHotplugPartition(part)
++				self.devices_scanned_on_init.append((blockdev, removable, is_cdrom, medium_found))
+ 
+ 	def getAutofsMountpoint(self, device):
+ 		return "/autofs/%s/" % (device)
+ 
++	def is_hard_mounted(self, device):
++		mounts = file('/proc/mounts').read().split('\n')
++		for x in mounts:
++			if x.find('/autofs') == -1 and x.find(device) != -1:
++				return True
++		return False
++
+ 	def addHotplugPartition(self, device, physdev = None):
+ 		if not physdev:
+ 			dev, part = self.splitDeviceName(device)
+@@ -516,22 +530,36 @@ class HarddiskManager:
+ 				physdev = dev
+ 				print "couldn't determine blockdev physdev for device", device
+ 
+-		# device is the device name, without /dev
+-		# physdev is the physical device path, which we (might) use to determine the userfriendly name
+-		description = self.getUserfriendlyDeviceName(device, physdev)
++		error, blacklisted, removable, is_cdrom, partitions, medium_found = self.getBlockDevInfo(device)
++		print "found block device '%s':" % device,
+ 
+-		p = Partition(mountpoint = self.getAutofsMountpoint(device), description = description, force_mounted = True, device = device)
+-		self.partitions.append(p)
+-		self.on_partition_list_change("add", p)
++		if blacklisted:
++			print "blacklisted"
++		else:
++			if error:
++				print "error querying properties"
++			elif not medium_found:
++				print "no medium"
++			else:
++				print "ok, removable=%s, cdrom=%s, partitions=%s" % (removable, is_cdrom, partitions)
++
++			l = len(device)
++			if l:
++				# see if this is a harddrive
++				if not device[l-1].isdigit() and not removable and not is_cdrom:
++					self.hdd.append(Harddisk(device))
++					self.hdd.sort()
++					SystemInfo["Harddisk"] = len(self.hdd) > 0
++
++				if (not removable or medium_found) and not self.is_hard_mounted(device):
++					# device is the device name, without /dev
++					# physdev is the physical device path, which we (might) use to determine the userfriendly name
++					description = self.getUserfriendlyDeviceName(device, physdev)
++					p = Partition(mountpoint = self.getAutofsMountpoint(device), description = description, force_mounted = True, device = device)
++					self.partitions.append(p)
++					self.on_partition_list_change("add", p)
+ 
+-		# see if this is a harddrive
+-		l = len(device)
+-		if l and not device[l-1].isdigit():
+-			error, blacklisted, removable, is_cdrom, partitions, medium_found = self.getBlockDevInfo(device)
+-			if not blacklisted and not removable and not is_cdrom and medium_found:
+-				self.hdd.append(Harddisk(device))
+-				self.hdd.sort()
+-				SystemInfo["Harddisk"] = len(self.hdd) > 0
++		return error, blacklisted, removable, is_cdrom, partitions, medium_found
+ 
+ 	def removeHotplugPartition(self, device):
+ 		mountpoint = self.getAutofsMountpoint(device)
+@@ -589,15 +617,23 @@ class HarddiskManager:
+ 	def getUserfriendlyDeviceName(self, dev, phys):
+ 		dev, part = self.splitDeviceName(dev)
+ 		description = "External Storage %s" % dev
++		have_model_descr = False
+ 		try:
+ 			description = readFile("/sys" + phys + "/model")
++			have_model_descr = True
+ 		except IOError, s:
+ 			print "couldn't read model: ", s
+ 		from Tools.HardwareInfo import HardwareInfo
+-		for physdevprefix, pdescription in DEVICEDB.get(HardwareInfo().device_name,{}).items():
++		if dev.find('sr') == 0 and dev[2].isdigit():
++			devicedb = DEVICEDB_SR
++		else:
++			devicedb = DEVICEDB
++		for physdevprefix, pdescription in devicedb.get(HardwareInfo().device_name,{}).items():
+ 			if phys.startswith(physdevprefix):
+-				description = pdescription
+-
++				if have_model_descr:
++					description = pdescription + ' - ' + description
++				else:
++					description = pdescription
+ 		# not wholedisk and not partition 1
+ 		if part and part != 1:
+ 			description += " (Partition %d)" % part
+--- a/lib/python/Plugins/SystemPlugins/Hotplug/plugin.py
++++ b/lib/python/Plugins/SystemPlugins/Hotplug/plugin.py
+@@ -1,66 +1,300 @@
+ from Plugins.Plugin import PluginDescriptor
+-from twisted.internet.protocol import Protocol, Factory
+-from twisted.internet import reactor
+ from Components.Harddisk import harddiskmanager
++from Tools.Directories import fileExists
+ 
+ hotplugNotifier = [ ]
++bdpoll = None
+ 
+-class Hotplug(Protocol):
+-	def connectionMade(self):
+-		self.received = ""
++def processHotplugData(self, v):
++	print "hotplug:", v
++	action = v.get("ACTION")
++	device = v.get("DEVPATH")
++	physdevpath = v.get("PHYSDEVPATH")
++	media_state = v.get("X_E2_MEDIA_STATUS")
+ 
+-	def dataReceived(self, data):
+-		self.received += data
++	dev = device.split('/')[-1]
+ 
+-	def connectionLost(self, reason):
+-		data = self.received.split('\0')[:-1]
++	if action is not None and action == "add":
++		error, blacklisted, removable, is_cdrom, partitions, medium_found = harddiskmanager.addHotplugPartition(dev, physdevpath)
++		if bdpoll and removable or is_cdrom:
++			bdpoll.addDevice(dev, is_cdrom, medium_found)
++	elif action is not None and action == "remove":
++		if bdpoll:
++			bdpoll.removeDevice(dev)
++		harddiskmanager.removeHotplugPartition(dev)
++	elif media_state is not None:
++		if media_state == '1':
++			harddiskmanager.removeHotplugPartition(dev)
++			harddiskmanager.addHotplugPartition(dev, physdevpath)
++		elif media_state == '0':
++			harddiskmanager.removeHotplugPartition(dev)
+ 
+-		v = {}
++	for callback in hotplugNotifier:
++		try:
++			callback(dev, action or media_state)
++		except AttributeError:
++			hotplugNotifier.remove(callback)
+ 
+-		for x in data:
+-			i = x.find('=')
+-			var, val = x[:i], x[i+1:]
+-			v[var] = val
++CDROM_DRIVE_STATUS = 0x5326
++CDROM_MEDIA_CHANGED = 0x5325
++CDSL_CURRENT = ((int)(~0>>1))
++CDS_NO_INFO = 0
++CDS_NO_DISC = 1
++CDS_TRAY_OPEN = 2
++CDS_DRIVE_NOT_READY = 3
++CDS_DISC_OK = 4
++ENOMEDIUM = 159
++IOC_NRBITS = 8
++IOC_NRSHIFT = 0
++IOC_TYPESHIFT = (IOC_NRSHIFT+IOC_NRBITS)
++BLKRRPART = ((0x12<<IOC_TYPESHIFT) | (95<<IOC_NRSHIFT))
+ 
+-		print "hotplug:", v
++def autostart(reason, **kwargs):
++	if reason == 0:
++		print "starting hotplug handler"
+ 
+-		action = v.get("ACTION")
+-		device = v.get("DEVPATH")
+-		physdevpath = v.get("PHYSDEVPATH")
+-		media_state = v.get("X_E2_MEDIA_STATUS")
++		if fileExists('/dev/.udev'):
++			global netlink
++			global bdpoll
++			from enigma import eSocketNotifier, eTimer, ePythonMessagePump
++			import socket
++			from select import POLLIN, POLLPRI
+ 
+-		dev = device.split('/')[-1]
++			class Netlink:
++				def __init__(self):
++					self.netlink = socket.socket(socket.AF_NETLINK, socket.SOCK_DGRAM, 15)
++					self.netlink.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 65536)
++					self.netlink.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 65536)
++					self.netlink.bind((0, 1))
++					self.sn = eSocketNotifier(self.netlink.fileno(), POLLIN|POLLPRI)
++					self.sn.callback.append(self.dataAvail)
+ 
+-		if action is not None and action == "add":
+-			harddiskmanager.addHotplugPartition(dev, physdevpath)
+-		elif action is not None and action == "remove":
+-			harddiskmanager.removeHotplugPartition(dev)
+-		elif media_state is not None:
+-			if media_state == '1':
+-				harddiskmanager.removeHotplugPartition(dev)
+-				harddiskmanager.addHotplugPartition(dev, physdevpath)
+-			elif media_state == '0':
+-				harddiskmanager.removeHotplugPartition(dev)
+-		
+-		for callback in hotplugNotifier:
+-			try:
+-				callback(dev, action or media_state)
+-			except AttributeError:
+-				hotplugNotifier.remove(callback)
++				def dataAvail(self, what):
++					received = self.netlink.recvfrom(16384)
++#					print "HOTPLUG(%d):" %(what), received
+ 
+-def autostart(reason, **kwargs):
+-	if reason == 0:
+-		print "starting hotplug handler"
+-		factory = Factory()
+-		factory.protocol = Hotplug
++					data = received[0].split('\0')[:-1]
++					v = {}
++
++					for x in data:
++						i = x.find('=')
++						var, val = x[:i], x[i+1:]
++						v[var] = val
++
++					if v['SUBSYSTEM'] == 'block' and v['ACTION'] in ('add', 'remove'):
++						processHotplugData(self, v)
++
++			from threading import Thread, Semaphore, Lock
++
++			class ThreadQueue:
++				def __init__(self):
++					self.__list = [ ]
++					self.__lock = Lock()
++
++				def push(self, val):
++					list = self.__list
++					lock = self.__lock
++					lock.acquire()
++					list.append(val)
++					lock.release()
++
++				def pop(self):
++					list = self.__list
++					lock = self.__lock
++					lock.acquire()
++					ret = list[0]
++					del list[0]
++					lock.release()
++					return ret
+ 
+-		try:
+ 			import os
+-			os.remove("/tmp/hotplug.socket")
+-		except OSError:
+-			pass
++			import errno
++			import fcntl
++
++			class BDPoll(Thread):
++				CHECK_INTERVAL = 2000
++				MSG_MEDIUM_REMOVED = 1
++				MSG_MEDIUM_INSERTED = 2
++				MSG_POLL_FINISHED = 4
++				def __init__(self):
++					Thread.__init__(self)
++					self.__sema = Semaphore(0)
++					self.__lock = Lock()
++					self.running = False
++					self.devices_to_poll = { }
++					self.messages = ThreadQueue()
++					self.checkTimer = eTimer()
++					self.checkTimer.callback.append(self.timeout)
++					self.checkTimer.start(BDPoll.CHECK_INTERVAL, True)
++					self.mp = ePythonMessagePump()
++					self.mp.recv_msg.get().append(self.gotThreadMsg)
++					self.start()
++
++				def gotThreadMsg(self, msg):
++					msg = self.messages.pop()
++					if msg[0] == BDPoll.MSG_MEDIUM_REMOVED:
++						print "MSG_MEDIUM_REMOVED"
++						harddiskmanager.removeHotplugPartition(msg[1])
++					elif msg[0] == BDPoll.MSG_MEDIUM_INSERTED:
++						print "MSG_MEDIUM_INSERTED"
++						harddiskmanager.addHotplugPartition(msg[1])
++					elif msg[0] == BDPoll.MSG_POLL_FINISHED:
++						self.checkTimer.start(BDPoll.CHECK_INTERVAL, True)
++
++				def timeout(self):
++					self.__sema.release() # start bdpoll loop in thread
++
++				def is_mounted(self, dev):
++					mounts = file('/proc/mounts').read()
++					return mounts.find(dev) != -1
++
++				def run(self):
++					sema = self.__sema
++					lock = self.__lock
++					messages = self.messages
++					mp = self.mp
++					self.running = True
++					while self.running:
++						sema.acquire()
++						self.__lock.acquire()
++						devices_to_poll = self.devices_to_poll.items()
++						self.__lock.release()
++						devices_to_poll_processed = [ ]
++						for device, state in devices_to_poll:
++							got_media = False
++							is_cdrom, prev_media_state = state
++							if is_cdrom:
++								try:
++									fd = os.open("/dev/" + device, os.O_RDONLY | os.O_NONBLOCK | os.O_EXCL)
++								except OSError, err:
++									if err.errno == errno.EBUSY:
++										print "open cdrom exclusive failed:",
++										if not self.is_mounted(device):
++											print "not mounted"
++											continue
++										try:
++											print "mounted... try non exclusive"
++											fd = os.open("/dev/" + device, os.O_RDONLY | os.O_NONBLOCK)
++										except OSError, err:
++											print "open cdrom not exclusive failed", os.strerror(err.errno)
++											continue
++								#here the fs must be valid!
++								try:
++									ret = fcntl.ioctl(fd, CDROM_DRIVE_STATUS, CDSL_CURRENT)
++								except IOError, err:
++									print "ioctl CDROM_DRIVE_STATUS failed", os.strerror(err.errno)
++								else:
++									if ret in (CDS_NO_INFO, CDS_NO_DISC, CDS_TRAY_OPEN, CDS_DRIVE_NOT_READY):
++										pass
++									elif ret == CDS_DISC_OK:
++										#todo new kernels support events to userspace event on media change
++										#but not 2.6.18.... see hotplug-ng bdpoll.c
++										got_media = True
++								os.close(fd)
++							else:
++								try:
++									fd = os.open("/dev/" + device, os.O_RDONLY)
++								except OSError, err:
++									if err.errno == ENOMEDIUM:
++										pass
++									else:
++										print "open non cdrom failed", os.strerror(err.errno)
++										continue
++								else:
++									got_media = True
++									os.close(fd)
++							if prev_media_state:
++								if not got_media:
++									print "media removal detected on", device
++									try:
++										fd = os.open("/dev/" + device, os.O_RDONLY | os.O_NONBLOCK)
++									except OSError, err:
++										print "open device for blkrrpart ioctl failed", os.strerror(err.errno)
++									else:
++										try:
++											fcntl.ioctl(fd, BLKRRPART)
++										except IOError, err:
++											print "ioctl BLKRRPART failed", os.strerror(err.errno)
++										os.close(fd)
++							else:
++								if got_media:
++									print "media insertion detected on", device
++							devices_to_poll_processed.append((device, is_cdrom, got_media))
++						self.__lock.acquire()
++						for device, is_cdrom, state in devices_to_poll_processed:
++							old_state = self.devices_to_poll.get(device)
++							if old_state is not None and old_state[1] != state:
++								msg = state and BDPoll.MSG_MEDIUM_INSERTED or BDPoll.MSG_MEDIUM_REMOVED
++								self.devices_to_poll[device] = (is_cdrom, state)
++								messages.push((msg, device))
++								mp.send(0)
++
++						self.__lock.release()
++						messages.push((self.MSG_POLL_FINISHED,))
++						mp.send(0)
++
++				def addDevice(self, device, is_cdrom, inserted):
++					self.__lock.acquire()
++					if device in self.devices_to_poll:
++						print "device", device, "already in bdpoll"
++					else:
++						print "add device", device, "to bdpoll current state:",
++						if inserted:
++							print "medium inserted"
++						else:
++							print "medium removed"
++						self.devices_to_poll[device] = (is_cdrom, inserted)
++					self.__lock.release()
++
++				def removeDevice(self, device):
++					self.__lock.acquire()
++					if device in self.devices_to_poll:
++						print "device", device, "removed from bdpoll"
++						del self.devices_to_poll[device]
++					else:
++						print "try to del not exist device", device, "from bdpoll"
++					self.__lock.release()
++
++			netlink = Netlink()
++			bdpoll = BDPoll()
++			for blockdev, removable, is_cdrom, medium_found in harddiskmanager.devices_scanned_on_init:
++				if removable or is_cdrom:
++					bdpoll.addDevice(blockdev, is_cdrom, medium_found)
++		else:
++			from twisted.internet.protocol import Protocol, Factory
++			from twisted.internet import reactor
++
++			try:
++				import os
++				os.remove("/tmp/hotplug.socket")
++			except OSError:
++				pass
++
++			class Hotplug(Protocol):
++				def connectionMade(self):
++					print "HOTPLUG connection!"
++					self.received = ""
++
++				def dataReceived(self, data):
++					print "hotplug:", data
++					self.received += data
++					print "complete", self.received
++
++				def connectionLost(self, reason):
++					print "HOTPLUG connection lost!"
++					data = self.received.split('\0')[:-1]
++					v = {}
++
++					for x in data:
++						i = x.find('=')
++						var, val = x[:i], x[i+1:]
++						v[var] = val
++
++					processHotplugData(self, v)
+ 
+-		reactor.listenUNIX("/tmp/hotplug.socket", factory)
++			factory = Factory()
++			factory.protocol = Hotplug
++			reactor.listenUNIX("/tmp/hotplug.socket", factory)
+ 
+ def Plugins(**kwargs):
+ 	return PluginDescriptor(name = "Hotplug", description = "listens to hotplug events", where = PluginDescriptor.WHERE_AUTOSTART, fnc = autostart)
+--- a/lib/python/Tools/HardwareInfo.py
++++ b/lib/python/Tools/HardwareInfo.py
+@@ -3,7 +3,7 @@ class HardwareInfo:
+ 
+ 	def __init__(self):
+ 		if HardwareInfo.device_name is not None:
+-			print "using cached result"
++#			print "using cached result"
+ 			return
+ 
+ 		HardwareInfo.device_name = "unknown"
