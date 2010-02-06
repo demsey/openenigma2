@@ -5,7 +5,11 @@ DEPENDS += "unifdef-native"
 PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
-           file://arm-syscall-define.patch;patch=1"
+           file://arm-syscall-define.patch;patch=1 \
+           file://fix-dvb-headers.patch;patch=1"
+
+SRC_URI_append_mipsel = " file://mips-add-missing-headers.patch;patch=1 \
+           file://mips-fix-ptrace-header.patch;patch=1"
 
 S = "${WORKDIR}/linux-2.6.18"
 
@@ -56,10 +60,10 @@ do_stage () {
 		cp include/asm-arm/procinfo.h ${STAGE_TEMP}${includedir}/asm
 	fi
 	install -d ${STAGING_INCDIR}
-	rm -rf ${STAGING_INCDIR}/linux ${STAGING_INCDIR}/asm ${STAGING_INCDIR}/asm-generic
-	cp -pfLR ${STAGE_TEMP}${includedir}/linux ${STAGING_INCDIR}/
-	cp -pfLR ${STAGE_TEMP}${includedir}/asm ${STAGING_INCDIR}/
-	cp -pfLR ${STAGE_TEMP}${includedir}/asm-generic ${STAGING_INCDIR}/
+	for x in linux asm asm-generic linux mtd rdma scsi sound video; do
+		rm -rf ${STAGING_INCDIR}/$x;
+		cp -pfLR ${STAGE_TEMP}${includedir}/$x ${STAGING_INCDIR}/;
+	done
 	# Add UTS_RELEASE to version.h. UTS_RELEASE was moved from version.h to 
 	# utsrelease.h in order to avoid recompiling a kernel every time a localversion
 	# changed. Since the our headers are static and we're not compiling an 
