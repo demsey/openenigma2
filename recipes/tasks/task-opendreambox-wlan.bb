@@ -40,8 +40,7 @@ RDEPENDS_${PN}_append_dm800 = "\
 "
 
 RDEPENDS_${PN}_append_dm8000 = "\
-  ${WLAN_CRYPTO_MODULES} \
-  ${WLAN_PCI_MODULES} \
+  ${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', 'task-opendreambox-madwifi', '${WLAN_CRYPTO_MODULES} ${WLAN_PCI_MODULES}', d)} \
 "
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
