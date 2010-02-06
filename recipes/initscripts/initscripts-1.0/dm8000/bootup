@@ -1,5 +1,4 @@
 echo 10 > /proc/progress
-[ -e /dev/dbox/oled0 ] && ln -s /dev/dbox/oled0 /dev/dbox/lcd0
 
 depmod -Ae
 echo 12 > /proc/progress
@@ -39,6 +38,18 @@ echo 19 > /proc/progress
 cat /etc/videomode > /proc/stb/video/videomode
 
 echo 20 > /proc/progress
+
+if [ "$(uname -r | cut -d- -f1)" == "2.6.18" ]; then
+	echo "loading madwifi modules"
+	for x in wlan ath_rate; do
+		for mod in `ls /lib/modules/$(uname -r)/net | grep $x | cut -d . -f 0`; do
+			modprobe $mod
+		done
+	done
+	modprobe ath_pci
+fi
+
+echo 21 > /proc/progress
 
 [ -e /etc/dropbear/dropbear_rsa_host_key ] && /usr/bin/showiframe /boot/bootlogo.mvi || /usr/bin/showiframe /boot/bootlogo_wait.mvi
 
