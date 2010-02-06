@@ -4,6 +4,9 @@ LICENSE = "GPL"
 HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "dbus gnutls ${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng", "",d)}"
 DEPENDS_opendreambox = "libnl openssl"
+DEPENDS_opendreambox_append_dm8000 = " ${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', 'madwifi-ng', '', d)}"
+TARGET_CFLAGS_append_dm8000 = " ${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', ' -I${STAGING_INCDIR}/madwifi-ng', '', d)}"
+
 PR = "r5"
 
 #we introduce MY_ARCH to get 'armv5te' as arch instead of the misleading 'arm' on armv5te builds
@@ -16,6 +19,8 @@ SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://defconfig-0.6.0-gnutls \
 	file://ifupdown.sh \
 	file://functions.sh"
+
+SRC_URI_append_dm8000 = " file://defconfig-0.6.0-madwifi"
 
 S = "${WORKDIR}/wpa_supplicant-${PV}/wpa_supplicant"
 
@@ -37,8 +42,14 @@ do_configure () {
         fi
 }
 
-do_configure_opendreambox() {
-        install -m 0755 ${WORKDIR}/defconfig-0.6.0-gnutls .config
+export NEED_MADWIFI = "${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', 1, 0, d)}"
+
+do_configure_dm8000() {
+	if [ "x$NEED_MADWIFI" == "x1" ] ; then
+		install -m 0755 ${WORKDIR}/defconfig-0.6.0-madwifi .config
+	else
+		install -m 0755 ${WORKDIR}/defconfig-0.6.0-gnutls .config
+	fi
 }
 
 do_compile () {
