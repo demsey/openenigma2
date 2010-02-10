@@ -35,7 +35,6 @@ RREPLACES = "wpa-supplicant-cli"
 RRECOMMENDS_${PN} = "wpa-supplicant-passphrase"
 
 export HAS_MADWIFI = "${@base_contains('COMBINED_FEATURES', 'madwifi', 1, 0,d)}"
-
 do_configure () {
         install -m 0755 ${WORKDIR}/defconfig-0.6.0-gnutls  .config
 
@@ -45,10 +44,9 @@ do_configure () {
         fi
 }
 
-export NEED_OLD = "${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', 1, 0, d)}"
-
+export NEED_OLD_8K = "${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', 1, 0, d)}"
 do_configure_dm8000 () {
-	if [ "x$NEED_OLD" == "x1" ] ; then
+	if [ "x$NEED_OLD_8K" == "x1" ] ; then
 		install -m 0755 ${WORKDIR}/defconfig-0.6.0-old .config
                 echo "CONFIG_DRIVER_MADWIFI=y" >> .config
 	else
@@ -56,8 +54,9 @@ do_configure_dm8000 () {
 	fi
 }
 
+export NEED_OLD_800 = "${@base_contains('PREFERRED_VERSION_linux-dm800', '2.6.18', 1, 0, d)}"
 do_configure_dm800 () {
-	if [ "x$NEED_OLD" == "x1" ] ; then
+	if [ "x$NEED_OLD_800" == "x1" ] ; then
 		install -m 0755 ${WORKDIR}/defconfig-0.6.0-old .config
 	else
 		install -m 0755 ${WORKDIR}/defconfig-0.6.0-gnutls .config
