@@ -12,11 +12,10 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/plugins/tu
 	file://32bpp.diff;patch=1;pnum=1 \
 	file://add_new_default_conf.diff;patch=1;pnum=1 \
 	file://add_advanced_rc.diff;patch=1 \
-	file://makelib.diff;patch=1 \
 	file://allow_different_demux.diff;patch=1 \
 	file://plugin.py"
 
-FILES_${PN} = "/usr/lib/libtuxtxt32bpp.so* /usr/share/fonts /usr/lib/enigma2/python/Plugins/Extensions/Tuxtxt /etc/tuxtxt"
+FILES_${PN} = "/usr/bin/tuxtxt /usr/share/fonts /usr/lib/enigma2/python/Plugins/Extensions/Tuxtxt /etc/tuxtxt"
 
 S = "${WORKDIR}/tuxtxt"
 
@@ -35,6 +34,5 @@ do_configure_prepend() {
 }
 
 do_stage() {
-	oe_libinstall -so -C .libs libtuxtxt32bpp ${STAGING_LIBDIR}
 	install -m 0644 tuxtxt.h ${STAGING_INCDIR}/
 }
