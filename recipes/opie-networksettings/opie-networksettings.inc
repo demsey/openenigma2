@@ -5,6 +5,8 @@ LICENSE = "GPL"
 PROVIDES = "opie-networksettings-pppplugin opie-networksettings-wlanplugin"
 APPNAME = "networksettings"
 
+SRC_URI_append = " file://wireless.patch;patch=1"
+
 S = "${WORKDIR}/${APPNAME}"
 
 inherit opie
@@ -39,7 +41,7 @@ do_install() {
 	done
 
 	# install changedns script
-	install -m 0755 ${WORKDIR}/root${bindir}/changedns ${D}${bindir}/
+	install -m 0755 ${WORKDIR}/root/usr/bin/changedns ${D}${bindir}/
 	install -m 0644 ${WORKDIR}/root/etc/ppp/peers/opie-kppp ${D}${sysconfdir}/ppp/peers
 }
 

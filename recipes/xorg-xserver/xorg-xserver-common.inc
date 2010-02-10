@@ -2,6 +2,8 @@ HOMEPAGE = "http://www.x.org"
 SECTION = "x11/base"
 LICENSE = "MIT-X"
 
+INC_PR = "r13"
+
 PROVIDES = "virtual/xserver"
 
 DEPENDS = "hal fontconfig freetype flex-native lbxutil kbproto \ 
@@ -11,7 +13,7 @@ scrnsaverproto bigreqsproto resourceproto fontsproto inputproto \
 xf86dgaproto videoproto compositeproto trapproto recordproto dmxproto \
 resourceproto xineramaproto xtrans evieext libxkbfile libxfont libxau \
 libfontenc libxdmcp libxxf86vm libxaw libxmu libxt libxpm libxext libx11 \
-libxkbui libxxf86misc libxi libdmx libxtst libxres mesa libxcalibrate \
+libxkbui libxxf86misc libxi libdmx libxtst libxres virtual/libgl libxcalibrate \
 libxv"
 
 RECOMMENDS_${PN} = "hal libpciaccess"
@@ -21,7 +23,7 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/${XORG_PN}-${PV}.tar.bz2"
 
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig glx-use-tls
 
 EXTRA_OECONF += " --enable-xcalibrate \
                   --enable-kdrive \
@@ -45,7 +47,7 @@ FILES_${PN}-sdl = "${bindir}/Xsdl"
 FILES_${PN}-xprint = "${libdir}/X11/xserver/*/print"
 FILES_${PN}-xvfb = "${bindir}/Xvfb"
 FILES_${PN}-utils = "${bindir}/scanpci ${bindir}/pcitweak ${bindir}/ioport ${bindir}/in[bwl] ${bindir}/out[bwl] ${bindir}/mmap[rw] ${bindir}/gtf ${bindir}/getconfig ${bindir}/getconfig.pl"
-FILES_${PN} = "${bindir} ${libdir}/X11/Options ${libdir}/X11/Cards ${libdir}/X11/getconfig ${libdir}/X11/etc ${libdir}/modules ${libdir}/xorg/modules /etc/X11 "
+FILES_${PN} = "${bindir} ${libdir}/X11/Options ${libdir}/X11/Cards ${libdir}/X11/getconfig ${libdir}/X11/etc ${libdir}/modules ${libdir}/xorg/modules /etc/X11 ${libdir}/xorg/protocol.txt"
 FILES_${PN}-doc += "${libdir}/X11/doc /usr/share/X11/xkb/compiled/README.compiled"
 FILES_${PN}-xephyr = "${bindir}/Xephyr"
 
@@ -65,6 +67,7 @@ FILES_${PN}-dbg += "${libdir}/xorg/modules/.debug \
 #  84.0k   libxf4bpp.so
 
 PACKAGES =+ "${PN}-extension-dri \
+             ${PN}-extension-dri2 \
              ${PN}-extension-glx \
              ${PN}-module-libint10 \
              ${PN}-module-libafb \
@@ -76,6 +79,7 @@ PACKAGES =+ "${PN}-extension-dri \
              ${PN}-module-libxf4bpp"
 
 FILES_${PN}-extension-dri = "${libdir}/xorg/modules/extensions/libdri.so"
+FILES_${PN}-extension-dri2 = "${libdir}/xorg/modules/extensions/libdri2.so"
 FILES_${PN}-extension-glx = "${libdir}/xorg/modules/extensions/libglx.so"
 FILES_${PN}-module-libint10 = "${libdir}/xorg/modules/libint10.so"
 FILES_${PN}-module-libafb = "${libdir}/xorg/modules/libafb.so"

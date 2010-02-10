@@ -2,19 +2,21 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11 virtual/kernel \
+DEPENDS = "live555 libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11 virtual/kernel \
 	   ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad liba52 lame', d)}"
 
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
-	   file://Makefile-codec-cfg.patch;patch=1 \
-	   file://pld-onlyarm5-svn.patch;patch=1 \
 	   file://makefile-nostrip-svn.patch;patch=1 \
-	   file://configh \
-	   file://configmak \
-	   "
+	   file://mplayer-arm-pld.patch;patch=1 \
+	   file://mplayer-lavc-arm.patch;patch=1 \
+       file://fix-exp.diff;patch=1;maxrev=30291 \
+	   file://fix-addrinfo.patch;patch=1;maxrev=30302 \
+       file://fix-avconfig.diff;patch=1;maxrev=30376 \
+"
 
+SRCREV = "30165"
 SRC_URI_append_armv7a = " \
 		file://omapfb.patch;patch=1 \
 	   file://vo_omapfb.c \
@@ -36,10 +38,10 @@ ARM_INSTRUCTION_SET = "ARM"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PV = "0.0+1.0rc2+svnr${SRCREV}"
-PR = "r10"
+PV = "0.0+1.0rc3+svnr${SRCPV}"
+PR = "r17"
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_armv7a = "1"
+DEFAULT_PREFERENCE_angstrom = "1"
 
 PARALLEL_MAKE = ""
 
@@ -76,7 +78,7 @@ EXTRA_OECONF = " \
 	--enable-rtc \
 	--enable-network \
 	--disable-smb \
-	--disable-live \
+	--enable-live \
 	--disable-dvdnav \
 	--enable-dvdread \
 	--disable-dvdread-internal \
@@ -87,8 +89,6 @@ EXTRA_OECONF = " \
 	--enable-sortsub \
 	--disable-fribidi \
 	--disable-enca \
-	--disable-macosx \
-	--disable-macosx-bundle \
 	--disable-ftp \
 	--disable-vstream \
 	\
@@ -135,7 +135,7 @@ EXTRA_OECONF = " \
 	--disable-dxr2 \
 	--disable-dxr3 \
 	--disable-dvb \
-	--disable-dvbhead \
+	--enable-dvbhead \
 	--disable-mga \
 	--disable-xmga \
 	--enable-xv \
@@ -169,13 +169,15 @@ EXTRA_OECONF = " \
 	--disable-win32waveout \
 	--enable-select \
 	\
-	"
+	--extra-libs=' -lBasicUsageEnvironment -lUsageEnvironment -lgroupsock -lliveMedia -lstdc++' \
+    --enable-protocol='file_protocol pipe_protocol http_protocol rtmp_protocol tcp_protocol udp_protocol' \
+"
 
 EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
 				--disable-encoder=vorbis_encoder"
 
 EXTRA_OECONF_append_armv6 = " --enable-armv6"
-EXTRA_OECONF_append_armv7a = " --enable-armv6"
+EXTRA_OECONF_append_armv7a = " --enable-armv6 --enable-neon"
 
 
 #build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
@@ -192,6 +194,9 @@ EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'x86', '--enable-ru
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O4 -ffast-math"
 FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-frame-pointer -O4 -ffast-math"
 BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
+# FIXME: Temporarily disable debugging to work-around http://gcc.gnu.org/bugzilla/show_bug.cgi?id=37987
+DEBUG_OPTIMIZATION_spitz = "-O -fomit-frame-pointer -g"
+DEBUG_OPTIMIZATION_akita = "-O -fomit-frame-pointer -g"
 
 do_configure_prepend_armv7a() {
 	cp ${WORKDIR}/yuv.S ${S}/libvo
@@ -209,13 +214,11 @@ do_configure() {
 	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
 	sed -i 's|/usr/\S*include[\w/]*||g' ${S}/configure
 	sed -i 's|/usr/\S*lib[\w/]*||g' ${S}/configure
+	sed -i 's|HOST_CC|BUILD_CC|' ${S}/Makefile
 
 	export SIMPLE_TARGET_SYS="$(echo ${TARGET_SYS} | sed s:${TARGET_VENDOR}::g)"
 	./configure ${EXTRA_OECONF}
 	
-	cat ${WORKDIR}/configh >> ${S}/config.h
-	cat ${WORKDIR}/configmak  ${OPTSMAK} >> ${S}/config.mak
-
 }
 
 do_compile () {

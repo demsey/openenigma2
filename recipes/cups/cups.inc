@@ -24,9 +24,10 @@ EXTRA_OECONF = " \
 
 
 do_configure() {
+    	export DSOFLAGS="${LDFLAGS}"
 	gnu-configize
 	libtoolize --force
-	DSOFLAGS="${LDFLAGS}" oe_runconf
+	oe_runconf
 }
 
 do_compile () {
@@ -60,15 +61,17 @@ do_stage () {
 
 python do_package_append() {
 	# Change permissions back the way they were, they probably had a reason...
-	workdir = bb.data.getVar('WORKDIR', d, 1)
-	os.system('chmod 0511 %s/install/cups/var/run/cups/certs' % workdir)
+	pkgdest = bb.data.getVar('PKGDEST', d, 1)
+	os.system('chmod 0511 %s/cups/var/run/cups/certs' % pkgdest)
 }
 
-do_stage_append() {
+SYSROOT_PREPROCESS_FUNCS += "cups_config_mangle"
+
+cups_config_mangle() {
 	# Undo mangle of cups_datadir and cups_serverbin
 	sed -e 's:cups_datadir=.*:cups_datadir=${datadir}/cups:g' \
 	    -e 's:cups_serverbin=.*:cups_serverbin=${libdir}/cups:g' \
-	    -i ${STAGING_BINDIR_CROSS}/cups-config
+	    -i  ${SYSROOT_DESTDIR}${STAGING_BINDIR_CROSS}/cups-config
 }
 
 PACKAGES =+ "${PN}-lib ${PN}-libimage"

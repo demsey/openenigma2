@@ -1,5 +1,5 @@
 DESCRIPTION = "Basic task to get a device booting"
-PR = "r49"
+PR = "r52"
 
 inherit task
 
@@ -13,6 +13,12 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS ?= ""
 MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS ?= ""
 
+# update-alternatives script installed in rootfs needs to be the same as
+# u-a script used for building image which is defined with
+# PREFERRED_PROVIDER_virtual/update-alternatives-native
+
+DISTRO_UPDATE_ALTERNATIVES ?= "${PREFERRED_PROVIDER_virtual/update-alternatives}"
+
 # Make sure we build the kernel
 DEPENDS = "virtual/kernel"
 
@@ -20,17 +26,17 @@ DEPENDS = "virtual/kernel"
 # minimal set of packages - needed to boot
 #
 RDEPENDS_task-boot = "\
-    kernel \
     base-files \
     base-passwd \
     busybox \
     ${@base_contains("MACHINE_FEATURES", "keyboard", "keymaps", "", d)} \
     modutils-initscripts \
     netbase \
-    update-alternatives \
+    ${DISTRO_UPDATE_ALTERNATIVES} \
     ${MACHINE_ESSENTIAL_EXTRA_RDEPENDS} \
     "
 
 RRECOMMENDS_task-boot = "\
+    kernel \
     ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS} \
     "

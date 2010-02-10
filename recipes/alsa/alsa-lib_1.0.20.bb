@@ -2,7 +2,7 @@ DESCRIPTION = "Alsa sound library"
 HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "libs/multimedia"
 LICENSE = "LGPL"
-PR = "r1"
+PR = "r3"
 
 # configure.in sets -D__arm__ on the command line for any arm system
 # (not just those with the ARM instruction set), this should be removed,
@@ -19,7 +19,7 @@ SRC_URI_append_opendreambox = " file://asound.conf"
 inherit autotools pkgconfig
 
 
-EXTRA_OECONF = "--with-cards=pdaudiocf --with-oss=yes --disable-python"
+EXTRA_OECONF = "--with-cards=pdaudiocf --with-oss=yes --disable-python --enable-shared --enable-static"
 
 
 require alsa-fpu.inc

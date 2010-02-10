@@ -1,15 +1,11 @@
-DEFAULT_PREFERENCE = "1"
-PR = "r18"
-
 require uclibc.inc
+PR = "${INC_PR}.0"
 
 # This is the correct KERNEL_SOURCE location, if the uClibc
 # fix_includes.sh script is run (see nokernelheader.patch below)
 # this must be correct.
 KERNEL_SOURCE = "${STAGING_DIR_HOST}/${exec_prefix}"
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
-
-SRC_URI += "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2"
 
 S = "${WORKDIR}/uClibc-${PV}"
 

@@ -5,7 +5,7 @@ ARM_INSTRUCTION_SET = "arm"
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev virtual-libc-dev"
 
-PR = "r10"
+PR = "${INC_PR}.1"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"
@@ -68,6 +68,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
            file://etc/ld.so.conf \
            file://generate-supported.mk \
            file://march-i686.patch;patch=1;pnum=0 \
+	   file://glibc-arm-no-asm-page.patch;patch=1 \
            "
 
 
@@ -76,8 +77,7 @@ SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"
 SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"
 
 #powerpc patches to add support for soft-float
-SRC_URI_append_powerpc= " \
-                          file://powerpc-sqrt-hack.diff;patch=1""
+SRC_URI_append_powerpc= " file://powerpc-sqrt-hack.diff;patch=1"
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
@@ -159,4 +159,4 @@ do_compile () {
 
 require glibc-stage.inc
 
-require glibc-package.bbclass
+require glibc-package.inc

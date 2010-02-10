@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r27"
+PR = "r31"
 
 # Major part of version
 PVM = "5.8"
@@ -63,7 +63,7 @@ do_configure() {
         done
 
         # Fixups for uclibc
-        if [ "${TARGET_OS}" = "linux-uclibc" -o "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
+        if [ "${TARGET_OS}" = "linux-uclibc" -o "${TARGET_OS}" = "linux-uclibceabi" ]; then
                 sed -i -e "s,\(d_crypt_r=\)'define',\1'undef',g" \
                        -e "s,\(crypt_r_proto=\)'\w+',\1'0',g" \
                        -e "s,\(d_getnetbyname_r=\)'define',\1'undef',g" \
@@ -81,6 +81,7 @@ do_configure() {
         sed -i -e 's,@DESTDIR@,${D},g' \
                -e 's,@ARCH@,${TARGET_ARCH}-${TARGET_OS},g' \
                -e "s%/usr/include/%${STAGING_INCDIR}/%g" \
+	       -e 's,/usr/,${exec_prefix}/,g' \
             config.sh-${TARGET_ARCH}-${TARGET_OS}
 
         if test "${MACHINE}" != "native"; then
@@ -103,10 +104,9 @@ do_compile() {
         oe_runmake perl LD="${TARGET_SYS}-gcc"
 }
 do_install() {
-        oe_runmake install
-
+	oe_runmake install
         # Add perl pointing at current version
-        ln -sf perl${PV} ${D}/usr/bin/perl
+        ln -sf perl${PV} ${D}${bindir}/perl
 
         # Fix up versioned directories
         mv ${D}/${libdir}/perl/${PVM} ${D}/${libdir}/perl/${PV}
@@ -141,12 +141,11 @@ do_install() {
         fi
 }
 do_stage() {
-        install -d ${STAGING_DIR_HOST}/perl \
-                   ${STAGING_LIBDIR_NATIVE}/perl/${PV} \
+        install -d ${STAGING_LIBDIR_NATIVE}/perl/${PV} \
                    ${STAGING_LIBDIR}/perl/${PV}/CORE \
                    ${STAGING_DATADIR}/perl/${PV}/ExtUtils
         # target config, used by cpan.bbclass to extract version information
-        install config.sh ${STAGING_DIR_HOST}/perl/
+        install config.sh ${STAGING_LIBDIR}/perl/
         # target configuration, used by native perl when cross-compiling
         install lib/Config_heavy.pl ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy-target.pl
 	# target configuration

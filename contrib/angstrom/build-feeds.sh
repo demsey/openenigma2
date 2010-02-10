@@ -70,19 +70,24 @@ fi
 for machine in ${ARCH_MACHINES}
 do
         BUILD_MACHINE=$machine
-        BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
+        BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free iso-codes perl perl-native python python-native python-pygtk gnome-icon-theme"
         BUILD_TARGETS=" \
+                      opkg-native \
                       abiword \
                       aircrack-ng \
+                      angstrom-task-gnome \
                       angstrom-zeroconf-audio \
                       apache2 \
                       artoolkit \
+                      asciidoc \
                       asterisk \
                       atomic \
                       autoconf \
                       automake \
+                      balsa \
                       binutils \
                       bison \
+                      blueman \
                       bluez-gnome \
                       bluez-hcidump \
                       boa \
@@ -96,20 +101,33 @@ do
                       connman \
                       connman-gnome \
                       contacts \
+                      cpufrequtils \
                       cron \
                       cvs \
                       cwiid \
                       dates \
+                      devicekit-disks \
+                      devmem2 \
+                      dialog \
                       distcc \
                       dsniff \
+                      dosfstools \
                       duke3d \
+                      dvb-apps \
+                      dvbstream \
+                      dvbtraffic \
+                      dvbtune \
                       e-uae \
                       e-wm \
                       ekiga \
                       empathy \ 
+                      emtooth \
+                      eog \
                       epdfview \
                       epiphany \
                       evince \
+                      exalt \
+                      exalt-client \
                       exo \
                       fakeroot \
                       fennec \
@@ -134,6 +152,7 @@ do
                       gdb \
                       gdbserver \
                       gdm \
+                      geany \
                       geda \
                       geda-docs \
                       geda-examples \
@@ -143,10 +162,13 @@ do
                       geda-gsymcheck \
                       geda-symbols \
                       geda-utils \
+                      giac \
                       gimp \
                       glider \
+                      gksu \
                       gmp \
                       gmpc \
+                      gnome-dvb-daemon \
                       gnome-games \
                       gnome-mplayer \
                       gnome-panel \
@@ -168,14 +190,18 @@ do
                       gqview \
                       gsm0710muxd \
                       gspcav1 \
+                      gst-omapfb \
                       gtk+ \
                       gzip \
                       hal \
+                      hdparm \
                       hexatrolic \
+                      htop \
                       i2c-tools \
                       iaimaster \
                       icebloxx \
                       imagemagick \
+                      inkscape \
                       inkwp \
                       ioquake3 \
                       ipaq-sleep \
@@ -185,15 +211,19 @@ do
                       iscsi-target \
                       ivman \
                       jamvm \
+                      julius \
+                      kernel-module-udlfb \
                       kismet \
                       konqueror-embedded \
                       labyrinth \
                       lcd4linux \
                       leafpad \
+                      libv4l \
                       lighttpd \
                       links-x11 \
                       lirc \
-                      lowpan-utils \
+                      lowpan-tools \
+                      lyx \
                       m4 \
                       madplay \
                       mahjongg \
@@ -216,17 +246,26 @@ do
                       mplayer \
                       mtd-utils \
                       mutt \
+                      mysql5 \
                       mythtv \
+                      mythplugins \
+                      myththemes \
+                      nano \
                       nautilus \
+                      nbench-byte \
                       navit \
+                      netbook-launcher-efl \
                       netkit-ftp \
                       netsurf \
                       news \
+		      nfs-utils \
                       nmap \
                       nmm \
                       notecase \
+                      ntfs-3g \
                       numptyphysics \
                       octave \
+                      openbox \
                       opencv \
                       opencv-samples \
                       openmoko-browser2 \
@@ -234,11 +273,15 @@ do
                       openvpn \
                       opie-notes \
                       orage \
+                      padevchooser \
+                      pavucontrol \
                       palantir \
                       pairs \
+                      paprefs \
                       pciutils \
                       pdamaze \
                       perl \
+                      php \
                       pidgin \
                       pine \
                       pingus \
@@ -246,6 +289,7 @@ do
                       pkgconfig \
                       places \
                       pmount \
+                      pngcrush \
                       pocketcellar \
                       povray \
                       prboom \
@@ -255,6 +299,7 @@ do
                       python \
                       python-pybluez \
                       python-coherence \
+                      python-pygame \
                       qfish2 \
                       qmatrix \
                       qpe-nmap \
@@ -274,6 +319,7 @@ do
                       screen \
                       scummvm \
                       sdlquake \
+                      sdrshell \
                       sensors-applet \
                       setserial \
                       shisensho \
@@ -286,7 +332,9 @@ do
                       subversion \
                       sugar \
                       sylpheed \
+                      sysstat \
                       systray \
+                      task-beagleboard-demo \
                       task-gpe-pim \
                       task-openmoko-feed \
                       task-openmoko-games \
@@ -296,6 +344,7 @@ do
                       task-xqtlauncher \
                       tasks \
                       texinfo \
+                      tgt \
                       thttpd \
                       thunar \
                       tightvnc \
@@ -307,9 +356,11 @@ do
                       tzdata \
                       ubahnnav \
                       ufraw \
+                      unzip \
                       usbutils \
                       usbview \
                       ushare \
+                      vdr \
                       viking \
                       vlc \
                       vpnc \
@@ -318,14 +369,19 @@ do
                       win4 \
                       wireshark \
                       wpa-gui \
+                      wscan \
                       wt \
                       wt3 \
+                      wvdial \
                       x11vnc \
+                      xclip \
                       xf86-input-evdev \
+                      xf86-input-evtouch \
                       xf86-input-keyboard \
                       xf86-input-mouse \
                       xf86-input-tslib \
                       xf86-video-ati \
+                      xf86-video-displaylink \
                       xf86-video-fbdev \
                       xf86-video-sisusb \
                       xf86-video-vesa \
@@ -344,7 +400,11 @@ do
                       xfprint \
                       xfwm4 \
                       xfwm4-themes \
+                      xinput \
+                      xinput-calibrator \
+                      xmame \
                       xmms \
+                      xrefresh \
                       xserver-kdrive \
                       xserver-xorg \
                       zauralign \
@@ -352,6 +412,7 @@ do
                       zenity \
                       zgscore \
                       zhone \
+                      zip \
                       ziq \
                       zlapspeed \
                       zrev7 \

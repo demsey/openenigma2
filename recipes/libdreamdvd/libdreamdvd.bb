@@ -21,7 +21,7 @@ S = "${WORKDIR}/libdreamdvd"
 
 inherit autotools pkgconfig
 
-do_stage_append() {
+do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \
 		bindir=${STAGING_BINDIR} \
 		includedir=${STAGING_INCDIR} \

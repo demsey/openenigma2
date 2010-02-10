@@ -1,12 +1,13 @@
 require gst-plugins.inc
 
-PR = "${INC_PR}.0"
+PR = "r6"
 
-SRC_URI += "file://backport_matroskademux_memleak_fix.patch;patch=1;pnum=1"
+SRC_URI += "file://fix-unit-scale-asseration.patch;patch=1"
 
-do_configure_prepend() {
-	sed -i -e s:docs::g Makefile.am
-}
+inherit gconf 
 
-EXTRA_OECONF += "--with-check=no "
-DEPENDS += "gst-plugins-base"
+DEPENDS += "libsoup-2.4 flac gst-plugins-base openssl popt esound"
+
+PACKAGES =+ "gst-plugin-gconfelements"
+FILES_gst-plugin-gconfelements += "${sysconfdir}/gconf"
+

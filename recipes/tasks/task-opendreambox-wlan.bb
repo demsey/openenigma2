@@ -34,9 +34,14 @@ WLAN_USB_MODULES = "\
   zd1211-firmware \
 "
 
+WLAN_USB_MODULES_2_6_18 = "\
+  kernel-module-zd1211rw \
+  zd1211-firmware \
+  wlan-rt73 \
+"
+
 RDEPENDS_${PN}_append_dm800 = "\
-  ${WLAN_CRYPTO_MODULES} \
-  ${WLAN_USB_MODULES} \
+  ${@base_contains('PREFERRED_VERSION_linux-dm800', '2.6.18', '${WLAN_USB_MODULES_2_6_18}', '${WLAN_CRYPTO_MODULES} ${WLAN_USB_MODULES}', d)} \
 "
 
 RDEPENDS_${PN}_append_dm8000 = "\

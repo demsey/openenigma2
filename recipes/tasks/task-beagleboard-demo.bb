@@ -1,10 +1,11 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r9"
+PR = "r15"
 
 inherit task 
 
-ECONFIG ?= "places e-wm-config-angstrom e-wm-config-default"
+ECONFIG ?= "places e-wm-config-angstrom e-wm-config-angstrom-touchscreen e-wm-config-angstrom-widescreen e-wm-config-default"
+EMENU ?= "e-wm-menu"
 
 RDEPENDS_${PN} = "\
     task-proper-tools \
@@ -15,13 +16,13 @@ RDEPENDS_${PN} = "\
     angstrom-zeroconf-audio \
     angstrom-led-config \ 
     gpe-scap \
-    mime-support e-wm ${ECONFIG} exhibit \
+    mime-support e-wm ${ECONFIG} ${EMENU} \
     xterm xmms \
     firefox midori \
-    swfdec-mozilla \
+    gecko-mediaplayer-firefox-hack \
     hicolor-icon-theme gnome-icon-theme \
     jaaa nmap iperf gnuplot \
-    abiword \
+    abiword-meta \
     gnumeric \
     gimp \
     powertop oprofile \
@@ -35,7 +36,7 @@ RDEPENDS_${PN} = "\
 	angstrom-gnome-icon-theme-enable \
 	openssh-scp openssh-ssh \
 	picodlp-control \
-	connman-gnome \
+	network-manager-applet \
 	gnome-bluetooth \
 "
 
@@ -47,5 +48,7 @@ RRECOMMENDS_${PN} += " \
 "
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-RRECOMMENDS_${PN}_append_armv7a = " omapfbplay"
+RRECOMMENDS_${PN}_append_armv7a = " \
+	gnash gnash-browser-plugin \
+	omapfbplay"
 

@@ -1,8 +1,8 @@
 require python.inc
-DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl tk zlib"
-DEPENDS_opendreambox = "python-native db gdbm openssl readline sqlite3 zlib"
+DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl zlib\
+           ${@base_contains('DISTRO_FEATURES', 'tk', 'tk', '', d)}"
 DEPENDS_sharprom = "python-native db readline zlib gdbm openssl"
-PR = "ml5"
+PR = "${INC_PR}.0"
 
 SRC_URI = "\
   http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
@@ -26,13 +26,6 @@ SRC_URI = "\
   \
   file://sitecustomize.py \
 "
-
-SRC_URI_append_opendreambox = " \
-  file://some_configure_fixes.patch;patch=1;pnum=0 \
-  file://strict_aliasing_site.patch;patch=0;pnum=0 \
-  file://fix_pthread_site.patch;patch=0;pnum=0 \
-  file://forced_largefile_support.patch;patch=1;pnum=1"
-
 S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools

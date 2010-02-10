@@ -10,6 +10,8 @@ DEPENDS = "libebml"
 
 inherit pkgconfig autotools module-base
 
+PR = "r0"
+
 #EXTRA_OEMAKE += "CFLAGS='${CFLAGS} -I${STAGING_INCDIR}' LDFLAGS='${LDFLAGS} -L${STAGING_LIBDIR}"
 #LDFLAGS += " -L${STAGING_LIBDIR}"
 #EXTRA_OEMAKE += " LDFLAGS='${LDFLAGS}"

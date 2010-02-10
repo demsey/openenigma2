@@ -1,8 +1,4 @@
-DESCRIPTION = "Kernel based automounter for linux."
-SECTION = "base"
-LICENSE = "GPL"
-
-PR = "r2"
+require autofs.inc
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-${PV}.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-4.1.4-misc-fixes.patch;patch=1 \
@@ -22,23 +18,17 @@ SRC_URI_append_opendreambox = " \
            file://auto.network \
            file://autofs"
 
-inherit autotools pkgconfig update-rc.d
+PR = "${INC_PR}"
+
+inherit update-rc.d
 
 INITSCRIPT_NAME = "autofs"
 INITSCRIPT_PARAMS = "defaults 21 19"
 
-EXTRA_OEMAKE="TARGET_PREFIX=${TARGET_PREFIX}"
+# FIXME: modules/Makefile has crappy rules that don't obey LDFLAGS
+CFLAGS += "${LDFLAGS}"
+EXTRA_OEMAKE = "STRIP=/bin/true"
 PARALLEL_MAKE = ""
-
-do_configure_prepend () {
-	if [ ! -e acinclude.m4 ]; then
-		cp aclocal.m4 acinclude.m4
-	fi
-}
-
-do_install () {
-	oe_runmake 'INSTALLROOT=${D}' install
-}
 
 do_install_append_opendreambox () {
 	install -d ${D}${sysconfdir}/init.d

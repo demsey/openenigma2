@@ -5,7 +5,7 @@ ARM_INSTRUCTION_SET = "arm"
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev virtual-libc-dev"
 
-PR = "r1"
+PR = "${INC_PR}.3"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"
@@ -43,8 +43,9 @@ RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 #	   file://arm-ioperm.patch;patch=1;pnum=0 \
 #	   file://ldd.patch;patch=1;pnum=0 \
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
-	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-2.7.tar.bz2 \
+	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-${PV}.tar.bz2 \
 	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-${PV}.tar.bz2 \
+	   file://nscd-init.patch;patch=1;pnum=0 \
            file://arm-memcpy.patch;patch=1 \
            file://arm-longlong.patch;patch=1 \
            file://fhs-linux-paths.patch;patch=1 \
@@ -61,16 +62,26 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
            file://etc/ld.so.conf \
            file://generate-supported.mk \
            file://march-i686.patch;patch=1;pnum=0 \
+	   file://tls_i486.patch;patch=1 \
+	   file://glibc-2.9-use-_begin.patch;patch=1 \
+           file://arm-lowlevellock-include-tls.patch;patch=1 \
+           file://glibc-2.9-enable-binutils-2.2.patch;patch=1 \
            "
+
+# patches to fix libmemusage.so
+SRC_URI_append = " file://0001-malloc-memusage.c-update_data-Fix-handling-of-wrappi.patch;patch=1 \
+                   file://0002-malloc-memusage.c-DEFAULT_BUFFER_SIZE-Change-to-3276.patch;patch=1 \
+                   file://0003-Fix-wrap-around-in-memusage.patch;patch=1 "
 
 
 # Build fails on sh3 and sh4 without additional patches
-SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"
-SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"
+SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1 \
+		file://glibc-2.9-sh-fix.patch;patch=1"
+SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1 \
+		file://glibc-2.9-sh-fix.patch;patch=1"
 
 #powerpc patches to add support for soft-float
-SRC_URI_append_powerpc= " \
-                          file://powerpc-sqrt-hack.diff;patch=1""
+SRC_URI_append_powerpc= " file://powerpc-sqrt-hack.diff;patch=1"
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
@@ -87,7 +98,7 @@ EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
 
 do_munge() {
 	# Integrate ports and libidn into tree
-	mv ${WORKDIR}/glibc-ports-2.7 ${S}/ports
+	mv ${WORKDIR}/glibc-ports-${PV} ${S}/ports
 	mv ${WORKDIR}/glibc-libidn-${PV} ${S}/libidn
 
 	# Ports isn't really working... Fix it
@@ -121,6 +132,8 @@ addtask munge before do_patch after do_unpack
 
 
 do_configure () {
+# /var/db was not included to FHS
+	sed -i s:/var/db/nscd:/var/run/nscd: ${S}/nscd/nscd.h
 # override this function to avoid the autoconf/automake/aclocal/autoheader
 # calls for now
 # don't pass CPPFLAGS into configure, since it upsets the kernel-headers
@@ -152,4 +165,4 @@ do_compile () {
 
 require glibc-stage.inc
 
-require glibc-package.bbclass
+require glibc-package.inc

@@ -1,12 +1,13 @@
 DESCRIPTION = "Etk is an advanced widget toolkit based on the Enlightenment Foundation Libraries."
 DEPENDS = "evas ecore edje"
 LICENSE = "MIT"
-PV = "0.1.0.042+svnr${SRCREV}"
+PV = "0.1.0.042+svnr${SRCPV}"
 PR = "r5"
 
 inherit efl
 
-SRC_URI += "file://mkinstalldirs"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/OLD;module=${SRCNAME};proto=http \
+file://mkinstalldirs"
 
 RRECOMMENDS_${PN} = "\
   etk-engines-software-x11 \

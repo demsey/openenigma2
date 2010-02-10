@@ -7,10 +7,14 @@ USERDISTRO := "${DISTRO}"
 DISTRO = "angstrom"
 DISTRO_NAME = "Angstrom"
 
+BUILDNAME = "Angstrom ${DISTRO_VERSION}"
+
 TARGET_VENDOR = "-angstrom"
 
-# Add FEED_ARCH to overrides
-OVERRIDES .= ":${FEED_ARCH}"
+SOC_FAMILY ?= "Unknown"
+
+# Add FEED_ARCH and SOC_FAMILY to overrides
+OVERRIDES .= ":${FEED_ARCH}:${SOC_FAMILY}"
 
 # Put links to sources in deploy/sources to make it easier for people to be GPL compliant
 INHERIT += "src_distribute_local"
@@ -54,7 +58,7 @@ THUMB_INTERWORK = "yes"
 #Use this variable in feeds and other parts that need a URI
 ANGSTROM_URI ?= "http://www.angstrom-distribution.org"
 
-#Use this variable to select which recipe you want to use to get feed configs (/etc/ipkg/*, /etc/apt/sources.list)
+#Use this variable to select which recipe you want to use to get feed configs (/etc/ipkg/, /etc/apt/sources.list)
 # usefull for derivative distros and local testing
 # As this is runtime we can't and won't use virtual/feed-configs
 ANGSTROM_FEED_CONFIGS ?= "angstrom-feed-configs"
@@ -68,6 +72,9 @@ INHERIT += "debian"
 #activate config checker
 INHERIT += "sanity" 
 
+#activate the blacklister
+INHERIT += "angstrom"
+
 #make devshell available as task
 INHERIT += "devshell" 
 
@@ -76,7 +83,11 @@ INHERIT += "angstrom-mirrors"
 
 #run QA tests on builds and packages and log them  
 INHERIT += "insane"
+# INHERIT += "packagehistory"
 QA_LOG = "1"
+
+#run QA tests on recipes
+INHERIT += "recipe_sanity"
 
 #save statistical info on images
 INHERIT += "testlab"
@@ -100,7 +111,7 @@ ENABLE_BINARY_LOCALE_GENERATION ?= "1"
 LOCALE_UTF8_ONLY = "1"
 
 #qemu doesn't like this fp
-ENABLE_BINARY_LOCALE_GENERATION_ep93xx = "0"
+ENABLE_BINARY_LOCALE_GENERATION_ep9312 = "0"
 
 #qemu has taken a dislike to armeb as well
 ENABLE_BINARY_LOCALE_GENERATION_armeb = "0"
@@ -129,15 +140,6 @@ FEED_ARCH ?= "${BASE_PACKAGE_ARCH}"
 
 #blackfin machines
 FEED_ARCH_bfin          = "blackfin"
-
-#Tweak packaging for strongarm machines since they can't use EABI
-
-PACKAGE_EXTRA_ARCHS_collie = "arm-oabi"
-PACKAGE_EXTRA_ARCHS_h3600  = "arm-oabi"
-PACKAGE_EXTRA_ARCHS_h3800  = "arm-oabi"
-PACKAGE_EXTRA_ARCHS_simpad = "arm-oabi"
-PACKAGE_EXTRA_ARCHS_htcwallaby = "arm-oabi"
-
 
 #Name the generated images in a sane way
 IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${LIBC}-${ANGSTROM_PKG_FORMAT}-${DISTRO_VERSION}-${MACHINE}"
@@ -191,9 +193,10 @@ SEPPUKU_AUTOBUILD    = "1"
 SEPPUKU_PRODUCT      = "Openembedded"
 SEPPUKU_COMPONENT    = "org.openembedded.dev"
 
-OESTATS_SERVER      ?= "tinderbox.openembedded.net"
-
-
+OESTATS_SERVER      ?= "tinderbox.openembedded.org"
 
 # We want images supporting the following features (for task-base)
-DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 vfat irda pcmcia usbgadget usbhost pci"
+DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 vfat irda pcmcia usbgadget usbhost pci pam"
+
+# Use-like features
+DISTRO_FEATURES += "tk"

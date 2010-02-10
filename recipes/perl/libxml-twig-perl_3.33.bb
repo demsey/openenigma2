@@ -1,14 +1,14 @@
+DESCRIPTION = "XML::Twig - A perl module for processing huge XML documents in tree mode."
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 HOMEPAGE = "http://www.xmltwig.com/"
 DEPENDS += "libxml-parser-perl"
-PR = "r0"
+PR = "r3"
 
-SRC_URI = "http://xmltwig.com/xmltwig/XML-Twig-${PV}.tar.gz"
+SRC_URI = "http://www.angstrom-distribution.org/unstable/sources/XML-Twig-${PV}-upstream-keeps-changing-this-tarball-so-we-mirror-our-own.tar.gz"
 
 S = "${WORKDIR}/XML-Twig-${PV}"
 
-EXTRA_CPANFLAGS = "EXPATLIBPATH=${STAGING_LIBDIR} EXPATINCPATH=${STAGING_INCDIR}"
-
 inherit cpan
 
+BBCLASSEXTEND="native"

@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 SECTION = "devel"
 AUTHOR = "Daniel Ribeiro"
 
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 PR = "r4"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/userspace/;module=ezxd;proto=http \
@@ -18,6 +18,8 @@ INITSCRIPT_PARAMS = "start 00 S ."
 S = "${WORKDIR}/${PN}"
 
 CFLAGS_append = " -DDEBUG " 
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_configure() {
         sed -i -e s:CROSS:CC:g Makefile

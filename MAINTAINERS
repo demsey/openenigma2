@@ -44,7 +44,21 @@ Mail:       cbrake@bec-systems.com
 Website:    http://bec-systems.com
 Interests:  Support in OE for single board computers, web application support
 Machines:   cm-x270, em-x270, gesbc-9302
-Recipes:    mono, argtable, vala, socketcan
+Recipes:    mono, argtable, vala, socketcan, clearsilver
+
+Person:     Denys Dmytriyenko
+Mail:       denis@denix.org
+Machines:   davinci (dm6446-evm, dm6467-evm, dm355-evm, dm365-evm), omap3evm
+Distros:    Ångström, Arago
+Interests:  External Toolchains
+
+Person:     Dmitry Eremin-Solenikov
+Mail:       dbaryshkov@gmail.com
+Website:    http://tosa.lumag.spb.ru
+Interests:  Kernel, Porting, evaluation hardware
+Machines:   tosa, tqm8540, am91sam9g20ek
+Distros:    Ångström
+Recipes:    lowpan-tools, libnl
 
 Person:     Erik Hovland
 Mail:       erik@hovland.org
@@ -74,7 +88,7 @@ Interests:  Multimedia in gpe and on fbdev, and gtk+ apps on PDA devices.
 Interests:  GNOME on PDA
 Recipes:    mplayer, xmms, xmms-mad, xmms-tremor, dillo, links, links-x11
 Recipes:    epdfview, sylpheed-claws, sylpheed, gqview, tightvnc
-Recipes:    epdfview, gtk+_2.10.* openmoko2/*
+Recipes:    gtk+_2.10.*
 
 Person:     Henning Heinold 'woglinde'
 Mail:       heinold@inf.fu-berlin.de
@@ -115,6 +129,10 @@ Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
 Recipes:    gtk+, gtkmm
 
+Person:     John Willis 'DJWillis'
+Mail:       source@distant-earth.com
+Machines:   omap3-pandora
+
 Person:     Junqian Gordon Xu 'xjqian'
 Mail:       xjqian@gmail.com
 Machines:   tosa, borzoi, nokia770
@@ -147,25 +165,28 @@ Recipes:    gnumeric, gobby, obby, imposter, inkscape
 Recipes:    *moko*, telepathy, tilibs, xchat, xournal.
 
 Person:     Kristoffer Ericson
-Mail:       Kristoffer_e1@hotmail.com
-Website:    www.jlime.com
-Machines:   spitz, jornada 680, jornada 720
-Distros:    JLime, Openzaurus
-Interests:  wifi, kernels, emulation, qemu, git
+Mail:       Kristoffer.ericson@gmail.com
+Website:    http://www.jlime.com
+Machines:   jornada 680, jornada 720, NEC Mobilepro 900/c, Ben Nanonote
+Distros:    JLime
+Interests:  Kernels, emulation, superh/arm/mips 
 Recipes:    linux-jlime*, scummvm, blackbox
 
 Person:     Leon Woestenberg
 Mail:       leon@sidebranch.com
 Website:    http://www.sidebranch.com/
-Interests:  Real-time and/or embedded Linux for industrial applications.
+Interests:  Real-time and embedded Linux for industrial applications.
 Interests:  Small read-only Linux based firmware, deterministic builds.
 Recipes:    lighttpd, fastcgi, squashfs-tools, rt-tests, linux-rt, linux
-Machines:   mpc8313e-rdb, mpc8315e-rdb, efika, ixp4xxbe, x86, canyonlands
+Machines:   mpc8313e-rdb, mpc8315e-rdb, canyonlands, calamari, openrd-base
 
-Person:	    Liam Girdwoord
-Mail:       liam.girdwood@wolfsonmicro.com
+Person:	    Liam Girdwood
+Mail:       lrg@slimlogic.co.uk
+Website:    http://www.slimlogic.co.uk
+Interests:  Mobile and embedded Linux within commercial environments.
+Interests:  Kernel development, userspace development, audio, power management.
 Machines:   mx31ads
-Recipes:    mx31ads-kernel*	
+Recipes:    mx31ads-kernel*, glibc-2.10.1, some pulseaudio versions	
 
 Person:     Lynn Lin
 Mail:       Lin_Lynn@emc.com
@@ -175,7 +196,7 @@ Recipes:    mini-httpd,dmidecode,mktemp
 Person:     Marcin Juszkiewicz
 Mail:       marcin@juszkiewicz.com.pl
 Website:    http://marcin.juszkiewicz.com.pl/
-Machines:   progear, alix, at91sam9263ek
+Machines:   bug, progear, alix, at91sam9263ek
 Distros:    Poky, Ångström
 
 Person:     Marco Cavallini
@@ -184,6 +205,13 @@ Website:    http://www.koansoftware.com - http://www.embedded.it
 Machines:   ronetix-pm9263, vortex86sx, at91sam9g20ek
 Distros:    KaeilOS, Ångström
 Interests:  x86, ARM, wxWidgets
+
+Person:     Martin 'JaMa' Jansa
+Mail:       Martin.Jansa@gmail.com
+Machines:   spitz, om-gta02
+Distros:    SHR, Ångström
+Interests:  xorg
+Recipes:    shr/*, xorg-*/*, linux/*openmoko*
 
 Person:     Matthias 'CoreDump' Hentges
 Website:    http://www.hentges.net

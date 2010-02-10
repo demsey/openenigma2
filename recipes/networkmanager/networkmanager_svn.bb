@@ -1,6 +1,8 @@
 require networkmanager-pre0.7.inc
 
-PV = "0.7+svnr${SRCREV}"
+SRCREV = "3202"
+
+PV = "0.7+svnr${SRCPV}"
 PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"

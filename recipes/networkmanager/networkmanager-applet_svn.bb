@@ -9,7 +9,9 @@ inherit gnome gtk-icon-cache
 SRC_URI = "svn://svn.gnome.org/svn/network-manager-applet/;module=trunk;proto=http \
            file://applet-no-gnome.diff;patch=1;pnum=0"
 
-PV = "0.0+svnr${SRCREV}"
+SRCREV = "200"
+
+PV = "0.0+svnr${SRCPV}"
 
 S = "${WORKDIR}/trunk"
 

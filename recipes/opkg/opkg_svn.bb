@@ -1,7 +1,11 @@
 require opkg.inc
 
-PR = "r14"
+DEPENDS_append = " openssl"
 
+PR = "${INC_PR}"
+
+PROVIDES =+ "virtual/update-alternatives"
+RPROVIDES_${PN} = "update-alternatives"
 PACKAGES =+ "libopkg-dev libopkg"
 RPROVIDES_${PN} += "update-alternatives"
 
@@ -22,3 +26,5 @@ pkg_postinst_${PN} () {
 pkg_postrm_${PN} () {
   update-alternatives --remove opkg ${bindir}/opkg-cl
 }
+
+require update-alternatives-merge.inc

@@ -7,9 +7,9 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.29"
-PR = "r31"
 
 require uclibc.inc
+PR = "${INC_PR}.0"
 
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
@@ -38,7 +38,5 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 #as stated above, uclibc needs real kernel-headers
 #however: we can't depend on virtual/kernel when nptl hits due to depends deadlocking ....
 KERNEL_SOURCE = "${STAGING_DIR_HOST}/${exec_prefix}"
-
-SRC_URI += "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2"
 
 S = "${WORKDIR}/uClibc-${UCLIBC_BASE}"

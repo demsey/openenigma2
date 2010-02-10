@@ -6,7 +6,7 @@ DEPENDS = "libgpg-error"
 
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-${PV}.tar.gz \
            file://add-pkgconfig-support.patch;patch=1 \
-           file://mips-ppc-fix-gcc-4.4.0.patch;patch=1"
+           file://mips-h-constraint.patch;patch=1"
 
 inherit autotools binconfig pkgconfig lib_package
 

@@ -45,9 +45,9 @@ SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz;m
            file://keyboardless-buttonmap.patch;patch=1 \
            file://kernel-keymap.patch;patch=1 \
 	   file://kernel-keymap-corgi.patch;patch=1 \
-	   file://kernel-asm-page.patch;patch=1 \
 	   file://remove-unused-kbdhandler.patch;patch=1 \
 	   file://disable-dup-rotation.patch;patch=1 \
+	   file://fix-qte-asm-include.patch;patch=1 \
 	   file://sharp_char.h \
 	   file://switches.h "
 
@@ -116,8 +116,8 @@ do_configure() {
 			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-uclibc-,'`
 		sed -e 's,-linux-,-linux-gnueabi-,g' < $f \
 			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-gnueabi-,'`
-		sed -e 's,-linux-,-linux-uclibcgnueabi-,g' < $f \
-			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-uclibcgnueabi-,'`
+		sed -e 's,-linux-,-linux-uclibceabi-,g' < $f \
+			> `dirname $f`/`basename $f | sed -e 's,linux-,linux-uclibceabi-,'`
 	done
 	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qte failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }

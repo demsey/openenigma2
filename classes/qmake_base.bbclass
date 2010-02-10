@@ -13,6 +13,9 @@ export OE_QMAKE_AR="${AR}"
 export OE_QMAKE_STRIP="echo"
 export OE_QMAKE_RPATH="-Wl,-rpath-link,"
 
+# do not export STRIP to the environment
+STRIP[unexport] = "1"
+
 # default to qte2 via bb.conf, inherit qt3x11 to configure for qt3x11
 
 oe_qmake_mkspecs () {
@@ -33,7 +36,7 @@ oe_qmake_mkspecs () {
 
 qmake_base_do_configure() {
 	case ${QMAKESPEC} in
-	*linux-oe-g++|*linux-uclibc-oe-g++|*linux-gnueabi-oe-g++|*linux-uclibcgnueabi-oe-g++)
+	*linux-oe-g++|*linux-uclibc-oe-g++|*linux-gnueabi-oe-g++|*linux-uclibceabi-oe-g++)
 		;;
 	*-oe-g++)
 		die Unsupported target ${TARGET_OS} for oe-g++ qmake spec

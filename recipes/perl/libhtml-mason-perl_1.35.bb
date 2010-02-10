@@ -1,3 +1,4 @@
+DESCRIPTION = "Mason - High-performance, dynamic web site authoring system"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS = "libexception-class-perl-native libparams-validate-perl-native \
@@ -15,6 +16,10 @@ PR = "r1"
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/HTML-Mason-${PV}.tar.gz"
 
 S = "${WORKDIR}/HTML-Mason-${PV}"
+
+do_stage() {
+	:
+}
 
 inherit cpan_build
 

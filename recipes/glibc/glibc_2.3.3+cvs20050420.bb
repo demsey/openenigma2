@@ -5,7 +5,7 @@ DEFAULT_PREFERENCE_i586 = "0"
 DEFAULT_PREFERENCE_sh3 = "-99"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r14"
+PR = "${INC_PR}.0"
 
 GLIBC_ADDONS ?= "linuxthreads"
 
@@ -81,4 +81,4 @@ do_compile () {
 
 require glibc-stage.inc
 
-require glibc-package.bbclass
+require glibc-package.inc

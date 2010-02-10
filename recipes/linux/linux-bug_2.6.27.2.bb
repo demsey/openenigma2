@@ -2,11 +2,12 @@ DESCRIPTION = "Linux kernel for bug"
 
 PV_append = "+svnr${SRCREV}"
 KV = "2.6.27.2"
-PR = "r27"
+PR = "r32"
 
 COMPATIBLE_MACHINE = "bug"
 
 SVN_PRJ = "bug-linux-${KV}"
+SRCREV = "10746"
 
 SRC_URI = "svn://svn.buglabs.net/bug/branches/R1.4/qa;module=${SVN_PRJ};proto=svn \
            file://defconfig \
@@ -20,8 +21,15 @@ UBOOT_ENTRYPOINT = "0x80008000"
 require linux.inc
 
 do_install_append() {
-#        install -m 0644 arch/${ARCH}/boot/uImage ${D}/${KERNEL_IMAGEDEST}/uImage-${KERNEL_VERSION}
         cd ${D}/${KERNEL_IMAGEDEST} && ln -sf uImage-${KERNEL_VERSION} uImage
+}
+
+do_stage_append() {
+	cp -fR arch/arm/include/asm/* ${STAGING_KERNEL_DIR}/include/asm/
+	if [ ! -e ${STAGING_KERNEL_DIR}/include/mach ]; then
+		mkdir ${STAGING_KERNEL_DIR}/include/mach
+	fi
+	cp -fR arch/arm/plat-mxc/include/mach/* ${STAGING_KERNEL_DIR}/include/mach/
 }
 
 FILESDIR = "${WORKDIR}"
@@ -38,5 +46,6 @@ module_autoload_bugpm = "bugpm"
 module_autoload_bugpm_apm = "bugpm_apm"
 module_autoload_rtc-isl12026 = "rtc-isl12026"
 module_autoload_bug_v4l2_capture = "bug_v4l2_capture"
+module_autoload_libertas_sdio = "libertas_sdio"
 # bmi_lcd_core loaded to ensure xserver device nodes are created on boot.
 module_autoload_bmi_lcd_core = "bmi_lcd_core"

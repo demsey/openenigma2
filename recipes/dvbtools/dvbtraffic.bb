@@ -7,7 +7,7 @@ PV = "0.0+cvs${SRCDATE}"
 SRC_URI = "cvs://anonymous@cvs.linuxtv.org/cvs/linuxtv;module=dvb-apps/util/dvbtraffic"
 
 S = "${WORKDIR}/dvbtraffic"
-CFLAGS_append = " -D PATH_MAX=128"
+CFLAGS_append = " ${LDFLAGS} -D PATH_MAX=128"
 
 do_compile() {
 	oe_runmake dvbtraffic

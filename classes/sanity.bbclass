@@ -11,8 +11,6 @@ def raise_sanity_error(msg):
 	%s""" % msg)
 
 def check_conf_exists(fn, data):
-	import bb, os
-
 	bbpath = []
 	fn = bb.data.expand(fn, data)
 	vbbpath = bb.data.getVar("BBPATH", data)
@@ -26,12 +24,12 @@ def check_conf_exists(fn, data):
 
 def check_sanity(e):
 	from bb import note, error, data, __version__
-	from bb.event import Handled, NotHandled, getName
+
 	try:
 		from distutils.version import LooseVersion
 	except ImportError:
 		def LooseVersion(v): print "WARNING: sanity.bbclass can't compare versions without python-distutils"; return 1
-	import os, commands
+	import commands
 
 	# Check the bitbake version meets minimum requirements
 	minversion = data.getVar('BB_MIN_VERSION', e.data , True)
@@ -98,11 +96,14 @@ def check_sanity(e):
 			if not check_app_exists("qemu-arm", e.data):
 				messages = messages + "qemu-native was in ASSUME_PROVIDED but the QEMU binaries (qemu-arm) can't be found in PATH"
 
-		if os.path.exists("/proc/sys/vm/mmap_min_addr"):
-			f = file("/proc/sys/vm/mmap_min_addr", "r")
-			if (f.read().strip() != "0"):
-				messages = messages + "/proc/sys/vm/mmap_min_addr is not 0. This will cause problems with qemu so please fix the value (as root).\n\nTo fix this in later reboots, set vm.mmap_min_addr = 0 in /etc/sysctl.conf.\n"
-			f.close()
+		try:
+			if os.path.exists("/proc/sys/vm/mmap_min_addr"):
+				f = file("/proc/sys/vm/mmap_min_addr", "r")
+				if (f.read().strip() != "0"):
+					messages = messages + "/proc/sys/vm/mmap_min_addr is not 0. This will cause problems with qemu so please fix the value (as root).\n\nTo fix this in later reboots, set vm.mmap_min_addr = 0 in /etc/sysctl.conf.\n"
+				f.close()
+		except:
+			pass
 
 	for util in required_utilities.split():
 		if not check_app_exists( util, e.data ):
@@ -114,7 +115,7 @@ def check_sanity(e):
 
 	try:
 	    if os.path.basename(os.readlink('/bin/sh')) == 'dash':
-		    print "WARNING: Using dash as /bin/sh causes various subtle build problems, please consider using bash instead."
+		    messages = messages + "Using dash as /bin/sh causes various subtle build problems, please use bash instead.\n"
 	except:
 		pass
 
@@ -185,7 +186,7 @@ def check_sanity(e):
 	archs = data.getVar('PACKAGE_ARCHS', e.data, True).split()
 	for arch in archs:
 		if archs.count(arch) != 1:
-			messages = messages + "Error, Your PACKAGE_ARCHS field contains duplicates. Perhaps you set EXTRA_PACKAGE_ARCHS twice accidently through some tune file?\n"
+			messages = messages + "Error, Your PACKAGE_ARCHS field contains duplicates. Perhaps you set PACKAGE_EXTRA_ARCHS twice accidently through some tune file?\n"
 			break
 
 	if messages != "":
@@ -193,10 +194,8 @@ def check_sanity(e):
 
 addhandler check_sanity_eventhandler
 python check_sanity_eventhandler() {
-    from bb import note, error, data, __version__
-    from bb.event import getName
-
-    if getName(e) == "ConfigParsed":
+    from bb.event import Handled, NotHandled
+    if bb.event.getName(e) == "ConfigParsed":
         check_sanity(e)
 
     return NotHandled

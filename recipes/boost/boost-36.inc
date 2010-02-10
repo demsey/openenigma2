@@ -9,7 +9,7 @@ SECTION = "libs"
 DEPENDS = "boost-jam-native zlib"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
-PR = "r3"
+INC_PR = "r9"
 
 ARM_INSTRUCTION_SET = "arm"
 BOOST_VER = "${@"_".join(bb.data.getVar("PV",d,1).split("."))}"
@@ -70,6 +70,7 @@ FILES_${PN}-dev = "${includedir} ${libdir}/libboost_*.so ${libdir}/libboost_*.a"
 # "boost" is a metapackage which pulls in all boost librabries
 PACKAGES += "${PN}"
 RRECOMMENDS_${PN} += "${BOOST_PACKAGES}"
+ALLOW_EMPTY = "1"
 
 # to avoid GNU_HASH QA errors added LDFLAGS to ARCH; a little bit dirty but at least it works
 TARGET_CC_ARCH += " ${LDFLAGS}" 
@@ -128,7 +129,7 @@ BJAM_OPTS    = '${BJAM_TOOLS} \
 do_configure_prepend() {
 	cp -f boost/config/platform/linux.hpp boost/config/platform/linux-gnueabi.hpp
 
-	echo 'using gcc : 4.3.1 : ${CXX} : compileflags -DBOOST_SP_USE_PTHREADS -I${includedir} linkflags -L${libdir} ;' >> ${S}/tools/build/v2/user-config.jam
+	echo "using gcc : $(${CXX} -dumpversion) : ${CXX} : compileflags -DBOOST_SP_USE_PTHREADS -I${includedir} linkflags -L${libdir} ;" >> ${S}/tools/build/v2/user-config.jam
 }
 
 do_compile() {

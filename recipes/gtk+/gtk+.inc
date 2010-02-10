@@ -5,12 +5,24 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 tiff pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt cups \
-           libxrandr libxdamage libxrender libxcomposite"
+	   libxrandr libxdamage libxrender libxcomposite cairo jasper"
 PROVIDES = "gdk-pixbuf"
+
+MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
+SRC_URI = "http://download.gnome.org/sources/gtk+/${MAJ_VER}/gtk+-${PV}.tar.bz2 \
+	file://hardcoded_libtool.patch;patch=1 \
+	file://no-demos.patch;patch=1 \
+	file://run-iconcache.patch;patch=1 \
+	file://toggle-font.diff;patch=1;pnum=0 \
+	file://xsettings.patch;patch=1 \
+	"
+
+INC_PR = "r7"
 
 inherit autotools pkgconfig
 
 LEAD_SONAME = "libgtk-x11-2.0.so"
+LIBV = "2.10.0"
 
 FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${bindir}/gtk-update-icon-cache \
@@ -18,9 +30,10 @@ FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${libdir}/lib*.so.* \
 	${datadir}/themes ${sysconfdir} \
 	${libdir}/gtk-2.0/${LIBV}/engines/libpixmap.so"
+RDEPENDS_${PN} = "hicolor-icon-theme"
 
 FILES_${PN}-dev += " \
-        ${datadir}/gtk-2.0/include \
+	${datadir}/gtk-2.0/include \
 	${libdir}/gtk-2.0/include \
 	${bindir}/gdk-pixbuf-csource \
 	${bindir}/gtk-builder-convert"
@@ -38,28 +51,14 @@ RRECOMMENDS_${PN} = " ${NEATSTUFF} "
 RRECOMMENDS_${PN}_linux = " ${NEATSTUFF} glibc-gconv-iso8859-1 "
 RRECOMMENDS_${PN}_linux-gnueabi = " ${NEATSTUFF} glibc-gconv-iso8859-1"
 
-
-
-do_stage () {
-	oe_libinstall -so -C gtk libgtk-x11-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -C gdk libgdk-x11-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -C contrib/gdk-pixbuf-xlib libgdk_pixbuf_xlib-2.0 ${STAGING_LIBDIR}
-	oe_libinstall -so -C gdk-pixbuf libgdk_pixbuf-2.0 ${STAGING_LIBDIR}
-	if test -d modules/other/gail/libgail-util ; then
-		oe_libinstall -so -C modules/other/gail/libgail-util libgailutil ${STAGING_LIBDIR}
-	fi
-
-	autotools_stage_includes
-
-	mkdir -p ${STAGING_LIBDIR}/gtk-2.0/include
-	install -m 0644 gdk/gdkconfig.h ${STAGING_LIBDIR}/gtk-2.0/include/gdkconfig.h
-        # Copy over all headers, since the maemo stuff needs access to the private api. *sigh*
-	cp gtk/*.h ${STAGING_INCDIR}/gtk-2.0/gtk/
+do_install_append () {
+	mkdir -p ${D}${libdir}/gtk-2.0/include
+	install -m 0644 gdk/gdkconfig.h ${D}${libdir}/gtk-2.0/include/gdkconfig.h
+	# Copy over all headers, since the maemo stuff needs access to the private api. *sigh*
+	cp gtk/*.h ${D}${includedir}/gtk-2.0/gtk/
 
 	install -m 0644 m4macros/gtk-2.0.m4 ${STAGING_DATADIR}/aclocal/
-}
 
-do_install_append () {
 	install -d ${D}${sysconfdir}/gtk-2.0
 	rm -f ${D}${libdir}/gtk-2.0/*/*.la ${D}${libdir}/gtk-2.0/${LIBV}/*/*.la
 }

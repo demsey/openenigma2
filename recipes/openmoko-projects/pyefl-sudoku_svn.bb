@@ -4,8 +4,8 @@ SECTION = "openmoko/applications"
 LICENSE = "GPL"
 DEPENDS = "python-evas python-edje python-ecore"
 RDEPENDS = "python-evas python-edje python-ecore"
-PV = "0.0.2+svnr${SRCREV}"
-PR = "r2"
+PV = "0.0.2+svnr${SRCPV}"
+PR = "r3"
 
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=pyefl-sudoku;proto=http"
 

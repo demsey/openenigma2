@@ -2,7 +2,7 @@ SUMMARY = "A compact Java Virtual Machine which conforms to the JVM specificatio
 HOMEPAGE = "http://jamvm.sourceforge.net/"
 LICENSE = "GPL"
 
-DEPENDS = "zlib-native classpath-initial jikes-initial"
+DEPENDS = "zlib-native classpath-initial jikes-initial libffi-native"
 
 PR = "r1"
 
@@ -19,12 +19,16 @@ ARM_INSTRUCTION_SET = "arm"
 
 inherit native autotools
 
+# libdir must be modified so that jamvm-initial and -native
+# do not interfere
 EXTRA_OECONF = "\
   --with-classpath-install-dir=${prefix} \
   --program-suffix=-initial \
+  --libdir=${STAGING_LIBDIR}/jamvm-initial \
   "
 
-CFLAGS += "-DDEFAULT_MAX_HEAP=16*MB"
+# jamvm-initial has to run some binaries which need lots of memory.
+CFLAGS += "-DDEFAULT_MAX_HEAP=512*MB"
 
 do_compile() {
   oe_runmake \

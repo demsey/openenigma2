@@ -8,7 +8,7 @@ do_configure_prepend() {
 
 DEPENDS += "gst-plugins-base"
 
-EXTRA_OECONF_opendreambox += "--disable-apexsink --disable-dvdnav --disable-cdaudio "
+EXTRA_OECONF_opendreambox += "--disable-apexsink --disable-dvdnav --disable-cdaudio --disable-mpeg2enc --disable-mplex"
 
 SRC_URI_append_opendreambox += " file://mpegpsdemux_speedup.diff;patch=1;pnum=0 \
 				 file://mpegtsdemux_fix_ac3_detection.diff;patch=1;pnum=0"

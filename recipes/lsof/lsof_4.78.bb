@@ -3,6 +3,8 @@ Its name stands for LiSt Open Files, and it does just that."
 SECTION = "devel"
 LICENSE = "BSD"
 
+PR = "r4"
+
 SRC_URI = "ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof/lsof_${PV}.tar.bz2"
 LOCALSRC = "file://${WORKDIR}/lsof_${PV}/lsof_${PV}_src.tar"
 S = "${WORKDIR}/lsof_${PV}_src"
@@ -17,7 +19,10 @@ python do_unpack () {
 
 export LSOF_OS = "${TARGET_OS}"
 LSOF_OS_linux-uclibc = "linux"
+LSOF_OS_linux-uclibceabi = "linux"
+LSOF_OS_linux-uclibspe = "linux"
 LSOF_OS_linux-gnueabi = "linux"
+LSOF_OS_linux-gnuspe = "linux"
 export LSOF_INCLUDE = "${STAGING_INCDIR}"
 
 do_configure () {
@@ -29,7 +34,8 @@ export L = "${STAGING_INCDIR}"
 export EXTRA_OEMAKE = ""
 
 do_compile () {
-	oe_runmake 'CC=${CC}' 'CFGL=${LDFLAGS} -L./lib -llsof' 'DEBUG=' 'INCL=${CFLAGS}'
+	oe_runmake 'CC=${CC}' 'CFGL=${LDFLAGS} -L./lib -llsof' 'DEBUG=' 'INCL=${CFLAGS}' \
+	'RANLIB=${RANLIB} liblsof.a'
 }
 
 do_install () {

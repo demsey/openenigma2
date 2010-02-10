@@ -32,14 +32,10 @@ ac_cv_path_ZIP=${bindir}/zip \
 ac_cv_path_UNZIP=${bindir}/unzip \
 "
 
-do_configure_prepend() {
-	# remove dangling symlinks
-	find ${S} -type l -exec rm {} \;
-}
-
 do_unpack_append() {
         bb.build.exec_func('do_utf8_conversion', d)
 }
+
 do_utf8_conversion() {
 	cd ${S}/lib
 	iconv -f iso8859-1 -t utf-8 -o mc.hint.tmp mc.hint && mv mc.hint.tmp mc.hint
@@ -75,4 +71,9 @@ do_utf8_conversion() {
 	iconv -f iso8859-5 -t utf-8 -o xnc.hlp.tmp xnc.hlp && mv xnc.hlp.tmp xnc.hlp
 	iconv -f iso8859-5 -t utf-8 -o mcserv.8.in.tmp mcserv.8.in && mv mcserv.8.in.tmp mcserv.8.in
 	cd ${S}
+}
+
+do_configure_prepend() {
+	# remove dangling symlinks
+	find ${S} -type l -exec rm {} \;
 }

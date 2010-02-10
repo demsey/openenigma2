@@ -1,14 +1,15 @@
 require eglibc.inc
 
 DEPENDS += "gperf-native"
-DEFAULT_PREFERENCE = "1"
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
+FILESPATHPKG =. "eglibc-svn:"
 PV = "2.9"
-PR = "r5"
-SVN_REV="7430"
+PR = "${INC_PR}.6"
+SVN_REV="8690"
 EGLIBC_BRANCH="eglibc-2_9"
-SRC_URI = "svn://svn.eglibc.org/branches;module=eglibc-2_9;rev=${SVN_REV};proto=svn \
+SRC_URI = "svn://svn.eglibc.org/branches;module=${EGLIBC_BRANCH};rev=${SVN_REV};proto=svn \
            file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
+	   file://armv4t-interworking.patch;patch=1 \
+	   file://IO-acquire-lock-fix.patch;patch=1 \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
 S = "${WORKDIR}/${EGLIBC_BRANCH}/libc"

@@ -5,16 +5,22 @@ SECTION = "console/network"
 PRIORITY = "optional"
 DEPENDS = "libpcap"
 
-SRC_URI = "http://www.tcpdump.org/release/tcpdump-${PV}.tar.gz \
-           file://tcpdump_configure_no_-O2.patch;patch=1"
+PR = "r1"
+
+SRC_URI = " \
+	http://www.tcpdump.org/release/tcpdump-${PV}.tar.gz \
+	file://tcpdump_configure_no_-O2.patch;patch=1 \
+	file://ipv6-cross.patch;patch=1 \
+"
 
 inherit autotools
 
-EXTRA_OECONF = "--without-crypto"
+EXTRA_OECONF = "--without-crypto \
+		${@base_contains('DISTRO_FEATURES', 'ipv6', '--enable-ipv6', '--disable-ipv6', d)}"
 
 do_configure() {
 	gnu-configize
 	oe_runconf
-        sed -i 's:/usr/lib:${STAGING_LIBDIR}:' ./Makefile
-        sed -i 's:/usr/include:${STAGING_INCDIR}:' ./Makefile
+	sed -i 's:/usr/lib:${STAGING_LIBDIR}:' ./Makefile
+	sed -i 's:/usr/include:${STAGING_INCDIR}:' ./Makefile
 }

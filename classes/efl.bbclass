@@ -11,19 +11,23 @@ PE = "2"
 
 ARM_INSTRUCTION_SET = "arm"
 
-AUTOTOOLS_STAGE_PKGCONFIG = "1"
-# do NOT inherit pkgconfig here, see note in autotools_stage_all
 inherit autotools
+
+# evas-native looks at this var, so keep it
+AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 do_configure_prepend() {
 	touch config.rpath
 }
 
-do_stage() {
-	autotools_stage_all
+do_install_prepend () {
+	for i in `find ${S}/ -name "*.pc" -type f` ; do \
+		sed -i -e 's:-L${STAGING_LIBDIR}::g' -e 's:-I${STAGING_INCDIR}::g' $i
+	done
 }
 
-PACKAGES = "${PN}-dbg ${PN} ${PN}-themes ${PN}-dev ${PN}-tests"
+# This construction is stupid, someone with more E knowledge should change it to =+ or something
+PACKAGES = "${PN}-dbg ${PN} ${PN}-themes ${PN}-dev ${PN}-doc ${PN}-tests ${PN}-static"
 
 FILES_${PN} = "${libdir}/*.so.*"
 
@@ -39,12 +43,15 @@ FILES_${PN}-themes = "${datadir}/${PN}/themes \
 FILES_${PN}-dev   += "${bindir}/${PN}-config \
                       ${libdir}/pkgconfig/* \
                       ${libdir}/lib*.la \
-                      ${libdir}/lib*.a \
                       ${libdir}/*.so \
-                      ${libdir}/${PN}/*.a \
                       ${libdir}/${PN}/*.la \
-                      ${libdir}/${PN}/*/*.a \
-                      ${libdir}/${PN}/*/*.la"
+                      ${libdir}/${PN}/*/*.la \
+                      ${datadir}/${PN}/edje_externals \
+"
+
+FILES_${PN}-static += "${libdir}/${PN}/*.a \
+                       ${libdir}/${PN}/*/*.a \
+"
 
 FILES_${PN}-dbg +=   "${libdir}/${PN}/.debug \
                       ${libdir}/${PN}/*/.debug"

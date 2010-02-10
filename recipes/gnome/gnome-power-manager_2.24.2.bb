@@ -1,5 +1,7 @@
 LICENSE = "GPLv2"
-DEPENDS = "libnotify libgnomeui gnome-panel gnome-doc-utils libwnck gtk+ gnome-keyring libglade hal dbus-glib " 
+DEPENDS = "gtk+ gnome-keyring libgnome libgnomeui hal dbus libglade \
+           libnotify libwnck cairo libunique gnome-panel gstreamer \
+           xrandr policykit-gnome gnome-doc-utils dbus-glib " 
 
 inherit gnome
 
@@ -11,6 +13,10 @@ EXTRA_OECONF = " --disable-scrollkeeper \
                  --enable-compile-warnings=no \
                  ac_cv_header_X11_extensions_dpms_h=yes \
                "
+
+do_configure_prepend() {
+        sed -i -e 's:	man	::g' ${S}/Makefile.am
+}
 
 do_configure_append() {
         rm config.log
@@ -31,6 +37,6 @@ FILES_${PN} += "${datadir}/icons \
 		${datadir}/gnome/autostart \
 		"
 
-FILE_{PN}-doc += "${datadir}/omf \
-                  ${datadir}/gnome/help "
+FILES_${PN}-doc += "${datadir}/omf \
+                    ${datadir}/gnome/help "
 

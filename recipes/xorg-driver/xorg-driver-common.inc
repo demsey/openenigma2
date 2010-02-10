@@ -2,7 +2,7 @@ DESCRIPTION = "X driver"
 HOMEPAGE = "http://www.x.org"
 SECTION = "x11/drivers"
 LICENSE = "MIT-X"
-PR = "r7"
+PR = "r9"
 
 DEPENDS = "randrproto xorg-server xproto"
 
@@ -15,6 +15,9 @@ FILES_${PN} += " ${libdir}/xorg/modules"
 FILES_${PN}-dbg +=  "${libdir}/xorg/modules/*/.debug"
 
 inherit autotools pkgconfig
+
+TARGET_CPPFLAGS += "-I${STAGING_DIR_HOST}/usr/include/xorg"
+
 
 do_stage() {
 	autotools_stage_all

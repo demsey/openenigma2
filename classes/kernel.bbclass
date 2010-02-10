@@ -8,9 +8,6 @@ KERNEL_IMAGETYPE ?= "zImage"
 # Add dependency on mkimage for kernels that build a uImage
 
 python __anonymous () {
-
-    import bb
-    
     kerneltype = bb.data.getVar('KERNEL_IMAGETYPE', d, 1) or ''
     if kerneltype == 'uImage':
     	depends = bb.data.getVar("DEPENDS", d, 1)
@@ -20,6 +17,11 @@ python __anonymous () {
     image = bb.data.getVar('INITRAMFS_IMAGE', d, True)
     if image != '' and image is not None:
         bb.data.setVar('INITRAMFS_TASK', '${INITRAMFS_IMAGE}:do_rootfs', d)
+
+    machine_kernel_pr = bb.data.getVar('MACHINE_KERNEL_PR', d, True)
+
+    if machine_kernel_pr:
+       bb.data.setVar('PR', machine_kernel_pr, d)
 }
 
 INITRAMFS_IMAGE ?= ""
@@ -64,10 +66,6 @@ export CMDLINE_CONSOLE = "console=${@bb.data.getVar("KERNEL_CONSOLE",d,1) or "tt
 KERNEL_VERSION = "${@get_kernelversion('${S}')}"
 KERNEL_MAJOR_VERSION = "${@get_kernelmajorversion('${KERNEL_VERSION}')}"
 
-# A machine.conf or local.conf can increase MACHINE_KERNEL_PR to force
-# rebuilds for kernel and external modules
-PR = "${MACHINE_KERNEL_PR}"
-
 KERNEL_LOCALVERSION ?= ""
 
 # kernels are generally machine specific
@@ -76,6 +74,10 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 # U-Boot support
 UBOOT_ENTRYPOINT ?= "20008000"
 UBOOT_LOADADDRESS ?= "${UBOOT_ENTRYPOINT}"
+
+# For the kernel, we don't want the '-e MAKEFLAGS=' in EXTRA_OEMAKE.
+# We don't want to override kernel Makefile variables from the environment
+EXTRA_OEMAKE = ""
 
 kernel_do_compile() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
@@ -93,18 +95,34 @@ kernel_do_compile() {
 kernel_do_compile[depends] = "${INITRAMFS_TASK}"
 
 kernel_do_stage() {
-	ASMDIR=`readlink include/asm`
+	if [ -e include/asm ] ; then
+		# This link is generated only in kernel before 2.6.33-rc1, don't stage it for newer kernels
+		ASMDIR=`readlink include/asm`
 
-	mkdir -p ${STAGING_KERNEL_DIR}/include/$ASMDIR
-	cp -fR include/$ASMDIR/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+		mkdir -p ${STAGING_KERNEL_DIR}/include/$ASMDIR
+		cp -fR include/$ASMDIR/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+	fi
 	# Kernel 2.6.27 moved headers from includes/asm-${ARCH} to arch/${ARCH}/include/asm	
 	if [ -e arch/${ARCH}/include/asm/ ] ; then 
-		cp -fR arch/${ARCH}/include/asm/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+		if [ -e include/asm ] ; then
+			cp -fR arch/${ARCH}/include/asm/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+		fi
 		install -d ${STAGING_KERNEL_DIR}/arch/${ARCH}/include
 		cp -fR arch/${ARCH}/* ${STAGING_KERNEL_DIR}/arch/${ARCH}/	
+
+	# Check for arch/x86 on i386
+	elif [ -d arch/x86/include/asm/ ]; then
+		if [ -e include/asm ] ; then
+			cp -fR arch/x86/include/asm/* ${STAGING_KERNEL_DIR}/include/asm-x86/
+		fi
+		install -d ${STAGING_KERNEL_DIR}/arch/x86/include
+		cp -fR arch/x86/* ${STAGING_KERNEL_DIR}/arch/x86/
 	fi
-	rm -f $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
-	ln -sf $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
+
+	if [ -e include/asm ] ; then
+		rm -f ${STAGING_KERNEL_DIR}/include/asm
+		ln -sf $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
+	fi
 
 	mkdir -p ${STAGING_KERNEL_DIR}/include/asm-generic
 	cp -fR include/asm-generic/* ${STAGING_KERNEL_DIR}/include/asm-generic/
@@ -174,6 +192,7 @@ kernel_do_install() {
 	install -m 0644 System.map ${D}/boot/System.map-${KERNEL_VERSION}
 	install -m 0644 .config ${D}/boot/config-${KERNEL_VERSION}
 	install -m 0644 vmlinux ${D}/boot/vmlinux-${KERNEL_VERSION}
+	[ -e Module.symvers ] && install -m 0644 Module.symvers ${D}/boot/Module.symvers-${KERNEL_VERSION}
 	install -d ${D}/etc/modutils
 	if [ "${KERNEL_MAJOR_VERSION}" = "2.6" ]; then
 		install -d ${D}/etc/modprobe.d
@@ -191,8 +210,12 @@ kernel_do_install() {
 kernel_do_configure() {
 	yes '' | oe_runmake oldconfig
 	if [ ! -z "${INITRAMFS_IMAGE}" ]; then
-		cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE}-${MACHINE}.cpio.gz" initramfs.cpio.gz
-	fi 
+		for img in cpio.gz cpio.lzo cpio.lzma; do
+		if [ -e "${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE}-${MACHINE}.$img" ]; then
+			cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE}-${MACHINE}.$img" initramfs.$img
+		fi
+		done
+	fi
 }
 
 do_menuconfig() {
@@ -205,7 +228,7 @@ do_menuconfig() {
 	fi
 }
 do_menuconfig[nostamp] = "1"
-addtask menuconfig after do_patch
+addtask menuconfig after do_configure
 
 pkg_postinst_kernel () {
 	cd /${KERNEL_IMAGEDEST}; update-alternatives --install /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE} ${KERNEL_IMAGETYPE}-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
@@ -224,7 +247,7 @@ EXPORT_FUNCTIONS do_compile do_install do_stage do_configure
 PACKAGES = "kernel kernel-base kernel-image kernel-dev kernel-vmlinux"
 FILES = ""
 FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
-FILES_kernel-dev = "/boot/System.map* /boot/config*"
+FILES_kernel-dev = "/boot/System.map* /boot/Module.symvers* /boot/config*"
 FILES_kernel-vmlinux = "/boot/vmlinux*"
 RDEPENDS_kernel = "kernel-base"
 RRECOMMENDS_kernel-module-hostap-cs += '${@base_version_less_or_equal("KERNEL_VERSION", "2.6.17", "", "apm-wifi-suspendfix", d)}'
@@ -296,8 +319,9 @@ module_conf_sco = "alias bt-proto-2 sco"
 module_conf_rfcomm = "alias bt-proto-3 rfcomm"
 
 python populate_packages_prepend () {
+	import os
 	def extract_modinfo(file):
-		import tempfile, os, re
+		import tempfile, re
 		tempfile.tempdir = bb.data.getVar("WORKDIR", d, 1)
 		tf = tempfile.mkstemp()
 		tmpfile = tf[1]
@@ -318,9 +342,9 @@ python populate_packages_prepend () {
 		return vals
 	
 	def parse_depmod():
-		import os, re
+		import re
 
-		dvar = bb.data.getVar('D', d, 1)
+		dvar = bb.data.getVar('PKGD', d, 1)
 		if not dvar:
 			bb.error("D not defined")
 			return
@@ -369,10 +393,10 @@ python populate_packages_prepend () {
 		return deps
 	
 	def get_dependencies(file, pattern, format):
-		file = file.replace(bb.data.getVar('D', d, 1) or '', '', 1)
+		file = file.replace(bb.data.getVar('PKGD', d, 1) or '', '', 1)
 
 		if module_deps.has_key(file):
-			import os.path, re
+			import re
 			dependencies = []
 			for i in module_deps[file]:
 				m = re.match(pattern, os.path.basename(i))
@@ -388,7 +412,7 @@ python populate_packages_prepend () {
 		import re
 		vals = extract_modinfo(file)
 
-		dvar = bb.data.getVar('D', d, 1)
+		dvar = bb.data.getVar('PKGD', d, 1)
 
 		# If autoloading is requested, output /etc/modutils/<name> and append
 		# appropriate modprobe commands to the postinst
@@ -441,12 +465,16 @@ python populate_packages_prepend () {
 
 	postinst = bb.data.getVar('pkg_postinst_modules', d, 1)
 	postrm = bb.data.getVar('pkg_postrm_modules', d, 1)
+
+        maybe_update_modules = "update-modules "
+        if bb.data.getVar("ONLINE_PACKAGE_MANAGEMENT", d) == "none":
+                maybe_update_modules = ""
 	
 	do_split_packages(d, root='/lib/firmware', file_regex='^(.*)\.bin$', output_pattern='kernel-firmware-%s', description='Firmware for %s', recursive=True, extra_depends='')
 	do_split_packages(d, root='/lib/firmware', file_regex='^(.*)\.fw$', output_pattern='kernel-firmware-%s', description='Firmware for %s', recursive=True, extra_depends='')
-	do_split_packages(d, root='/lib/modules', file_regex=module_regex, output_pattern=module_pattern, description='%s kernel module', postinst=postinst, postrm=postrm, recursive=True, hook=frob_metadata, extra_depends='update-modules kernel-%s' % bb.data.getVar("KERNEL_VERSION", d, 1))
+	do_split_packages(d, root='/lib/modules', file_regex=module_regex, output_pattern=module_pattern, description='%s kernel module', postinst=postinst, postrm=postrm, recursive=True, hook=frob_metadata, extra_depends='%skernel-%s' % (maybe_update_modules, bb.data.getVar("KERNEL_VERSION", d, 1)))
 
-	import re, os
+	import re
 	metapkg = "kernel-modules"
 	bb.data.setVar('ALLOW_EMPTY_' + metapkg, "1", d)
 	bb.data.setVar('FILES_' + metapkg, "", d)
@@ -480,31 +508,42 @@ do_sizecheck() {
 
 addtask sizecheck before do_install after do_compile
 
+do_uboot_mkimage() {
+    if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
+        ENTRYPOINT=${UBOOT_ENTRYPOINT}
+        if test -n "${UBOOT_ENTRYSYMBOL}"; then
+            ENTRYPOINT=`${HOST_PREFIX}nm ${S}/vmlinux | \
+                   awk '$3=="${UBOOT_ENTRYSYMBOL}" {print $1}'`
+        fi
+        if test -e arch/${ARCH}/boot/compressed/vmlinux ; then
+            ${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
+            uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C none -a ${UBOOT_LOADADDRESS} -e $ENTRYPOINT -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin arch/${ARCH}/boot/uImage
+            rm -f linux.bin
+        else
+            ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
+            rm -f linux.bin.gz
+            gzip -9 linux.bin
+            uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C gzip -a ${UBOOT_LOADADDRESS} -e $ENTRYPOINT -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin.gz arch/${ARCH}/boot/uImage
+            rm -f linux.bin.gz
+        fi
+    fi
+}
+
+addtask uboot_mkimage before do_install after do_compile
+
 KERNEL_IMAGE_BASE_NAME ?= "${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}"
 KERNEL_IMAGE_SYMLINK_NAME ?= "${KERNEL_IMAGETYPE}-${MACHINE}"
+MODULES_IMAGE_BASE_NAME ?= modules-${PV}-${PR}-${MACHINE}
 
 do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}
 	install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
+	package_stagefile_shell ${S}/${KERNEL_OUTPUT}
 	package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
 
-	if [ -d "${D}/lib" ]; then
-	tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${PV}-${PR}-${MACHINE}.tgz -C ${D} lib
-	fi
-
-	if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
-		if test -e arch/${ARCH}/boot/compressed/vmlinux ; then
-			${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
-			uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C none -a ${UBOOT_LOADADDRESS} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
-			rm -f linux.bin
-		else
-			${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
-			rm -f linux.bin.gz
-			gzip -9 linux.bin
-			uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C gzip -a ${UBOOT_LOADADDRESS} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
-			rm -f linux.bin.gz
-		fi
-		package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
+	if [ -d "${PKGD}/lib" ]; then
+		fakeroot tar -cvzf ${DEPLOY_DIR_IMAGE}/${MODULES_IMAGE_BASE_NAME}.tgz -C ${PKGD} lib
+		package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${MODULES_IMAGE_BASE_NAME}.tgz
 	fi
 
 	cd ${DEPLOY_DIR_IMAGE}
@@ -514,5 +553,6 @@ do_deploy() {
 }
 
 do_deploy[dirs] = "${S}"
+do_deploy[depends] += "fakeroot-native:do_populate_staging"
 
-addtask deploy before do_package after do_install
+addtask deploy before do_build after do_package

@@ -1,5 +1,5 @@
 ac_cv_sizeof_char=${ac_cv_sizeof_char=1}
-ac_cv_sizeof_unsigned_char=${ac_cv_sizeof_unsigned_int=1}
+ac_cv_sizeof_unsigned_char=${ac_cv_sizeof_unsigned_char=1}
 ac_cv_sizeof_char_p=${ac_cv_sizeof_char_p=4}
 ac_cv_sizeof_unsigned_char_p=${ac_cv_sizeof_unsigned_char_p=4}
 ac_cv_sizeof_int=${ac_cv_sizeof_int=4}
@@ -55,21 +55,7 @@ ac_cv_file_lib_src_libmad_frame_h=${ac_cv_file_lib_src_libmad_frame_h=no}
 
 # bash
 ac_cv_c_long_double=${ac_cv_c_long_double=yes}
-bash_cv_have_mbstate_t=${bash_cv_have_mbstate_t=yes}
 bash_cv_func_sigsetjmp=${bash_cv_func_sigsetjmp=missing}
-bash_cv_must_reinstall_sighandlers=${bash_cv_must_reinstall_sighandlers=no}
-bash_cv_func_strcoll_broken=${bash_cv_func_strcoll_broken=no}
-bash_cv_dup2_broken=${bash_cv_dup2_broken=no}
-bash_cv_opendir_not_robust=${bash_cv_opendir_not_robust=no}
-bash_cv_type_rlimit=${bash_cv_type_rlimit=rlim_t}
-bash_cv_getenv_redef=${bash_cv_getenv_redef=yes}
-bash_cv_ulimit_maxfds=${bash_cv_ulimit_maxfds=yes}
-bash_cv_getcwd_calls_popen=${bash_cv_getcwd_calls_popen=no}
-bash_cv_printf_a_format=${bash_cv_printf_a_format=yes}
-bash_cv_pgrp_pipe=${bash_cv_pgrp_pipe=no}
-bash_cv_job_control_missing=${bash_cv_job_control_missing=present}
-bash_cv_sys_named_pipes=${bash_cv_sys_named_pipes=present}
-bash_cv_unusable_rtsigs=${bash_cv_unusable_rtsigs=no}
 
 # clamav
 clamav_av_func_working_snprintf_long=${clamav_av_func_working_snprintf_long=yes}
@@ -103,9 +89,6 @@ ac_cv_func_posix_getpwnam_r=${ac_cv_func_posix_getpwnam_r=yes}
 
 dpkg_cv_va_copy=${ac_cv_va_copy=no}
 dpkg_cv___va_copy=${ac_cv___va_copy=yes}
-
-# enca
-yeti_cv_func_scanf_modif_size_t=yes
 
 # ettercap
 ettercap_cv_type_socklen_t=${ettercap_cv_type_socklen_t=yes}
@@ -172,6 +155,7 @@ with_broken_putenv=${with_broken_putenv=no}
 
 # mono
 cv_mono_sizeof_sunpath=108
+mono_cv_sizeof_sunpath=108
 
 # mysql
 mysql_cv_func_atomic_sub=${mysql_cv_func_atomic_sub=yes}
@@ -263,3 +247,8 @@ ac_cv_libiconv_utf8=${ac_cv_libiconv_utf8=yes}
 
 #dbus
 ac_cv_have_abstract_sockets=${ac_cv_have_abstract_sockets=yes}
+
+# socat
+ac_cv_ispeed_offset=${ac_cv_ispeed_offset=13}
+sc_cv_termios_ispeed=${sc_cv_termios_ispeed=yes}
+

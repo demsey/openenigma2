@@ -2,23 +2,22 @@ require ffmpeg.inc
 
 DEPENDS += "schroedinger libgsm"
 
-SRCREV = "16396"
+SRCREV = "21107"
 
 PE = "1"
-PV = "0.4.9+svnr${SRCREV}"
-PR = "r2"
+PV = "0.5.0+${PR}+svnr${SRCPV}"
+PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_angstrom = "1"
+DEFAULT_PREFERENCE_om-gta02 = "1"
 
 SRC_URI = "svn://svn.ffmpeg.org/ffmpeg/;module=trunk"
 
 S = "${WORKDIR}/trunk"
-
-DEFAULT_PREFERENCE = "-1"
-
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
-FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-frame-pointer -O4 -ffast-math"
+FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -fno-tree-vectorize -fomit-frame-pointer -O4 -ffast-math"
 BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
 
 EXTRA_FFCONF_armv7a = "--cpu=cortex-a8"
@@ -42,7 +41,8 @@ EXTRA_OECONF = " \
         --enable-libgsm \
         --enable-libmp3lame \
         --enable-libschroedinger \
-	--enable-swscale \
+        --enable-libtheora  \
+        --enable-libvorbis \
         --arch=${TARGET_ARCH} \
         --enable-cross-compile \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \

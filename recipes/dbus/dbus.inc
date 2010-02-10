@@ -5,6 +5,8 @@ LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl libsm libice virtual/libx11"
 DEPENDS_opendreambox = "expat glib-2.0 virtual/libintl"
 
+INC_PR = "r17"
+
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
   file://cross.patch;patch=1 \
@@ -18,6 +20,9 @@ S = "${WORKDIR}/dbus-${PV}"
 
 inherit autotools pkgconfig update-rc.d gettext
 
+EXTRA_OECONF_X = "--with-x"
+EXTRA_OECONF_X_opendreambox = ""
+
 EXTRA_OECONF = "\
   --disable-qt \
   --disable-qt3 \
@@ -26,17 +31,22 @@ EXTRA_OECONF = "\
   --disable-checks \
   --disable-xml-docs \
   --disable-doxygen-docs \
+  --disable-libaudit \
   --with-xml=expat \
   --with-dbus-default-reply-timeout=200000 \
+  ${EXTRA_OECONF_X} \
 "
 
-EXTRA_OECONF += " ${@base_conditional('DISTRO', 'opendreambox', '--without-x', '--with-x', d)}"
+do_compile_prepend_mipsel() {
+	sed -i -e 's/\-fPIE//' -e 's/\-pie\ \-Wl\,\-z\,relro//' bus/Makefile
+}
 
 do_install_append() {
         install -d ${D}${sysconfdir}/init.d
         install -m 0755 ${WORKDIR}/dbus-1.init ${D}${sysconfdir}/init.d/dbus-1
         # the stock install seems to install the libtool wrapper script, so we have to copy this manually :M:
         if [ -e bus/.libs/dbus-daemon-launch-helper ]; then
+                install -d  ${D}${libexecdir}/
                 install -m 0755 bus/.libs/dbus-daemon-launch-helper ${D}${libexecdir}/
         fi
 }

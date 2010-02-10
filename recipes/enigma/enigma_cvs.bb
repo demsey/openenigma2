@@ -50,7 +50,7 @@ do_compile_prepend() {
 	chmod ugo+x ${S}/po/xml2po
 }
 
-do_stage_append() {
+do_stage() {
 	install -d ${STAGING_INCDIR}/enigma
 	install -m 0644 ${WORKDIR}/enigma/include/*.h ${STAGING_INCDIR}/enigma
 	for dir in base dvb dvb/lowlevel codecs driver gdi gui socket system picviewer movieplayer; do

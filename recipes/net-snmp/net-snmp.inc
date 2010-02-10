@@ -6,9 +6,11 @@ RDEPENDS_${PN}-server += "net-snmp-mibs"
 RDEPENDS_${PN}-client += "net-snmp-mibs"
 RDEPENDS_${PN}-dev = "net-snmp-client (= ${EXTENDPV}) net-snmp-server (= ${EXTENDPV})"
 RRECOMMENDS_${PN}-dbg = "net-snmp-client (= ${EXTENDPV}) net-snmp-server (= ${EXTENDPV})"
+INC_PR = "r5"
 
 inherit autotools update-rc.d
 
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_configure() {
         # Additional flag based on target endiness (see siteinfo.bbclass)
@@ -48,8 +50,8 @@ do_stage() {
     	fi
         install -d ${STAGING_DIR_HOST}${layout_bindir}
         sed -e "s@-I/usr/include@@g" \
-            -e "s@^prefix=.*@prefix=${STAING_DIR_HOST}@g" \
-            -e "s@^exec_prefix=.*@exec_prefix=${STAING_DIR_HOST}@g" \
+            -e "s@^prefix=.*@prefix=${STAGING_DIR_HOST}@g" \
+            -e "s@^exec_prefix=.*@exec_prefix=${STAGING_DIR_HOST}@g" \
             -e "s@^includedir=.*@includedir=${STAGING_INCDIR}@g" \
             -e "s@^libdir=.*@libdir=${STAGING_LIBDIR}@g" \
                 -i net-snmp-config

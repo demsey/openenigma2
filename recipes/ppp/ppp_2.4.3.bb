@@ -48,7 +48,7 @@ do_install_append () {
 	install -m 0755 ${WORKDIR}/08setupdns ${D}${sysconfdir}/ppp/ip-up.d/
 	install -m 0755 ${WORKDIR}/92removedns ${D}${sysconfdir}/ppp/ip-down.d/
 	rm -rf ${D}/${mandir}/man8/man8
-	if [ ${DISTRO} = "opendreambox" ]; then
+	if [ ${DISTRO} == "opendreambox" ]; then
 		for i in pap-secrets options; do
 			rm ${D}/etc/ppp/$i
 		done

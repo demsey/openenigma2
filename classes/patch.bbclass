@@ -4,8 +4,6 @@
 QUILTRCFILE ?= "${STAGING_BINDIR_NATIVE}/quiltrc"
 
 def patch_init(d):
-	import os, sys
-
 	class NotFoundError(Exception):
 		def __init__(self, path):
 			self.path = path
@@ -13,8 +11,6 @@ def patch_init(d):
 			return "Error: %s not found." % self.path
 
 	def md5sum(fname):
-		import sys
-
 		# when we move to Python 2.5 as minimal supported
 		# we can kill that try/except as hashlib is 2.5+
 		try:
@@ -75,8 +71,6 @@ def patch_init(d):
 
 		def __str__(self):
 			return "Patch Error: %s" % self.msg
-
-	import bb, bb.data, bb.fetch
 
 	class PatchSet(object):
 		defaults = {
@@ -189,6 +183,24 @@ def patch_init(d):
 		def Clean(self):
 			""""""
 
+	class GitApplyTree(PatchTree):
+		def __init__(self, dir, d):
+			PatchTree.__init__(self, dir, d)
+
+		def _applypatch(self, patch, force = False, reverse = False, run = True):
+			shellcmd = ["git", "--git-dir=.", "apply", "-p%s" % patch['strippath']]
+
+			if reverse:
+				shellcmd.append('-R')
+
+			shellcmd.append(patch['file'])
+
+			if not run:
+				return "sh" + "-c" + " ".join(shellcmd)
+
+			return runcmd(["sh", "-c", " ".join(shellcmd)], self.dir)
+
+
 	class QuiltTree(PatchSet):
 		def _runcmd(self, args, run = True):
 			quiltrc = bb.data.getVar('QUILTRCFILE', self.d, 1)
@@ -235,6 +247,7 @@ def patch_init(d):
 				try:
 					output = runcmd(["quilt", "applied"], self.dir)
 				except CmdError:
+					import sys
 					if sys.exc_value.output.strip() == "No patches applied":
 						return
 					else:
@@ -348,6 +361,7 @@ def patch_init(d):
 			try:
 				self.patchset.Push()
 			except Exception:
+				import sys
 				os.chdir(olddir)
 				raise sys.exc_value
 
@@ -424,6 +438,7 @@ def patch_init(d):
 	g["PatchSet"] = PatchSet
 	g["PatchTree"] = PatchTree
 	g["QuiltTree"] = QuiltTree
+	g["GitApplyTree"] = GitApplyTree
 	g["Resolver"] = Resolver
 	g["UserResolver"] = UserResolver
 	g["NOOPResolver"] = NOOPResolver
@@ -437,9 +452,6 @@ PATCHDEPENDENCY = "${PATCHTOOL}-native:do_populate_staging"
 do_patch[depends] = "${PATCHDEPENDENCY}"
 
 python patch_do_patch() {
-	import re
-	import bb.fetch
-
 	patch_init(d)
 
 	src_uri = (bb.data.getVar('SRC_URI', d, 1) or '').split()
@@ -449,6 +461,7 @@ python patch_do_patch() {
 	patchsetmap = {
 		"patch": PatchTree,
 		"quilt": QuiltTree,
+		"git": GitApplyTree,
 	}
 
 	cls = patchsetmap[bb.data.getVar('PATCHTOOL', d, 1) or 'quilt']

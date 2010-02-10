@@ -2,7 +2,7 @@ require glibc.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
 SRCDATE = "20050627"
-PR = "r23"
+PR = "${INC_PR}.0"
 
 #Doesnt build for sh3
 DEFAULT_PREFERENCE_sh3="-1"
@@ -51,7 +51,7 @@ SRC_URI = "http://familiar.handhelds.org/source/v0.8.3/stash_libc_sources.redhat
 	   file://zecke-sane-readelf.patch;patch=1 \
 	   file://glibc-2.3.5-fix-weak-alias-arm.patch;patch=1 \
 	   file://glibc-2.3.5-fix-weak-alias-arm-2.patch;patch=1 \
-           file://etc/ld.so.conf \
+	   file://etc/ld.so.conf \
 	   file://generate-supported.mk"
 
 # seems to fail on tls platforms
@@ -74,7 +74,7 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 	        --without-cvs --disable-profile --disable-debug --without-gd \
 		--enable-clocale=gnu \
 	        --enable-add-ons=${GLIBC_ADDONS} \
-		--with-headers=${STAGING_INCDIR \
+		--with-headers=${STAGING_INCDIR} \
 		--without-selinux \
 		${GLIBC_EXTRA_OECONF}"
 
@@ -135,4 +135,4 @@ do_compile () {
 
 require glibc-stage.inc
 
-require glibc-package.bbclass
+require glibc-package.inc

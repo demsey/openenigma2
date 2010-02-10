@@ -13,7 +13,7 @@ libdir_jni ?= ${libdir}/jni
 # JVM bundle location on target
 libdir_jvm ?= ${libdir}/jvm
 
-STAGING_DATADIR_JAVA ?= ${STAGING_DATADIR}/java
+STAGING_DATADIR_JAVA ?= ${STAGING_DIR_JAVA}
 STAGING_LIBDIR_JNI ?= ${STAGING_LIBDIR}/jni
 STAGING_LIBDIR_JVM ?= ${STAGING_LIBDIR}/jvm
 
@@ -68,11 +68,11 @@ oe_jarinstall() {
 
   # Creates symlinks out of the remaining arguments.
   while [ "$#" -gt 0 ]; do
-    if [ -e $dir/$1 ]; then
+    if [ -e $dir/$1 -o -h $dir/$1 ]; then
       oewarn "file was in the way. removing:" $dir/$1
       rm $dir/$1
     fi
-    ln -sf $destname $dir/$1
+    ln -s $destname $dir/$1
     shift
   done
 }

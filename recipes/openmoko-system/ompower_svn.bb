@@ -1,8 +1,8 @@
 DESCRIPTION = "Openmoko Power State handling daemon via DBUS"
 LICENSE = "MIT BSD"
 DEPENDS = "ecore edbus"
-PV = "0.0.0+svnr${SRCREV}"
-PR = "r3"
+PV = "0.0.0+svnr${SRCPV}"
+PR = "r4"
 RDEPENDS = "initscripts"
 
 SRCNAME = "ompower"

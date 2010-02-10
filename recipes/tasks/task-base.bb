@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r83"
+PR = "r87"
 
 inherit task
 
@@ -59,6 +59,9 @@ HOTPLUG ?= "${@base_contains("MACHINE_FEATURES", "kernel24",  "linux-hotplug",""
 # dropbear, openssh or none
 #
 DISTRO_SSH_DAEMON ?= "dropbear"
+
+# Distro can override apm provider
+DISTRO_APM ?= "apm"
 
 #
 # bluetooth manager
@@ -190,7 +193,7 @@ RDEPENDS_task-base-acpi = "\
     acpid"
 
 RDEPENDS_task-base-apm = "\
-    apm \
+    ${DISTRO_APM} \
     apmd \
     ${@base_contains('MACHINE_FEATURES', 'kernel24', 'network-suspend-scripts', '',d)}"
 
@@ -340,13 +343,12 @@ RRECOMMENDS_task-base-ipsec = "\
 #
 RDEPENDS_task-base-wifi = "\
     wireless-tools \
-    ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'hostap-utils', '',d)} \
-    ${@base_contains('COMBINED_FEATURES', 'pci', 'hostap-utils', '',d)} \
-    ${@base_contains('COMBINED_FEATURES', 'pci', 'madwifi-ng-tools', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'hostap', 'hostap-utils', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'madwifi', 'madwifi-ng-tools', '',d)} \
     wpa-supplicant"
 
 RRECOMMENDS_task-base-wifi = "\
-    ${@base_contains('COMBINED_FEATURES', 'pci', 'madwifi-ng-modules', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'madwifi', 'madwifi-ng-modules', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'usbhost', 'kernel-module-zd1211rw', '',d)} \
     kernel-module-ieee80211-crypt \
     kernel-module-ieee80211-crypt-ccmp \

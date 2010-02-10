@@ -10,9 +10,11 @@ SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://vol_id_ld.patch;patch=1 \
 	   file://udevtrigger_add_devname_filtering.patch;patch=1 \
 	   file://libvolume-id-soname.patch;patch=1 \
+	   file://mtd-exclude-persistent.patch;patch=1 \
 	   file://mount.blacklist \
 	   file://run.rules \
 	   file://default \
+	   file://local.rules \
 	   "
 
 SRC_URI_append_h2200 = " file://50-hostap_cs.rules "
@@ -22,6 +24,8 @@ SRC_URI_append_opendreambox = " file://40-od-devfs-compatibility.rules \
 	   file://42-od-oled-compatibility.rules"
 
 SRC_URI_append_dm8000 = " ${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', 'file://41-od-linux-2.6.18-misc.rules', '', d)}"
+SRC_URI_append_dm800 = " ${@base_contains('PREFERRED_VERSION_linux-dm800', '2.6.18', 'file://41-od-linux-2.6.18-misc.rules', '', d)}"
+SRC_URI_append_dm500hd = " ${@base_contains('PREFERRED_VERSION_linux-dm500hd', '2.6.18', 'file://41-od-linux-2.6.18-misc.rules', '', d)}"
 
 require udev.inc
 

@@ -3,11 +3,12 @@ require midori.inc
 DEPENDS += "python-native python-docutils-native"
 
 # increment PR every time SRCREV is updated!
-PR = "r0"
+PR = "r2"
 PV = "0.1.7+${PR}+gitr${SRCREV}"
 
-SRC_URI = "git://git.xfce.org/kalikiana/midori;protocol=git \
-           file://waf"
+SRC_URI = "git://git.xfce.org/apps/midori;protocol=git \
+           file://waf \
+           file://wscript-fix.patch;patch=1"
 
 S = "${WORKDIR}/git"
 

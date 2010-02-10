@@ -14,21 +14,7 @@ apr_cv_tcp_nodelay_with_cork=${apr_cv_tcp_nodelay_with_cork=yes}
 
 # bash
 ac_cv_c_long_double=${ac_cv_c_long_double=yes}
-bash_cv_have_mbstate_t=${bash_cv_have_mbstate_t=yes}
 bash_cv_func_sigsetjmp=${bash_cv_func_sigsetjmp=missing}
-bash_cv_must_reinstall_sighandlers=${bash_cv_must_reinstall_sighandlers=no}
-bash_cv_func_strcoll_broken=${bash_cv_func_strcoll_broken=no}
-bash_cv_dup2_broken=${bash_cv_dup2_broken=no}
-bash_cv_opendir_not_robust=${bash_cv_opendir_not_robust=no}
-bash_cv_type_rlimit=${bash_cv_type_rlimit=rlim_t}
-bash_cv_getenv_redef=${bash_cv_getenv_redef=yes}
-bash_cv_ulimit_maxfds=${bash_cv_ulimit_maxfds=yes}
-bash_cv_getcwd_calls_popen=${bash_cv_getcwd_calls_popen=no}
-bash_cv_printf_a_format=${bash_cv_printf_a_format=yes}
-bash_cv_pgrp_pipe=${bash_cv_pgrp_pipe=no}
-bash_cv_job_control_missing=${bash_cv_job_control_missing=present}
-bash_cv_sys_named_pipes=${bash_cv_sys_named_pipes=present}
-bash_cv_unusable_rtsigs=${bash_cv_unusable_rtsigs=no}
 
 # coreutils
 utils_cv_sys_open_max=${utils_cv_sys_open_max=1019}
@@ -50,7 +36,7 @@ db_cv_path_sh=${db_cv_path_sh=/bin/sh}
 db_cv_path_strip=${db_cv_path_strip=/usr/bin/strip}
 db_cv_align_t=${db_cv_align_t='unsigned long long'}
 db_cv_alignp_t=${db_cv_alignp_t='unsigned long'}
-db_cv_mutex=${db_cv_mutex=no}
+db_cv_mutex=${db_cv_mutex=ARM/gcc-assembly}
 db_cv_posixmutexes=${db_cv_posixmutexes=no}
 db_cv_uimutexes=${db_cv_uimutexes=no}
 
@@ -148,6 +134,7 @@ ac_cv_lib_png_png_create_info_struct=${ac_cv_lib_png_png_create_info_struct=yes}
 
 # mono
 cv_mono_sizeof_sunpath=108
+mono_cv_sizeof_sunpath=108
 
 # mysql
 mysql_cv_func_atomic_sub=${mysql_cv_func_atomic_sub=no}
@@ -177,6 +164,7 @@ ac_cv_func_getaddrinfo=${ac_cv_func_getaddrinfo=yes}
 ac_cv_pread=${ac_cv_pread=no}
 ac_cv_pwrite=${ac_cv_pwrite=no}
 php_cv_lib_cookie_io_functions_use_off64_t=${php_cv_lib_cookie_io_functions_use_off64_t=yes}
+cv_php_mbstring_stdarg=${cv_php_mbstring_stdarg=yes}
 
 # rsync
 rsync_cv_HAVE_BROKEN_LARGEFILE=${rsync_cv_HAVE_BROKEN_LARGEFILE=no}

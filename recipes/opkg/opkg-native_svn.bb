@@ -1,7 +1,10 @@
 require opkg.inc
 
-DEPENDS = "curl-native"
-PR = "r3"
+DEPENDS = "curl-native openssl-native"
+PR = "${INC_PR}"
+PROVIDES =+ "virtual/update-alternatives-native"
+
+SRC_URI += "file://opkg-libdir.patch;patch=1;maxrev=342"
 
 target_libdir := "${libdir}"
 

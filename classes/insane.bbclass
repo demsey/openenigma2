@@ -61,6 +61,7 @@ def package_qa_get_machine_dict():
                         "i486":       (   3,     0,    0,          True,          True),
                         "i586":       (   3,     0,    0,          True,          True),
                         "i686":       (   3,     0,    0,          True,          True),
+                        "mips":       (   8,     0,    0,          False,         True),
                         "mipsel":     (   8,     0,    0,          True,          True),
                         "avr32":      (6317,     0,    0,          False,         True),
 			"sh4":        (42,	 0,    0,          True,          True),
@@ -73,11 +74,14 @@ def package_qa_get_machine_dict():
                         "arm" :       (40,     0,    0,          True,          True),
                         "armeb" :     (40,     0,    0,          False,         True),
                       },
-            "linux-uclibcgnueabi" : {
+            "linux-uclibceabi" : {
                         "arm" :       (40,     0,    0,          True,          True),
                         "armeb" :     (40,     0,    0,          False,         True),
                       },
             "linux-gnuspe" : {
+                        "powerpc":    (20,     0,    0,          False,         True),
+                      },
+            "linux-uclibcspe" : {
                         "powerpc":    (20,     0,    0,          False,         True),
                       },
 
@@ -178,7 +182,6 @@ def package_qa_get_elf(path, bits32):
 
 def package_qa_clean_path(path,d):
     """ Remove the common prefix from the path. In this case it is the TMPDIR"""
-    import bb
     return path.replace(bb.data.getVar('TMPDIR',d,True),"")
 
 def package_qa_make_fatal_error(error_class, name, path,d):
@@ -193,7 +196,6 @@ def package_qa_write_error(error_class, name, path, d):
     """
     Log the error
     """
-    import bb, os
     if not bb.data.getVar('QA_LOG', d):
         bb.note("a QA error occured but will not be logged because QA_LOG is not set")
         return
@@ -218,7 +220,6 @@ def package_qa_write_error(error_class, name, path, d):
     f.close()
 
 def package_qa_handle_error(error_class, error_msg, name, path, d):
-    import bb
     bb.error("QA Issue with %s: %s" % (name, error_msg))
     package_qa_write_error(error_class, name, path, d)
     return not package_qa_make_fatal_error(error_class, name, path, d)
@@ -255,7 +256,6 @@ def package_qa_check_dev(path, name,d, elf):
     Check for ".so" library symlinks in non-dev packages
     """
 
-    import bb, os
     sane = True
 
     # SDK packages are special.
@@ -276,7 +276,6 @@ def package_qa_check_dbg(path, name,d, elf):
     Check for ".debug" files or directories outside of the dbg package
     """
 
-    import bb, os
     sane = True
 
     if not "-dbg" in name:
@@ -301,7 +300,6 @@ def package_qa_check_arch(path,name,d, elf):
     if not elf:
         return True
 
-    import bb, os
     sane = True
     target_os   = bb.data.getVar('TARGET_OS',   d, True)
     target_arch = bb.data.getVar('TARGET_ARCH', d, True)
@@ -336,7 +334,6 @@ def package_qa_check_desktop(path, name, d, elf):
     """
     Run all desktop files through desktop-file-validate.
     """
-    import bb, os
     sane = True
     if path.endswith(".desktop"):
         output = os.popen("desktop-file-validate %s" % path)
@@ -350,7 +347,6 @@ def package_qa_hash_style(path, name, d, elf):
     """
     Check if the binary has the right hash style...
     """
-    import bb, os
 
     if not elf:
         return True
@@ -397,7 +393,6 @@ def package_qa_check_staged(path,d):
         to find the one responsible for the errors easily even
         if we look at every .pc and .la file
     """
-    import os, bb
 
     sane = True
     tmpdir = bb.data.getVar('TMPDIR', d, True)
@@ -437,7 +432,6 @@ def package_qa_check_staged(path,d):
 
 # Walk over all files in a directory and call func
 def package_qa_walk(path, funcs, package,d):
-    import bb, os
     sane = True
 
     #if this will throw an exception, then fix the dict above
@@ -460,14 +454,13 @@ def package_qa_walk(path, funcs, package,d):
 
     return sane
 
-def package_qa_check_rdepends(pkg, workdir, d):
-    import bb
+def package_qa_check_rdepends(pkg, pkgdest, d):
     sane = True
     if not "-dbg" in pkg and not "task-" in pkg and not "-image" in pkg:
         # Copied from package_ipk.bbclass
         # boiler plate to update the data
         localdata = bb.data.createCopy(d)
-        root = "%s/install/%s" % (workdir, pkg)
+        root = "%s/%s" % (pkgdest, pkg)
 
         bb.data.setVar('ROOT', '', localdata) 
         bb.data.setVar('ROOT_%s' % pkg, root, localdata)
@@ -498,9 +491,8 @@ def package_qa_check_rdepends(pkg, workdir, d):
 
 # The PACKAGE FUNC to scan each package
 python do_package_qa () {
-    import bb
     bb.debug(2, "DO PACKAGE QA")
-    workdir = bb.data.getVar('WORKDIR', d, True)
+    pkgdest = bb.data.getVar('PKGDEST', d, True)
     packages = bb.data.getVar('PACKAGES',d, True)
 
     # no packages should be scanned
@@ -519,10 +511,10 @@ python do_package_qa () {
             continue
 
         bb.debug(1, "Checking Package: %s" % package)
-        path = "%s/install/%s" % (workdir, package)
+        path = "%s/%s" % (pkgdest, package)
         if not package_qa_walk(path, checks, package, d):
             walk_sane  = False
-        if not package_qa_check_rdepends(package, workdir, d):
+        if not package_qa_check_rdepends(package, pkgdest, d):
             rdepends_sane = False
 
     if not walk_sane or not rdepends_sane:
@@ -544,7 +536,6 @@ python do_qa_staging() {
 addtask qa_configure after do_configure before do_compile
 python do_qa_configure() {
     bb.debug(1, "Checking sanity of the config.log file")
-    import os
     for root, dirs, files in os.walk(bb.data.getVar('WORKDIR', d, True)):
         statement = "grep 'CROSS COMPILE Badness:' %s > /dev/null" % \
                     os.path.join(root,"config.log")

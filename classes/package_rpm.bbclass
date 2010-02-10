@@ -10,9 +10,6 @@ RPMOPTS="--rcfile=${WORKDIR}/rpmrc --target ${TARGET_SYS}"
 RPM="rpm ${RPMOPTS}"
 
 python write_specfile() {
-	from bb import data, build
-	import sys
-
 	version = bb.data.getVar('PV', d, 1)
 	version = version.replace('-', '+')
 	bb.data.setVar('RPMPV', version, d)
@@ -50,9 +47,9 @@ python write_specfile() {
 			del files[files.index(r)]
 		except ValueError:
 			pass
+
 	if not files and bb.data.getVar('ALLOW_EMPTY', d) != "1":
-		from bb import note
-		note("Not creating empty archive for %s" % (bb.data.expand('${PKG}-${PV}-${PR}${DISTRO_PR}', d, True)))
+		bb.note("Not creating empty archive for %s" % (bb.data.expand('${PKG}-${PV}-${PR}${DISTRO_PR}', d, True)))
 		return
 
 	# output .spec using this metadata store
@@ -129,8 +126,6 @@ python write_specfile() {
 
 	# call out rpm -bb on the .spec, thereby creating an rpm
 
-	bb.note(bb.data.expand("${RPMBUILD} -bb ${OUTSPECFILE}", d))
-
 	bb.data.setVar('BUILDSPEC', "${RPMBUILD} -bb ${OUTSPECFILE}\n", d)
 	bb.data.setVarFlag('BUILDSPEC', 'func', '1', d)
 	bb.build.exec_func('BUILDSPEC', d)
@@ -156,7 +151,6 @@ python do_package_rpm () {
 		bb.error("WORKDIR not defined, unable to package")
 		return
 
-	import os # path manipulations
 	outdir = bb.data.getVar('DEPLOY_DIR_RPM', d, 1)
 	if not outdir:
 		bb.error("DEPLOY_DIR_RPM not defined, unable to package")
@@ -211,8 +205,9 @@ python do_package_rpm () {
 }
 
 python () {
-    import bb
-    if bb.data.getVar('PACKAGES', d, True) != '':
+    if bb.data.getVar('PACKAGES', d, True) != '' and \
+       not bb.data.inherits_class('native', d) and \
+       not bb.data.inherits_class('cross', d):
         deps = (bb.data.getVarFlag('do_package_write_rpm', 'depends', d) or "").split()
         deps.append('rpm-native:do_populate_staging')
         deps.append('fakeroot-native:do_populate_staging')
@@ -225,5 +220,7 @@ python do_package_write_rpm () {
 	bb.build.exec_func("rpm_prep", d)
 	bb.build.exec_func("do_package_rpm", d)
 }
+
 do_package_write_rpm[dirs] = "${D}"
 addtask package_write_rpm before do_package_write after do_package
+

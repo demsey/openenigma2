@@ -9,10 +9,21 @@ JAVA_arm ?= ""
 JAVA_armeb ?= ""
 JAVA_mipsel ?= ""
 JAVA_sh3 ?= ""
-OBJC_linux-uclibcgnueabi ?= ""
+OBJC_linux-uclibceabi ?= ""
 OBJC_linux-uclibc ?= ""
 OBJC_avr ?= ""
+OBJC_nylon ?= ""
+OBJC_mips ?= ""
+OBJC_mipsel ?= ""
 OBJC ?= ",objc"
+# disable --enable-target-optspace for powerpc SPE
+# at -Os libgcc.so.1 creates references into
+# hidden symbols in libgcc.a which linker complains
+# when linking shared libraries further in the build like (gnutls)
+
+OPTSPACE_linux-gnuspe ?= ""
+OPTSPACE_linux-uclibcspe ?= ""
+OPTSPACE ?= "--enable-target-optspace"
 
 # gcc 3.x expects 'f77', 4.0 expects 'f95', 4.1 and 4.2 expect 'fortran'
 FORTRAN ?= ",f77"
@@ -24,7 +35,6 @@ EXTRA_OECONF_PATHS ?= ""
 EXTRA_OECONF = "${@['--enable-clocale=generic', ''][bb.data.getVar('USE_NLS', d, 1) != 'no']} \
                 --with-gnu-ld \
                 --enable-shared \
-                --enable-target-optspace \
                 --enable-languages=${LANGUAGES} \
                 --enable-threads=posix \
                 --enable-multilib \
@@ -33,15 +43,17 @@ EXTRA_OECONF = "${@['--enable-clocale=generic', ''][bb.data.getVar('USE_NLS', d,
                 --enable-symvers=gnu \
                 --enable-libstdcxx-pch \
                 --program-prefix=${TARGET_PREFIX} \
+                ${OPTSPACE} \
                 ${EXTRA_OECONF_BASE} \
                 ${EXTRA_OECONF_FPU} \
-                ${EXTRA_OECONF_PATHS}"
+                ${EXTRA_OECONF_PATHS} \
+		${@get_gcc_mips_plt_setting(bb, d)}"
 
 # Build uclibc compilers without cxa_atexit support
 EXTRA_OECONF_append_linux               = " --enable-__cxa_atexit"
 EXTRA_OECONF_append_linux-gnueabi       = " --enable-__cxa_atexit"
 EXTRA_OECONF_append_linux-uclibc        = " --disable-__cxa_atexit"
-EXTRA_OECONF_append_linux-uclibcgnueabi = " --disable-__cxa_atexit"
+EXTRA_OECONF_append_linux-uclibceabi    = " --disable-__cxa_atexit"
 EXTRA_OECONF_FPU = "${@get_gcc_fpu_setting(bb, d)}"
 CPPFLAGS = ""
 
@@ -81,12 +93,18 @@ do_configure () {
 
 	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
 
-	# splice our idea of where the headers live into gcc's world
-	echo "NATIVE_SYSTEM_HEADER_DIR = ${layout_includedir}" > ${T}/t-oe
-	sed 's%^tmake_file=.*$%& ${T}/t-oe%' < ${S}/gcc/Makefile.in >${S}/gcc/Makefile.in.new
-	mv ${S}/gcc/Makefile.in.new ${S}/gcc/Makefile.in
-
-	echo "#define STANDARD_INCLUDE_DIR \"${layout_includedir}\"" >> ${S}/gcc/defaults.h
+	if [ "${HOST_SYS}" != "${TARGET_SYS}" ]; then
+		# splice our idea of where the headers live into gcc's world
+		echo "NATIVE_SYSTEM_HEADER_DIR = ${target_includedir}" > ${T}/t-oe
+		sed 's%^tmake_file=.*$%& ${T}/t-oe%' < ${S}/gcc/Makefile.in >${S}/gcc/Makefile.in.new
+		mv ${S}/gcc/Makefile.in.new ${S}/gcc/Makefile.in
+		cat ${S}/gcc/defaults.h | grep -v "\#endif.*GCC_DEFAULTS_H" > ${S}/gcc/defaults.h.new
+		echo "#ifndef STANDARD_INCLUDE_DIR" >> ${S}/gcc/defaults.h.new
+		echo "#define STANDARD_INCLUDE_DIR \"${target_includedir}\"" >> ${S}/gcc/defaults.h.new
+		echo "#endif" >> ${S}/gcc/defaults.h.new
+		echo "#endif /* ! GCC_DEFAULTS_H */" >> ${S}/gcc/defaults.h.new
+		mv ${S}/gcc/defaults.h.new ${S}/gcc/defaults.h
+	fi
 
 	oe_runconf
 

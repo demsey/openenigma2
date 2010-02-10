@@ -7,7 +7,7 @@ LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
-INC_PR = "r4"
+INC_PR = "r11"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://fedora/gcc43-c++-builtin-redecl.patch;patch=1;pnum=0 \
@@ -47,7 +47,6 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://904-flatten-switch-stmt-00.patch;patch=1 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \
-	file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
 	file://cache-amnesia.patch;patch=1 \
 	file://gfortran-4.3.x.patch;patch=1 \
 	file://gcc-4.0.2-e300c2c3.patch;patch=1 \
@@ -58,6 +57,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
 	file://zecke-xgcc-cpp.patch;patch=1 \
 	file://gcc-flags-for-build.patch;patch=1 \
+        file://arm-gcc-objective.patch;patch=1 \
 "
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
@@ -89,8 +89,9 @@ SRC_URI_append_ep93xx = " \
 	file://ep93xx/arm-size-bugfix.patch;patch=1 \
 	file://ep93xx/arm-prologue_use-length.patch;patch=1 \
 	file://ep93xx/arm-crunch-cftruncd32-attr.patch;patch=1 \
-	file://ep93xx/arm-crunch-fix-cirrus-reorg5.patch;patch=1 \
+	file://ep93xx/arm-crunch-fix-cirrus-reorg7.patch;patch=1 \
 	file://ep93xx/arm-crunch-cirrus-di-flag.patch;patch=1 \
+	file://ep93xx/arm-crunch-disable-floatsi.patch;patch=1 \
 "
 # Language Overrides
 FORTRAN = ""

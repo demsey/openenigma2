@@ -10,5 +10,7 @@ PREFERRED_PROVIDER_task-opendreambox-ui = "task-opendreambox-enigma2"
 TARGET_ARCH = "mipsel"
 TARGET_FPU ?= "soft"
 
+DISTRO_FEATURES += " mplt"
+
 require conf/machine/include/dreambox.inc
 require conf/machine/include/tune-mips32.inc

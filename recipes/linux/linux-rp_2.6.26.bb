@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r11"
+PR = "r13"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "-1"

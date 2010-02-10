@@ -33,9 +33,7 @@ def icc_determine_gcc_version(gcc):
 
     'i686-apple-darwin8-gcc-4.0.1 (GCC) 4.0.1 (Apple Computer, Inc. build 5363)'
     """
-    import os
     return os.popen("%s --version" % gcc ).readline().split()[2]
-
 
 def create_cross_env(bb,d):
     """
@@ -47,7 +45,7 @@ def create_cross_env(bb,d):
     if len(prefix) == 0:
         return ""
 
-    import tarfile, socket, time, os
+    import tarfile, socket, time
     ice_dir = bb.data.expand('${CROSS_DIR}', d)
     prefix  = bb.data.expand('${HOST_PREFIX}' , d)
     distro  = bb.data.expand('${DISTRO}', d)
@@ -62,7 +60,6 @@ def create_cross_env(bb,d):
         os.stat(os.path.join(ice_dir, target_sys, 'lib', 'libstdc++.so'))
         os.stat(os.path.join(ice_dir, target_sys, 'bin', 'g++'))
     except: # no cross compiler built yet
-        bb.error('no cross compiler built yet?')
         return ""
 
     VERSION = icc_determine_gcc_version( os.path.join(ice_dir,target_sys,"bin","g++") )
@@ -97,7 +94,7 @@ def create_cross_env(bb,d):
 
 
 def create_native_env(bb,d):
-    import tarfile, socket, time, os
+    import tarfile, socket, time
     ice_dir = bb.data.expand('${CROSS_DIR}', d)
     prefix  = bb.data.expand('${HOST_PREFIX}' , d)
     distro  = bb.data.expand('${DISTRO}', d)
@@ -144,7 +141,7 @@ def get_cross_kernel_cc(bb,d):
 
 
 def create_cross_kernel_env(bb,d):
-    import tarfile, socket, time, os
+    import tarfile, socket, time
     ice_dir = bb.data.expand('${CROSS_DIR}', d)
     prefix  = bb.data.expand('${HOST_PREFIX}' , d)
     distro  = bb.data.expand('${DISTRO}', d)
@@ -159,7 +156,6 @@ def create_cross_kernel_env(bb,d):
     try:
         os.stat(os.path.join(ice_dir, 'bin', kernel_cc))
     except: # no cross compiler built yet
-        bb.error('no kernel cross compiler built yet')
         return ""
 
     VERSION = icc_determine_gcc_version( os.path.join(ice_dir,"bin",kernel_cc) )
@@ -210,8 +206,6 @@ def create_path(compilers, type, bb, d):
     """
     Create Symlinks for the icecc in the staging directory
     """
-    import os
-
     staging = os.path.join(bb.data.expand('${STAGING_DIR}', d), "ice", type)
 
     #check if the icecc path is set by the user
@@ -263,7 +257,8 @@ def icc_path(bb,d):
     for black in package_blacklist:
         if black in package_tmp:
             bb.note(package_tmp, ' found in blacklist, disable icecc')
-            bb.data.setVar("PARALLEL_MAKE" , "", d) 
+            fallback_parallel = bb.data.getVar('ICECC_FALLBACK_PARALLEL', d) or ""
+            bb.data.setVar("PARALLEL_MAKE", fallback_parallel, d)
             return ""
 
     prefix = bb.data.expand('${HOST_PREFIX}', d)

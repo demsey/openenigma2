@@ -17,7 +17,6 @@ python package_ipk_install () {
 	# Warning - this function is not multimachine safe (see stagingdir reference)!
 	#
 
-	import os, sys, bb
 	pkg = bb.data.getVar('PKG', d, 1)
 	pkgfn = bb.data.getVar('PKGFN', d, 1)
 	rootfs = bb.data.getVar('IMAGE_ROOTFS', d, 1)
@@ -31,6 +30,7 @@ python package_ipk_install () {
 		bb.mkdirhier(rootfs)
 		os.chdir(rootfs)
 	except OSError:
+		import sys
 		(type, value, traceback) = sys.exc_info()
 		print value
 		raise bb.build.FuncFailed
@@ -67,10 +67,16 @@ python package_ipk_install () {
 		raise bb.build.FuncFailed
 }
 
+do_package_update_index_ipk[lockfiles] = "${DEPLOY_DIR_IPK}.lock"
+do_package_update_index_ipk[nostamp] = "1"
+do_package_update_index_ipk[recrdeptask] += "do_package_write_ipk"
+do_package_update_index_ipk[recrdeptask] += "do_package_write_ipk"
+do_package_update_index_ipk[depends] += "ipkg-utils-native:do_populate_staging"
+
 #
 # Update the Packages index files in ${DEPLOY_DIR_IPK}
 #
-package_update_index_ipk () {
+do_package_update_index_ipk () {
 	set -x
 
 	ipkgarchs="${PACKAGE_ARCHS}"
@@ -79,6 +85,7 @@ package_update_index_ipk () {
 		return
 	fi
 
+	mkdir -p ${DEPLOY_DIR_IPK}
 	touch ${DEPLOY_DIR_IPK}/Packages
 	ipkg-make-index -r ${DEPLOY_DIR_IPK}/Packages -p ${DEPLOY_DIR_IPK}/Packages -l ${DEPLOY_DIR_IPK}/Packages.filelist -m ${DEPLOY_DIR_IPK}
 
@@ -128,14 +135,14 @@ package_generate_ipkg_conf () {
 }
 
 python do_package_ipk () {
-	import sys, re, copy, bb
+	import re, copy
 
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	if not workdir:
 		bb.error("WORKDIR not defined, unable to package")
 		return
 
-	import os # path manipulations
+
 	outdir = bb.data.getVar('DEPLOY_DIR_IPK', d, 1)
 	if not outdir:
 		bb.error("DEPLOY_DIR_IPK not defined, unable to package")
@@ -167,10 +174,9 @@ python do_package_ipk () {
 			pkgname = pkg
 		bb.data.setVar('PKG', pkgname, localdata)
 
-		overrides = bb.data.getVar('OVERRIDES', localdata)
+		overrides = bb.data.getVar('OVERRIDES', localdata, True)
 		if not overrides:
 			raise bb.build.FuncFailed('OVERRIDES not defined')
-		overrides = bb.data.expand(overrides, localdata)
 		bb.data.setVar('OVERRIDES', overrides + ':' + pkg, localdata)
 
 		bb.data.update_data(localdata)
@@ -180,15 +186,14 @@ python do_package_ipk () {
 		bb.mkdirhier(pkgoutdir)
 		os.chdir(root)
 		from glob import glob
-		g = glob('*')
+		g = glob('*') + glob('.[!.]*')
 		try:
 			del g[g.index('CONTROL')]
 			del g[g.index('./CONTROL')]
 		except ValueError:
 			pass
 		if not g and bb.data.getVar('ALLOW_EMPTY', localdata) != "1":
-			from bb import note
-			note("Not creating empty archive for %s-%s" % (pkg, bb.data.expand('${PV}-${PR}${DISTRO_PR}', localdata, True)))
+			bb.note("Not creating empty archive for %s-%s" % (pkg, bb.data.expand('${PV}-${PR}${DISTRO_PR}', localdata, True)))
 			bb.utils.unlockfile(lf)
 			continue
 
@@ -203,9 +208,9 @@ python do_package_ipk () {
 		fields = []
 		pe = bb.data.getVar('PE', d, 1)
 		if pe and int(pe) > 0:
-			fields.append(["Version: %s:%s-%s%s\n", ['PE', 'PV', 'PR', 'DISTRO_PR']])
+			fields.append(["Version: %s:%s-%s\n", ['PE', 'PKGV', 'PKGR']])
 		else:
-			fields.append(["Version: %s-%s%s\n", ['PV', 'PR', 'DISTRO_PR']])
+			fields.append(["Version: %s-%s\n", ['PKGV', 'PKGR']])
 		fields.append(["Description: %s\n", ['DESCRIPTION']])
 		fields.append(["Section: %s\n", ['SECTION']])
 		fields.append(["Priority: %s\n", ['PRIORITY']])
@@ -230,6 +235,7 @@ python do_package_ipk () {
 						raise KeyError(f)
 				ctrlfile.write(c % tuple(pullData(fs, localdata)))
 		except KeyError:
+			import sys
 			(type, value, traceback) = sys.exc_info()
 			ctrlfile.close()
 			bb.utils.unlockfile(lf)
@@ -260,10 +266,9 @@ python do_package_ipk () {
 			ctrlfile.write("Replaces: %s\n" % ", ".join(rreplaces))
 		if rconflicts:
 			ctrlfile.write("Conflicts: %s\n" % ", ".join(rconflicts))
-		src_uri = bb.data.getVar("SRC_URI", localdata, 1)
-		if src_uri:
-			src_uri = re.sub("\s+", " ", src_uri)
-			ctrlfile.write("Source: %s\n" % " ".join(src_uri.split()))
+		src_uri = bb.data.getVar("SRC_URI", localdata, 1) or d.getVar("FILE", True)
+		src_uri = re.sub("\s+", " ", src_uri)
+		ctrlfile.write("Source: %s\n" % " ".join(src_uri.split()))
 		ctrlfile.close()
 
 		for script in ["preinst", "postinst", "prerm", "postrm"]:
@@ -302,7 +307,6 @@ python do_package_ipk () {
 }
 
 python () {
-    import bb
     if bb.data.getVar('PACKAGES', d, True) != '':
         deps = (bb.data.getVarFlag('do_package_write_ipk', 'depends', d) or "").split()
         deps.append('ipkg-utils-native:do_populate_staging')
@@ -311,7 +315,6 @@ python () {
 }
 
 python do_package_write_ipk () {
-	import bb
 	packages = bb.data.getVar('PACKAGES', d, True)
 	if not packages:
 		bb.debug(1, "No PACKAGES defined, nothing to package")
@@ -322,3 +325,4 @@ python do_package_write_ipk () {
 }
 do_package_write_ipk[dirs] = "${D}"
 addtask package_write_ipk before do_package_write after do_package
+addtask package_update_index_ipk before do_rootfs

@@ -1,6 +1,6 @@
 require glibc.inc
 
-PR = "r17"
+PR = "${INC_PR}.0"
 
 DEFAULT_PREFERENCE_sh3 = "-99"
 
@@ -109,4 +109,4 @@ do_compile () {
 
 require glibc-stage.inc
 
-require glibc-package.bbclass
+require glibc-package.inc

@@ -17,6 +17,12 @@ IMAGE_INITSCRIPTS ?= "initscripts"
 #
 IMAGE_LOGIN_MANAGER ?= "tinylogin"
 
+# set sane default for the SPLASH variable
+SPLASH ?= ""
+
+IMAGE_KEEPROOTFS ?= ""
+IMAGE_KEEPROOTFS[doc] = "Set to non-empty to keep ${IMAGE_ROOTFS} around after image creation."
+
 IMAGE_BOOT ?= "${IMAGE_INITSCRIPTS} \
 ${IMAGE_DEV_MANAGER} \
 ${IMAGE_INIT_MANAGER} \
@@ -69,13 +75,11 @@ def get_devtable_list(d):
     devtable = bb.data.getVar('IMAGE_DEVICE_TABLE', d, 1)
     if devtable != None:
         return devtable
-    str = ""
     devtables = bb.data.getVar('IMAGE_DEVICE_TABLES', d, 1)
     if devtables == None:
         devtables = 'files/device_table-minimal.txt'
-    for devtable in devtables.split():
-        str += " %s" % bb.which(bb.data.getVar('BBPATH', d, 1), devtable)
-    return str
+    return " ".join([ bb.which(bb.data.getVar('BBPATH', d, 1), devtable)
+                      for devtable in devtables.split() ])
 
 def get_imagecmds(d):
     import bb
@@ -105,7 +109,6 @@ LINGUAS_INSTALL = "${@" ".join(map(lambda s: "locale-base-%s" % s, bb.data.getVa
 do_rootfs[nostamp] = "1"
 do_rootfs[dirs] = "${TOPDIR}"
 do_build[nostamp] = "1"
-do_install[nostamp] = "1"
 
 # Must call real_do_rootfs() from inside here, rather than as a separate
 # task, so that we have a single fakeroot context for the whole process.
@@ -133,6 +136,7 @@ fakeroot do_rootfs () {
 	${IMAGE_POSTPROCESS_COMMAND}
 	
 	${MACHINE_POSTPROCESS_COMMAND}
+	${@['rm -rf ${IMAGE_ROOTFS}', ''][bool(d.getVar("IMAGE_KEEPROOTFS", 1))]}
 }
 
 do_deploy_to[nostamp] = "1"
@@ -231,8 +235,46 @@ rootfs_update_timestamp () {
 	date "+%m%d%H%M%Y" >${IMAGE_ROOTFS}/etc/timestamp
 }
 
-# export the zap_root_password, create_etc_timestamp and remote_init_link
-EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link do_rootfs make_zimage_symlink_relative set_image_autologin rootfs_update_timestamp
+# Install locales into image for every entry in IMAGE_LINGUAS
+install_linguas() {
+if [ -e ${IMAGE_ROOTFS}/usr/bin/opkg-cl ] ; then
+	OPKG="opkg-cl ${IPKG_ARGS}"
 
-addtask rootfs after do_compile before do_install
+	${OPKG} update || true
+	${OPKG} list_installed | awk '{print $1}' |sort | uniq > /tmp/installed-packages
+
+	for i in $(cat /tmp/installed-packages | grep -v locale) ; do
+		for translation in ${IMAGE_LINGUAS}; do
+			translation_split=$(echo ${translation} | awk -F '-' '{print $1}')
+			echo ${i}-locale-${translation}
+			echo ${i}-locale-${translation_split}
+		done
+	done | sort | uniq > /tmp/wanted-locale-packages
+
+	${OPKG} list | awk '{print $1}' |grep locale |sort | uniq > /tmp/available-locale-packages
+
+	cat /tmp/wanted-locale-packages /tmp/available-locale-packages | sort | uniq -d > /tmp/pending-locale-packages
+
+	cat /tmp/pending-locale-packages | xargs ${OPKG} -nodeps install
+	rm -f ${IMAGE_ROOTFS}${libdir}/opkg/lists/*
+
+    for i in ${IMAGE_ROOTFS}${libdir}/opkg/info/*.preinst; do
+        if [ -f $i ] && ! sh $i; then
+            opkg-cl ${IPKG_ARGS} flag unpacked `basename $i .preinst`
+        fi
+    done
+
+    for i in ${IMAGE_ROOTFS}${libdir}/opkg/info/*.postinst; do
+        if [ -f $i ] && ! sh $i configure; then
+            opkg-cl ${IPKG_ARGS} flag unpacked `basename $i .postinst`
+        fi
+    done
+
+fi
+}
+
+# export the zap_root_password, create_etc_timestamp and remote_init_link
+EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link do_rootfs make_zimage_symlink_relative set_image_autologin rootfs_update_timestamp install_linguas
+
+addtask rootfs before do_build after do_install
 addtask deploy_to after do_rootfs

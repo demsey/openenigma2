@@ -1,7 +1,7 @@
 require glibc.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r21"
+PR = "${INC_PR}.0"
 
 DEFAULT_PREFERENCE_sh3 = "-99"
 
@@ -193,4 +193,4 @@ do_stage() {
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${STAGING_DIR_HOST}/${layout_base_libdir}/libc.so
 }
 
-require glibc-package.bbclass
+require glibc-package.inc

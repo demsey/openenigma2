@@ -1,31 +1,33 @@
 require python.inc
-DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl tk zlib"
-DEPENDS_opendreambox = "python-native db gdbm openssl readline sqlite3 zlib"
+DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl zlib\
+           ${@base_contains('DISTRO_FEATURES', 'tk', 'tk', '', d)}"
 DEPENDS_sharprom = "python-native db readline zlib gdbm openssl"
-PR = "ml0"
+DEPENDS_opendreambox = "python-native db gdbm openssl readline sqlite3 zlib"
+# set to .0 on every increase of INC_PR
+PR = "${INC_PR}.0"
 
 SRC_URI = "\
-  http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
+  http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2;name=archive \
   file://00-fix-bindir-libdir-for-cross.patch;patch=1 \
   file://01-use-proper-tools-for-cross-build.patch;patch=1 \
   file://02-remove-test-for-cross.patch;patch=1 \
   file://03-fix-tkinter-detection.patch;patch=1 \
   file://04-default-is-optimized.patch;patch=1 \
   file://05-enable-ctypes-cross-build.patch;patch=1 \
-  file://06-libffi-enable-default-mips.patch;patch=1 \
   file://99-ignore-optimization-flag.patch;patch=1 \
   \
 # not yet pushed forward
-# sitecustomize, sitebranding
+# sitebranding
   \
 #  file://05-install.patch;patch=1 \
 #  file://06-fix-urllib-exception.patch;patch=1 \
 #  file://16-bug1179-imageop.patch;patch=1 \
 #  file://13-set-wakeup-fix.patch;patch=1 \
-#  file://07-export-grammer.patch;patch=1 \
   \
   file://sitecustomize.py \
 "
+SRC_URI[archive.md5sum] = "fee5408634a54e721a93531aba37f8c1"
+SRC_URI[archive.sha256sum] = "dad8d5575144a210d5cc4fdbc40b8a26386e9cdb1ef58941bec0be02c7cb9d89"
 
 SRC_URI_append_opendreambox = " \
   file://some_configure_fixes.patch;patch=1;pnum=0 \
@@ -42,8 +44,12 @@ inherit autotools
 TARGET_CC_ARCH_append_armv6 = " -D__SOFTFP__"
 TARGET_CC_ARCH_append_armv7a = " -D__SOFTFP__"
 
+do_configure_prepend() {
+	autoreconf -Wcross --verbose --install --force --exclude=autopoint Modules/_ctypes/libffi || oenote "_ctypes failed to autoreconf"
+}
+
 #
-# copy config.h and an appropriate Makefile for distutils.sysconfig
+# Copy config.h and an appropriate Makefile for distutils.sysconfig,
 # which laters uses the information out of these to compile extensions
 #
 do_compile_prepend() {
@@ -73,7 +79,7 @@ do_compile() {
 		STAGING_LIBDIR=${STAGING_LIBDIR} \
 		STAGING_INCDIR=${STAGING_INCDIR} \
 		BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
-		OPT="${CFLAGS}"
+		RUNSHARED= OPT="${CFLAGS}"
 }
 
 do_stage() {
@@ -89,7 +95,7 @@ do_install() {
 		STAGING_LIBDIR=${STAGING_LIBDIR} \
 		STAGING_INCDIR=${STAGING_INCDIR} \
 		BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
-		DESTDIR=${D} LIBDIR=${libdir} install
+		DESTDIR=${D} LIBDIR=${libdir} RUNSHARED= install
 
 	install -m 0644 ${WORKDIR}/sitecustomize.py ${D}/${libdir}/python${PYTHON_MAJMIN}
 
@@ -106,13 +112,27 @@ RRECOMMENDS_python-crypt = "openssl"
 
 # add sitecustomize
 FILES_python-core += "${libdir}/python${PYTHON_MAJMIN}/sitecustomize.py"
-
-# 2to3
+# ship 2to3
 FILES_python-core += "${bindir}/2to3"
 
-# package libpython
+# package libpython2
 PACKAGES =+ "libpython2"
-FILES_libpython2 = "${libdir}/libpython*.so.*"
+FILES_libpython2 = "${libdir}/libpython*.so*"
+
+# additional stuff -dev
+
+FILES_${PN}-dev = "\
+  ${includedir} \
+  ${libdir}/lib*${SOLIBSDEV} \
+  ${libdir}/*.la \
+  ${libdir}/*.a \
+  ${libdir}/*.o \
+  ${libdir}/pkgconfig \
+  ${base_libdir}/*.a \
+  ${base_libdir}/*.o \
+  ${datadir}/aclocal \
+  ${datadir}/pkgconfig \
+"
 
 # catch debug extensions (isn't that already in python-core-dbg?)
 FILES_python-dbg += "${libdir}/python${PYTHON_MAJMIN}/lib-dynload/.debug"

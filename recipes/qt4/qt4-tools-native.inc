@@ -1,9 +1,11 @@
 DESCRIPTION = "Native tools for Qt/[X11|Mac|Embedded] version 4.x"
-DEPENDS = "zlib-native dbus-native"
+DEPENDS = "zlib-native dbus-native libsm-native"
 SECTION = "libs"
 HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "GPL"
+
+INC_PR = "r5"
 
 inherit native
 
@@ -22,8 +24,8 @@ EXTRA_OECONF = "-prefix ${prefix} \
                 -no-exceptions  \
                 -no-nas-sound \
                 -no-nis \
-                -verbose -release  -fast -static \
-                -qt3support "
+                -verbose -release -fast -static \
+                -qt3support"
 
 # yank default -e, otherwise we get the following error:
 # moc_qbuffer.cpp: No such file or directory
@@ -57,7 +59,7 @@ do_compile() {
 }
 
 do_stage() {
-	install -d ${STAGING_BINDIR_NATIVE}/
+    install -d ${STAGING_BINDIR_NATIVE}/
     install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake2
     for i in moc uic uic3 rcc lrelease lupdate qdbuscpp2xml qdbusxml2cpp; do
         install -m 0755 bin/${i} ${STAGING_BINDIR_NATIVE}/${i}4

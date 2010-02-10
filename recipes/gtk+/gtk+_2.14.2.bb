@@ -1,21 +1,11 @@
 require gtk+.inc
 
-PR = "r5"
+PR = "${INC_PR}.0"
 
-DEPENDS += "cairo jasper"
-
-SRC_URI = "http://download.gnome.org/sources/gtk+/2.14/gtk+-${PV}.tar.bz2 \
-           file://xsettings.patch;patch=1 \
-           file://run-iconcache.patch;patch=1 \
-           file://hardcoded_libtool.patch;patch=1 \
-           file://no-demos.patch;patch=1 \
-           file://toggle-font.diff;patch=1;pnum=0 \
-           file://smallscreen_filechooser.patch;patch=1 \
+SRC_URI += "file://smallscreen_filechooser.patch;patch=1 \
           "
 
 EXTRA_OECONF = "--with-libtiff --disable-xkb --disable-glibtest --enable-display-migration gio_can_sniff=yes"
-
-LIBV = "2.10.0"
 
 PACKAGES_DYNAMIC = "gtk-module-* gdk-pixbuf-loader-* gtk-immodule-* gtk-printbackend-*"
 
@@ -37,16 +27,6 @@ python populate_packages_prepend () {
 
         if (bb.data.getVar('DEBIAN_NAMES', d, 1)):
                 bb.data.setVar('PKG_${PN}', 'libgtk-2.0', d)
-}
-
-
-do_stage_append() {
- 
- 	# this tool is required by gnome-keyring 2.26.0 to get built
- 	# it is written in Python and use only Python xml
- 	install -d ${STAGING_BINDIR_NATIVE}
- 	install -m 0755 ${S}/gtk/gtk-builder-convert ${STAGING_BINDIR_NATIVE}
- 
 }
 
 # gail is part of gtk+ since gtk+-2.13.0 (targetting >=GNOME 2.23):

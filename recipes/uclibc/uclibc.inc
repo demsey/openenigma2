@@ -2,6 +2,7 @@ DESCRIPTION = "C library for embedded systems"
 LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "required"
+INC_PR = "r33"
 #
 # For now, we will skip building of a gcc package if it is a uclibc one
 # and our build is not a uclibc one, and we skip a glibc one if our build
@@ -35,20 +36,23 @@ PACKAGES =+ "ldd uclibc-utils-dbg uclibc-utils uclibc-gconv uclibc-thread-db"
 LEAD_SONAME = "libc.so"
 
 # The last line (gdb and lib1) is for uclinux-uclibc builds 
-uclibc_baselibs = "/lib/libcrypt*.so* /lib/libdl*.so \
-		   /lib/libintl*.so* /lib/libm*.so \
-		   /lib/libnsl*.so* /lib/libpthread*.so \
-		   /lib/libresolv*.so* /lib/libutil*.so \
-		   /lib/libuClibc*.so* /lib/ld*.so* \
-		   /lib/libc*.so* /lib/libdl*.so* \
-		   /lib/libm*.so* /lib/libutil*.so* \
-		   /lib/libpthread*.so* /lib/librt*.so* \
-                   /usr/lib/libc.gdb /usr/lib/libc /lib/lib1.so \
+uclibc_baselibs = "${base_libdir}/libcrypt*.so.* ${base_libdir}/libcrypt-*.so \
+		   ${base_libdir}/libintl*.so.* ${base_libdir}/libintl-*.so \
+		   ${base_libdir}/libnsl*.so.* ${base_libdir}/libnsl-*.so \
+		   ${base_libdir}/libresolv*.so.* ${base_libdir}/libresolv-*.so \
+                   ${base_libdir}/ld*.so.* ${base_libdir}/ld-*.so \
+		   ${base_libdir}/libc*.so.* ${base_libdir}/libuClibc-*.so \
+                   ${base_libdir}/libdl*.so.* ${base_libdir}/libdl-*.so \
+		   ${base_libdir}/libm*.so.* ${base_libdir}/libm-*.so \
+                   ${base_libdir}/libutil*.so.* ${base_libdir}/libutil-*.so \
+		   ${base_libdir}/libpthread*.so.* ${base_libdir}/libpthread-*.so \
+                   ${base_libdir}/librt*.so.* ${base_libdir}/librt-*.so \
+                   ${libdir}/libc.gdb ${libdir}/libc ${base_libdir}/lib1.so \
                    "
 FILES_${PN} = "${sysconfdir} ${uclibc_baselibs} /sbin/ldconfig \
 	       ${libexecdir} ${datadir}/zoneinfo ${libdir}/locale"
 FILES_ldd = "${bindir}/ldd"
-FILES_uclibc-dev += "${libdir}/*.o"
+FILES_uclibc-dev_append = " ${libdir}/*.o ${libdir}/*_nonshared.a"
 FILES_uclibc-utils = "${bindir} ${sbindir}"
 FILES_uclibc-utils-dbg += "${bindir}/.debug ${sbindir}/.debug"
 FILES_uclibc-gconv = "${libdir}/gconv"
@@ -66,17 +70,17 @@ UCLIBC_LOCALE_URI = "http://www.uclibc.org/downloads/${UCLIBC_LOCALE_FILE}"
 UCLIBC_LOCALE_URI_arm = "http://wiki.openembedded.net/dl/uclibc-locale/${UCLIBC_LOCALE_FILE}"
 
 SRC_URI = "${@['${UCLIBC_LOCALE_URI}', ''][bb.data.getVar('USE_NLS', d, 1) != 'yes']} \
-	   file://uClibc.config"
-
-UCLIBC_STAGE_PREFIX = "${STAGING_DIR_HOST}${layout_prefix}"
+	   file://uClibc.config \
+           http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2;name=uClibc-${PV} \
+          "
 
 # do_stage barfs on a CC with whitepspace, therefore put the 'HOST_CC_ARCH' in
 # the CFLAGS (for when building the utils).
 OEMAKE_NO_CC = "'STRIPTOOL=true' 'LD=${LD}' \
 		'LOCALE_DATA_FILENAME=${UCLIBC_LOCALE_FILE}'"
 EXTRA_OEMAKE = "${OEMAKE_NO_CC} 'CC=${CC}' \
-		'HOSTCFLAGS=-I${STAGING_INCDIR_NATIVE}'"
-EXTRA_OEMAKE_task_do_populate_staging = "${OEMAKE_NO_CC}"
+		'HOSTCFLAGS=-I${STAGING_INCDIR_NATIVE}' \
+		ARCH=`grep TARGET_ARCH ${S}/.config|sed -e 's/TARGET_ARCH=//g'`"
 EXTRA_OEMAKE_task_do_package = "${OEMAKE_NO_CC}"
 
 KERNEL_SOURCE = "${STAGING_INCDIR}"
@@ -86,6 +90,9 @@ KERNEL_HEADERS = "${STAGING_INCDIR}"
 # ARCH_BIG_ENDIAN=y
 # ARCH_WANTS_BIG_ENDIAN=y
 # ARCH_WANTS_LITTLE_ENDIAN is not set
+
+# How to enable verbose logs:
+#export VERBOSE="1"
 
 configmangle = 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE="${KERNEL_SOURCE}",g; \
 		s,^KERNEL_HEADERS=.*,KERNEL_HEADERS="${KERNEL_HEADERS}",g; \
@@ -141,72 +148,30 @@ do_configure() {
 
    	sed -i -e '/CONFIG_ARM_EABI/d' ${S}/.config
 
-        if [ "${TARGET_OS}" = "linux-gnueabi" -o  "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
-       		echo "CONFIG_ARM_EABI=y"                >> ${S}/.config
-	else
-		echo "# CONFIG_ARM_EABI is not set"     >> ${S}/.config
+	if [ `echo ${TARGET_ARCH} | grep -e '^arm'` ]; then
+		if [ `echo ${TARGET_OS} | grep -e 'eabi$'` ]; then
+       			echo "CONFIG_ARM_EABI=y"                >> ${S}/.config
+		else
+			echo "# CONFIG_ARM_EABI is not set"     >> ${S}/.config
+		fi
 	fi
-
 	yes '' | oe_runmake oldconfig
 }
 
-do_stage() {
-	# This MUST be done first because we
-	# will install crt1.o in the install_dev stage and gcc needs it
-
-	# Install into the staging dir
-	oe_runmake PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		install_dev install_runtime
-
-	# We don't really need this
-	rm -f ${UCLIBC_STAGE_PREFIX}/include/.cvsignore
-
-	# Fixup shared lib symlinks
-	( cd ${UCLIBC_STAGE_PREFIX}/lib
-		for f in c crypt dl m nsl pthread resolv thread_db util; do
-			ln -sf lib${f}.so.? lib${f}.so
-		done
-	)
-
-	# This conflicts with the c++ version of this header
-	rm -f ${UCLIBC_STAGE_PREFIX}/include/bits/atomicity.h
-}
-
 do_install() {
-        # Tis MUST be done first because we
-        # will install crt1.o in the install_dev stage and gcc needs it)
-	oe_runmake STRIPTOOL=true PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		install_dev install_runtime
-
-	oe_runmake STRIPTOOL=true PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
+	oe_runmake PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
 		install_dev install_runtime 
+
+	# Need to overwrite the version from -initial
+	#if [ ! -e ${D}${libdir}/libc.so ]; then
+	#	ln -s ../../lib/libc.so.0 ${D}${libdir}/libc.so
+	#fi
 
 	# We don't really need this in ${includedir}
 	rm -f ${D}${prefix}/include/.cvsignore
 
 	# This conflicts with the c++ version of this header
 	rm -f ${D}${prefix}/include/bits/atomicity.h
-
-	# ugh.. uclibc doesn't like obeying our path variables.
-	if [ "${includedir}" != "${prefix}/include" ]; then
-		install -d ${D}${includedir}
-		mv ${D}${prefix}/include/* ${D}${includedir}/
-		rmdir ${D}${prefix}/include
-	fi
-
-	if [ "${libdir}" != "${prefix}/lib" ]; then
-		install -d ${D}${libdir}
-		mv ${D}${prefix}/lib/* ${D}${libdir}/
-		rmdir ${D}${prefix}/lib
-	fi
-
-	if [ "${bindir}" != "/usr/bin" ]; then
-		install -d ${D}${bindir}
-		mv ${D}/usr/bin/* ${D}${bindir}/
-		rmdir ${D}/usr/bin
-	fi
 
         oe_runmake "SSP_ALL_CFLAGS=${TARGET_LINK_HASH_STYLE}" utils
         oe_runmake STRIPTOOL=true PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
@@ -216,3 +181,6 @@ do_install() {
 	chmod +x ${D}/${base_libdir}/*
 }
 
+get_monotonic_srcrev () {
+    	(cd ${S}; eval `git rev-list HEAD|wc -l`)
+}

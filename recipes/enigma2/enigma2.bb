@@ -1,9 +1,9 @@
 DESCRIPTION = "Enigma2 is an experimental, but useful framebuffer-based frontend for DVB functions"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 DEPENDS = "jpeg libungif libmad libpng libsigc++-1.2 gettext-native \
-	dreambox-dvbincludes freetype libdvbsi++ python swig-native  \
-	gst-plugin-dvbmediasink \
-	libfribidi gstreamer libxmlccwrap libdreamdvd"
+	dreambox-dvbincludes freetype libdvbsi++ python swig-native \
+	libfribidi libxmlccwrap libdreamdvd gstreamer gst-plugin-dvbmediasink \
+	gst-plugins-bad gst-plugins-good gst-plugins-ugly"
 RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	python-xml python-fcntl gst-plugin-decodebin gst-plugin-decodebin2 python-stringold \
 	gst-plugin-queue2 gst-plugin-app \
@@ -55,7 +55,7 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-networkwizard = "provides easy s
 PN = "enigma2"
 PR = "r0"
 
-SRCDATE = "20100127"
+SRCDATE = "20100209"
 #SRCDATE is NOT used by git to checkout a specific revision
 #but we need it to build a ipk package version
 #when you like to checkout a specific revision of e2 you need
@@ -65,7 +65,7 @@ SRCDATE = "20100127"
 ####################################################
 BRANCH = "master"
 PV = "2.8git${SRCDATE}"
-SRCREV = "025acea46debca45f8ae004cdb17cc6e5fc84309"
+SRCREV = "f87f40e3d7bade8c5dbd12d9ccc7f1b2417fff04"
 ####################################################
 
 # if you want experimental use
@@ -112,7 +112,7 @@ python populate_packages_prepend () {
 	do_split_packages(d, enigma2_plugindir, '(.*?/.*?)/.*', 'enigma2-plugin-%s', '%s ', recursive=True, match_path=True, prepend=True)
 }
 
-do_stage_append() {
+do_stage() {
 	install -d ${STAGING_INCDIR}/enigma2
 	install -m 0644 ${S}/include/*.h ${STAGING_INCDIR}/enigma2
 	for dir in actions base components driver dvb dvb/lowlevel dvb_ci gdi gui mmi nav python service; do

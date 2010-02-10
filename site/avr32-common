@@ -16,9 +16,6 @@ ac_cv_func_malloc_0_nonnull=${ac_cv_func_malloc_0_nonnull=yes}
 #gstreamer
 as_cv_unaligned_access=${as_cv_unaligned_access=no}
 
-#readline
-bash_cv_have_mbstate_t=${bash_cv_have_mbstate_t=yes}
-
 #libpcap
 ac_cv_linux_vers=${ac_cv_linux_vers=2}
 
@@ -47,3 +44,21 @@ dpkg_cv___va_copy=${ac_cv___va_copy=yes}
 
 #libidl
 libIDL_cv_long_long_format=${libIDL_cv_long_long_format=ll}
+
+# ORbit2
+ac_cv_alignof_CORBA_octet=1
+ac_cv_alignof_CORBA_boolean=1
+ac_cv_alignof_CORBA_char=1
+ac_cv_alignof_CORBA_wchar=2
+ac_cv_alignof_CORBA_short=2
+ac_cv_alignof_CORBA_long=4
+ac_cv_alignof_CORBA_long_long=4
+ac_cv_alignof_CORBA_float=4
+ac_cv_alignof_CORBA_double=4
+ac_cv_alignof_CORBA_long_double=4
+ac_cv_alignof_CORBA_struct=1
+ac_cv_alignof_CORBA_pointer=4
+
+# vim
+ac_cv_sizeof_int=${ac_cv_sizeof_int=4}
+
