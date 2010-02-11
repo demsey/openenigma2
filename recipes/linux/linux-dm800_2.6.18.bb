@@ -6,6 +6,7 @@ PR = "r0"
 SRC_URI += " http://trappist.elis.ugent.be/~mronsse/cdfs/download/cdfs-2.6.18.tar.bz2 \
 	file://stblinux-2.6.18-cdfs.patch \
 	file://linux-2.6.18-fix-mips-crosscompile.patch;patch=1 \
+	file://linux-2.6.18-fix-proc-cputype.patch;patch=1 \
 	file://ethtool-fix.patch;patch=1"
 
 do_configure_prepend() {
