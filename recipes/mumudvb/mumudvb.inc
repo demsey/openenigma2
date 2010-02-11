@@ -7,7 +7,7 @@ S = "${WORKDIR}/mumudvb"
 
 inherit autotools
 
-do_stage_append() {
+do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \
 	       bindir=${STAGING_BINDIR} \
 	       includedir=${STAGING_INCDIR} \
