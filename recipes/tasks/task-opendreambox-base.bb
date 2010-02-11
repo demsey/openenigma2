@@ -16,6 +16,8 @@ OPENDREAMBOX_BASE_ESSENTIAL = "\
   dreambox-bootlogo \
   dreambox-compat \
   dreambox-dccamd \
+  dreambox-wdog \
+  dreambox-tpmd \
   dreambox-feed-configs \
   dreambox-keymaps \
   dropbear \
