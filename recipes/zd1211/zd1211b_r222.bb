@@ -5,6 +5,9 @@ PRIORITY = "optional"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
 RDEPENDS = "wireless-tools"
+
+inherit module
+
 PR = "r0"
 
 SRC_URI = "http://www.reactivated.net/software/zd1211-vendor/releases/ZD1211LnxDrv_2_22_0_0.tar.gz \
@@ -12,8 +15,6 @@ SRC_URI = "http://www.reactivated.net/software/zd1211-vendor/releases/ZD1211LnxD
            file://zdiface.patch;patch=1"
            
 S = "${WORKDIR}/ZD1211LnxDrv_2_22_0_0"
-
-inherit module
 
 do_compile () {
         unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS CC LD CPP
