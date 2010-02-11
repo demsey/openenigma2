@@ -52,14 +52,17 @@ RDEPENDS_task-opendreambox-enigma2 = "\
 "
 
 RDEPENDS_task-opendreambox-enigma2_append_dm500hd = "\
+  enigma2-plugin-extensions-genuinedreambox \
   enigma2-plugin-systemplugins-videomode \
 "
 
 RDEPENDS_task-opendreambox-enigma2_append_dm800 = "\
+  enigma2-plugin-extensions-genuinedreambox \
   enigma2-plugin-systemplugins-videomode \
 "
 
 RDEPENDS_task-opendreambox-enigma2_append_dm8000 = "\
+  enigma2-plugin-extensions-genuinedreambox \
   enigma2-plugin-systemplugins-commoninterfaceassignment \
   enigma2-plugin-systemplugins-videomode \
   task-opendreambox-cdplayer \
