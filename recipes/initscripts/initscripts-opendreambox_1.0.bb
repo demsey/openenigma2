@@ -74,6 +74,10 @@ do_install () {
 	if [ "${MACHINE}" = "dm8000" ]; then
 		install -m 0755 ${WORKDIR}/fscking.raw ${D}${sysconfdir}/
 	fi
+
+	#hack for non working "passwd" call when no /etc/shadow exist
+	echo "[ -f /etc/shadow ] && /bin/true || touch /etc/shadow" >> ${D}${sysconfdir}/init.d/bootup
+
 #
 # Create runlevel links
 #
