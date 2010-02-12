@@ -1,7 +1,6 @@
 echo 4 > /proc/progress
 [ -e /dev/dbox/oled0 ] && ln -s /dev/dbox/oled0 /dev/dbox/lcd0
 
-depmod -Ae
 echo 16 > /proc/progress
 
 mount -at nonfs,nosmbfs,noncpfs,nocifs

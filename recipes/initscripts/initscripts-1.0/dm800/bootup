@@ -1,7 +1,6 @@
 echo 10 > /proc/progress
 [ -e /dev/dbox/oled0 ] && ln -s /dev/dbox/oled0 /dev/dbox/lcd0
 
-depmod -Ae
 echo 12 > /proc/progress
 
 mount -at nonfs,nosmbfs,noncpfs,nocifs
@@ -53,5 +52,3 @@ echo 24 > /proc/progress
 ldconfig
 
 echo 25 > /proc/progress
-
-opkg-cl configure

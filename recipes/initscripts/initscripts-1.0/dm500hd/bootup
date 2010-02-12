@@ -53,5 +53,3 @@ echo 24 > /proc/progress
 ldconfig
 
 echo 25 > /proc/progress
-
-opkg-cl configure
