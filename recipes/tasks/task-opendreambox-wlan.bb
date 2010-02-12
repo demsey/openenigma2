@@ -35,8 +35,7 @@ WLAN_USB_MODULES = "\
 "
 
 WLAN_USB_MODULES_2_6_18 = "\
-  kernel-module-zd1211rw \
-  zd1211-firmware \
+  zd1211b \
   wlan-rt73 \
 "
 
