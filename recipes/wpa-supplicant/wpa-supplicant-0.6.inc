@@ -6,8 +6,6 @@ DEPENDS = "dbus gnutls ${@base_contains("COMBINED_FEATURES", "madwifi", "madwifi
 INC_PR = "r5"
 
 DEPENDS_opendreambox = "libnl openssl"
-DEPENDS_opendreambox_append_dm8000 = " ${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', 'madwifi-ng', '', d)}"
-TARGET_CFLAGS_append_dm8000 = " ${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', ' -I${STAGING_INCDIR}/madwifi-ng', '', d)}"
 
 #we introduce MY_ARCH to get 'armv5te' as arch instead of the misleading 'arm' on armv5te builds
 MY_ARCH := "${PACKAGE_ARCH}"
@@ -22,9 +20,6 @@ SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 
 #	file://gnutlsfix.patch;patch=1 \
 
-SRC_URI_append_dm8000 = " ${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', 'file://defconfig-0.6.0-old', '', d)}"
-SRC_URI_append_dm800 = " ${@base_contains('PREFERRED_VERSION_linux-dm800', '2.6.18', 'file://defconfig-0.6.0-old', '', d)}"
-
 S = "${WORKDIR}/wpa_supplicant-${PV}/wpa_supplicant"
 
 PACKAGES_prepend = "wpa-supplicant-passphrase "
@@ -34,7 +29,9 @@ RREPLACES = "wpa-supplicant-cli"
 
 RRECOMMENDS_${PN} = "wpa-supplicant-passphrase"
 
-export HAS_MADWIFI = "${@base_contains('COMBINED_FEATURES', 'madwifi', 1, 0,d)}"
+export HAS_MADWIFI = "${@base_contains('COMBINED_FEATURES', 'madwifi', 1, 0, d)}"
+export HAS_NL80211 = "${@base_contains('COMBINED_FEATURES', 'nl80211', 1, 0, d)}"
+
 do_configure () {
         install -m 0755 ${WORKDIR}/defconfig-0.6.0-gnutls  .config
 
@@ -42,25 +39,10 @@ do_configure () {
                 echo "CONFIG_DRIVER_MADWIFI=y" >> .config
                 echo "CFLAGS += -I${STAGING_INCDIR}/madwifi-ng" >> .config
         fi
-}
 
-export NEED_OLD_8K = "${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', 1, 0, d)}"
-do_configure_dm8000 () {
-	if [ "x$NEED_OLD_8K" == "x1" ] ; then
-		install -m 0755 ${WORKDIR}/defconfig-0.6.0-old .config
-                echo "CONFIG_DRIVER_MADWIFI=y" >> .config
-	else
-		install -m 0755 ${WORKDIR}/defconfig-0.6.0-gnutls .config
-	fi
-}
-
-export NEED_OLD_800 = "${@base_contains('PREFERRED_VERSION_linux-dm800', '2.6.18', 1, 0, d)}"
-do_configure_dm800 () {
-	if [ "x$NEED_OLD_800" == "x1" ] ; then
-		install -m 0755 ${WORKDIR}/defconfig-0.6.0-old .config
-	else
-		install -m 0755 ${WORKDIR}/defconfig-0.6.0-gnutls .config
-	fi
+        if [ "x$HAS_NL80211" == "x1" ] ; then
+                echo "CONFIG_DRIVER_NL80211=y" >> .config
+        fi
 }
 
 do_compile () {
