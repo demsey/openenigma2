@@ -1,0 +1,90 @@
+diff --git a/drivers/net/brcmint7038/bcmemac.c b/drivers/net/brcmint7038/bcmemac.c
+index aae25d0..a6c9ba5 100644
+--- a/drivers/net/brcmint7038/bcmemac.c
++++ b/drivers/net/brcmint7038/bcmemac.c
+@@ -93,7 +93,6 @@
+ 
+ extern unsigned long getPhysFlashBase(void);
+ 
+-static int netdev_ethtool_ioctl(struct net_device *dev, void *useraddr);
+ static int bcmemac_enet_ioctl(struct net_device *dev, struct ifreq *rq, int cmd);
+ static int bcmIsEnetUp(struct net_device *dev);
+ 
+@@ -2627,6 +2626,23 @@ static int bcmemac_power_off(void *arg)
+ 
+ #endif /* CONFIG_BRCM_PM */
+ 
++/*
++ * ethtool function - get driver info.
++ */
++static void bcmumac_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
++{
++	strncpy(info->driver, CARDNAME, sizeof(info->driver));
++	strncpy(info->version, VERSION, sizeof(info->version));
++}
++
++/* 
++ * standard ethtool support functions.
++ */
++static struct ethtool_ops bcmemac_ethtool_ops = {
++	.get_drvinfo		= bcmumac_get_drvinfo,
++	.get_link		= ethtool_op_get_link,
++};
++
+ static void bcmemac_dev_setup(struct net_device *dev, int devnum, int phy_id)
+ {
+     int ret;
+@@ -2750,6 +2766,7 @@ static void bcmemac_dev_setup(struct net_device *dev, int devnum, int phy_id)
+     TRACE(("bcmemacenet: bcmemac_net_probe dev 0x%x\n", (unsigned int)dev));
+ 
+     SET_MODULE_OWNER(dev);
++    SET_ETHTOOL_OPS(dev, &bcmemac_ethtool_ops);
+ }
+ 
+ static void bcmemac_null_setup(struct net_device *dev)
+@@ -2987,35 +3004,6 @@ static int bcmemac_uninit_dev(BcmEnet_devctrl *pDevCtrl)
+     return 0;
+ }
+ 
+-static int netdev_ethtool_ioctl(struct net_device *dev, void *useraddr)
+-{
+-    BcmEnet_devctrl *pDevCtrl = netdev_priv(dev);
+-    u32 ethcmd;
+-    
+-
+-    ASSERT(pDevCtrl != NULL);   
+-        
+-    if (copy_from_user(&ethcmd, useraddr, sizeof(ethcmd)))
+-        return -EFAULT;
+-    
+-    switch (ethcmd) {
+-    /* get driver-specific version/etc. info */
+-    case ETHTOOL_GDRVINFO: {
+-        struct ethtool_drvinfo info = {ETHTOOL_GDRVINFO};
+-
+-        strncpy(info.driver, CARDNAME, sizeof(info.driver)-1);
+-        strncpy(info.version, VERSION, sizeof(info.version)-1);
+-        if (copy_to_user(useraddr, &info, sizeof(info)))
+-            return -EFAULT;
+-        return 0;
+-        }
+-    default:
+-        break;
+-    }
+-    
+-    return -EOPNOTSUPP;    
+-}   
+-
+ static int bcmemac_enet_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
+ {
+     BcmEnet_devctrl *pDevCtrl = netdev_priv(dev);
+@@ -3047,9 +3035,6 @@ static int bcmemac_enet_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
+         spin_unlock_irqrestore(&pDevCtrl->lock, flags);
+ 	val = 0;
+         break;
+-
+-    case SIOCETHTOOL:
+-        return netdev_ethtool_ioctl(dev, (void *) rq->ifr_data);
+     }
+ 
+     return val;

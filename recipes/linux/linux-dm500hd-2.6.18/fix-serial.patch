@@ -1,0 +1,25 @@
+--- linux-2.6.18-org/drivers/serial/8250.c	2010-02-13 10:02:49.000000000 +0100
++++ linux-2.6.18/drivers/serial/8250.c	2010-02-13 01:59:43.000000000 +0100
+@@ -1874,6 +1874,11 @@
+ 	baud = uart_get_baud_rate(port, termios, old, 0, port->uartclk/16); 
+ 	quot = serial8250_get_divisor(port, baud);
+ 
++#ifdef CONFIG_MIPS_BCM7405
++	quot = 5;
++	baud = 1000000;
++#endif
++
+ 	/*
+ 	 * Oxford Semi 952 rev B workaround
+ 	 */
+@@ -1973,6 +1978,10 @@
+ 		serial_outp(up, UART_LCR, cval | UART_LCR_DLAB);/* set DLAB */
+ 	}
+ 
++#ifndef CONFIG_MIPS_BCM7405
++	serial_dl_write(up, quot);
++#endif
++
+ 	/*
+ 	 * LCR DLAB must be set to enable 64-byte FIFO mode. If the FCR
+ 	 * is written without DLAB set, this mode will be disabled.
