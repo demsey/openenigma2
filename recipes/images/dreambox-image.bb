@@ -58,6 +58,14 @@ generate_nfo() {
     echo "MD5: ${MD5SUM}" >> ${NFO}
 }
 
+do_rootfs_append_dm500hd() {
+    generate_nfo
+}
+
+do_rootfs_append_dm800() {
+    generate_nfo
+}
+
 do_rootfs_append_dm8000() {
     generate_nfo
 }
