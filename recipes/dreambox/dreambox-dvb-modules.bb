@@ -5,9 +5,10 @@ LICENSE = "proprietary"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 RDEPENDS_dm8000 = "dreambox-secondstage"
 RDEPENDS_dm800 = "dreambox-secondstage"
+#RDEPENDS_dm500hd = "dreambox-secondstage"
 
-KV_dm500hd = "2.6.30-dm500hd"
-PV_dm500hd = "${KV}-20090727"
+KV_dm500hd = "${@base_contains('PREFERRED_VERSION_linux-dm500hd', '2.6.18', '2.6.18-7.1-dm500hd', '2.6.30-dm500hd', d)}"
+PV_dm500hd = "${KV}-${@base_contains('PREFERRED_VERSION_linux-dm500hd', '2.6.18', '20100212', '20090727', d)}"
 
 KV_dm7020 = "2.6.9"
 PV_dm7020 = "${KV}-20060622"
