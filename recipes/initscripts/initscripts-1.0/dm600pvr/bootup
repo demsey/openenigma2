@@ -14,7 +14,6 @@ modprobe head
 modprobe dreambox_keyboard
 [ -e /etc/dropbear/dropbear_rsa_host_key ] && /usr/bin/showiframe /boot/bootlogo.mvi || /usr/bin/showiframe /boot/bootlogo_wait.mvi
 hostname -F /etc/hostname
-/usr/bin/wdog /usr/bin/dccamd -
 ifup -a
 mount -at nfs,smbfs,cpfs,cifs 2>/dev/null
 [ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"

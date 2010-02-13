@@ -35,7 +35,6 @@ echo 62 > /proc/progress
 hostname -F /etc/hostname
 
 echo 66 > /proc/progress
-/usr/bin/wdog /usr/bin/dccamd -
 
 echo 70 > /proc/progress
 
