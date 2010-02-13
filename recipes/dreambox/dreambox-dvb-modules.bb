@@ -7,14 +7,8 @@ RDEPENDS_dm8000 = "dreambox-secondstage"
 RDEPENDS_dm800 = "dreambox-secondstage"
 #RDEPENDS_dm500hd = "dreambox-secondstage"
 
-KV_dm500hd = "${@base_contains('PREFERRED_VERSION_linux-dm500hd', '2.6.18', '2.6.18-7.1-dm500hd', '2.6.30-dm500hd', d)}"
-PV_dm500hd = "${KV}-${@base_contains('PREFERRED_VERSION_linux-dm500hd', '2.6.18', '20100212', '20090727', d)}"
-
 KV_dm7020 = "2.6.9"
 PV_dm7020 = "${KV}-20060622"
-
-KV_dm7025 = "2.6.30-dm7025"
-PV_dm7025 = "${KV}-20090729"
 
 KV_dm600pvr = "2.6.12"
 PV_dm600pvr = "${KV}-20090430"
@@ -22,11 +16,17 @@ PV_dm600pvr = "${KV}-20090430"
 KV_dm500plus = "2.6.12"
 PV_dm500plus = "${KV}-20080822"
 
+KV_dm7025 = "2.6.30-dm7025"
+PV_dm7025 = "${KV}-20090729"
+
+KV_dm500hd = "${@base_contains('PREFERRED_VERSION_linux-dm500hd', '2.6.18', '2.6.18-7.1-dm500hd', '2.6.30-dm500hd', d)}"
+PV_dm500hd = "${KV}-${@base_contains('PREFERRED_VERSION_linux-dm500hd', '2.6.18', '20100212', '20090727', d)}"
+
 KV_dm800 = "${@base_contains('PREFERRED_VERSION_linux-dm800', '2.6.18', '2.6.18-7.1-dm800', '2.6.30-dm800', d)}"
 PV_dm800 = "${KV}-${@base_contains('PREFERRED_VERSION_linux-dm800', '2.6.18', '20100210', '20090723', d)}"
 
 KV_dm8000 = "${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', '2.6.18-7.1-dm8000', '2.6.30-dm8000', d)}"
-PV_dm8000 = "${KV}-${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', '20100119', '20090820', d)}"
+PV_dm8000 = "${KV}-${@base_contains('PREFERRED_VERSION_linux-dm8000', '2.6.18', '20100213', '20090820', d)}"
 
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
