@@ -20,8 +20,8 @@ RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
 RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska \
 	gst-plugin-qtdemux gst-plugin-cdxaparse gst-plugin-cdio gst-plugin-vcdsrc"
 RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf gst-plugin-matroska gst-plugin-qtdemux"
-RDEPENDS_append_dm500hd = " gst-plugin-alsa alsa-conf gst-plugin-matroska gst-plugin-qtdemux \
-	gst-plugin-avi"
+RDEPENDS_append_dm500hd = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska \
+	gst-plugin-qtdemux gst-plugin-cdxaparse gst-plugin-cdio gst-plugin-vcdsrc"
 
 # 'forward depends' - no two providers can have the same PACKAGES_DYNAMIC, however both
 # enigma2 and enigma2-plugins produce enigma2-plugin-*.
@@ -55,7 +55,7 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-networkwizard = "provides easy s
 PN = "enigma2"
 PR = "r0"
 
-SRCDATE = "20100209"
+SRCDATE = "20100212"
 #SRCDATE is NOT used by git to checkout a specific revision
 #but we need it to build a ipk package version
 #when you like to checkout a specific revision of e2 you need
@@ -65,7 +65,7 @@ SRCDATE = "20100209"
 ####################################################
 BRANCH = "master"
 PV = "2.8git${SRCDATE}"
-SRCREV = "f87f40e3d7bade8c5dbd12d9ccc7f1b2417fff04"
+SRCREV = "a37ddbb7785de5f1d944f4937a5b2914ce6a3862"
 ####################################################
 
 # if you want experimental use
