@@ -5,7 +5,7 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 PV = "0.1"
 PR = "r0"
 
-#yet just usable for dm500hd modem!
+#yet just usable for dm500hd/dm800 modem!
 #for other machines the serial port in "options" file should be fixed...
 
 S = "${WORKDIR}"
