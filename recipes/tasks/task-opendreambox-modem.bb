@@ -12,7 +12,7 @@ DESCRIPTION_${PN} = "OpenDreambox: Modem support"
 DEPENDS_${PN} = "enigma2-plugins"
 RDEPENDS_${PN} = "\
   dreambox-modem-ppp-scripts \
-  enigma2-plugin-extenstions-modem \
+  enigma2-plugin-extensions-modem \
   kernel-module-ppp-async \
   kernel-module-ppp-deflate \
   kernel-module-ppp-generic \
