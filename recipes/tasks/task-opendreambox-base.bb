@@ -15,13 +15,10 @@ OPENDREAMBOX_BASE_ESSENTIAL = "\
   base-files-doc \
   dreambox-bootlogo \
   dreambox-compat \
-  dreambox-dccamd \
   dreambox-wdog \
   dreambox-tpmd \
   dreambox-feed-configs \
   dreambox-keymaps \
-  dropbear \
-  dvbsnoop \
   e2fsprogs-e2fsck \
   e2fsprogs-mke2fs \
   fakelocale \
@@ -33,7 +30,14 @@ OPENDREAMBOX_BASE_ESSENTIAL = "\
   vsftpd \
 "
 
-OPENDREAMBOX_BASE_OPTIONAL = "\
+OPENDREAMBOX_BASE_RECOMMENDS = "\
+  dropbear \
+  dreambox-dccamd \
+  sambaserver \
+  zeroconf \
+"
+
+OPENDREAMBOX_BASE_OPTIONAL_RECOMMENDS = "\
   gdbserver \
   hddtemp \
   joe \
@@ -44,10 +48,13 @@ OPENDREAMBOX_BASE_OPTIONAL = "\
 
 RDEPENDS_${PN} = "\
 	${OPENDREAMBOX_BASE_ESSENTIAL} \
-	${OPENDREAMBOX_BASE_OPTIONAL} \
 "
 
-RDEPENDS_${PN}_dm7025 = "\
-	${OPENDREAMBOX_BASE_ESSENTIAL} \
+RRECOMMENDS_${PN} = "\
+	${OPENDREAMBOX_BASE_RECOMMENDS} \
+	${OPENDREAMBOX_BASE_OPTIONAL_RECOMMENDS} \
 "
 
+RRECOMMENDS_${PN}_dm7025 = "\
+	${OPENDREAMBOX_BASE_RECOMMENDS} \
+"

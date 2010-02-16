@@ -20,35 +20,36 @@ PACKAGES = "\
 RPROVIDES_task-opendreambox-enigma2 = "task-opendreambox-ui"
 DESCRIPTION_task-opendreambox-enigma2 = "OpenDreambox: Enigma2 Dependencies"
 RDEPENDS_task-opendreambox-enigma2 = "\
-  aio-grab \
   dreambox-blindscan-utils \
   enigma2 \
   enigma2-defaultservices \
-  enigma2-plugin-extensions-cutlisteditor \
-  enigma2-plugin-extensions-graphmultiepg \
-  enigma2-plugin-extensions-mediaplayer \
   enigma2-plugin-extensions-mediascanner \
-  enigma2-plugin-extensions-pictureplayer \
-  enigma2-plugin-extensions-webinterface \
   enigma2-plugin-systemplugins-frontprocessorupgrade \
   enigma2-plugin-systemplugins-hotplug \
   enigma2-plugin-systemplugins-networkwizard \
-  enigma2-plugin-systemplugins-positionersetup \
-  enigma2-plugin-systemplugins-satfinder \
-  enigma2-plugin-systemplugins-skinselector \
   enigma2-plugin-systemplugins-softwaremanager \
   enigma2-plugin-systemplugins-videotune \
   enigma2-streamproxy \
-  ethtool \
+  tuxbox-tuxtxt-32bpp \
+"
+
+RRECOMMENDS_task-opendreambox-enigma2 = "\
+  aio-grab \
   python-crypt \
   python-netserver \
-  python-pickle \
   python-twisted-core \
   python-twisted-protocols \
   python-twisted-web \
-  tuxbox-tuxtxt-32bpp \
-  ${@base_contains("MACHINE_FEATURES", "modem", "task-opendreambox-modem", "", d)} \
+  enigma2-plugin-extensions-cutlisteditor \
+  enigma2-plugin-extensions-graphmultiepg \
+  enigma2-plugin-extensions-mediaplayer \
+  enigma2-plugin-extensions-pictureplayer \
+  enigma2-plugin-extensions-webinterface \
+  enigma2-plugin-systemplugins-satfinder \
+  enigma2-plugin-systemplugins-positionersetup \
+  enigma2-plugin-systemplugins-skinselector \
   ${@base_contains("MACHINE_FEATURES", "wifi", "task-opendreambox-wlan", "", d)} \
+  ${@base_contains("MACHINE_FEATURES", "modem", "task-opendreambox-modem", "", d)} \
 "
 
 RDEPENDS_task-opendreambox-enigma2_append_dm500hd = "\
@@ -65,6 +66,9 @@ RDEPENDS_task-opendreambox-enigma2_append_dm8000 = "\
   enigma2-plugin-extensions-genuinedreambox \
   enigma2-plugin-systemplugins-commoninterfaceassignment \
   enigma2-plugin-systemplugins-videomode \
+"
+
+RRECOMMENDS_task-opendreambox-enigma2_append_dm8000 = "\
   task-opendreambox-cdplayer \
   task-opendreambox-dvdplayer \
   task-opendreambox-dvdburn \

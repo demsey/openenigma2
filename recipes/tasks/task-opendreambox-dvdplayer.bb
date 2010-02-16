@@ -11,6 +11,7 @@ inherit task
 DESCRIPTION_${PN} = "OpenDreambox: DVD-Player Support"
 DEPENDS_${PN} = "enigma2
 RDEPENDS_${PN} = "\
+  kernel-module-udf \
   enigma2-plugin-extensions-dvdplayer \
 "
 
