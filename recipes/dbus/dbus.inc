@@ -37,6 +37,11 @@ EXTRA_OECONF = "\
   ${EXTRA_OECONF_X} \
 "
 
+do_configure_prepend_mipsel() {
+	#this fixes error like "cannot make stub section: File format not recognized" with gcc 4.4.3
+	sed -i -e 's/-Wl,--gc-sections/--gc-sections/' configure.in
+}
+
 do_compile_prepend_mipsel() {
 	sed -i -e 's/\-fPIE//' -e 's/\-pie\ \-Wl\,\-z\,relro//' bus/Makefile
 }
