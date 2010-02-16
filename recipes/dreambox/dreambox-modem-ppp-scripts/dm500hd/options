@@ -1,4 +1,4 @@
-/dev/tts/2 2400
+/dev/ttyS2 2400
 
 nocrtscts
 nocdtrcts
