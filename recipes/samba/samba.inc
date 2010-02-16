@@ -40,7 +40,7 @@ EXTRA_OECONF='--disable-cups \
               samba_cv_struct_timespec=yes'
 
 PACKAGES =+ "libsmbclient libsmbclient-dev cifs cifs-doc smbfs smbfs-doc"
-PACKAGES =+ "${@base_conditional('DISTRO', 'opendreambox', ' sambaserver', '', d)}"
+PACKAGES =+ "${@base_conditional('DISTRO', 'opendreambox', ' sambaserver libpopt libtalloc libtdb', '', d)}"
 FILES_smbfs = "${bindir}/smbmount ${bindir}/smbumount ${bindir}/smbmnt ${base_sbindir}/mount.smbfs ${base_sbindir}/mount.smb"
 FILES_smbfs-doc = "${mandir}/man8/smbmount.8 ${mandir}/man8/smbumount.8 ${mandir}/man8/smbmnt.8"
 FILES_cifs = "${base_sbindir}/mount.cifs ${base_sbindir}/umount.cifs"
@@ -50,6 +50,11 @@ FILES_libsmbclient-dev = "${libdir}/libsmbclient.so ${includedir}"
 FILES_sambaserver = "${sbindir}/smbd ${sbindir}/nmbd ${libdir}/charset/*.so ${libdir}/*.dat \
 	/etc/samba/smb.conf /etc/samba/private \
 	/etc/network/if-up.d/01samba-start /etc/network/if-down.d/01samba-kill"
+FILES_libpopt = "${libdir}/libpopt.so.*"
+FILES_libtalloc = "${libdir}/libtalloc.so.*"
+FILES_libtdb = "${libdir}/libtdb.so.*"
+
+PROVIDES_append_opendreambox = " sambaserver libpopt libtalloc libtdb"
 
 INITSCRIPT_NAME = "samba"
 # No dependencies, goes in at level 20 (NOTE: take care with the
@@ -59,7 +64,7 @@ INITSCRIPT_PARAMS = "defaults"
 CONFFILES_${PN} = "${sysconfdir}/samba/smb.conf"
 
 CONFFILES_sambaserver = "${sysconfdir}/samba/smb.conf"
-CONFFILES_opendreambox = ""
+CONFFILES_${PN}_opendreambox = ""
 
 do_configure_prepend () {
 	./script/mkversion.sh
