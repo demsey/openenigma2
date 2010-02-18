@@ -11,8 +11,3 @@ EXTRA_OECONF += " --disable-libunwind-exceptions --with-mpfr=${STAGING_DIR_NATIV
 ARCH_FLAGS_FOR_TARGET += "-isystem${STAGING_DIR_TARGET}${target_includedir}"
 
 EXTRA_OECONF_append_mipsel = " --disable-multilib"
-
-#do_configure_prepend_mipsel () {
-#	${S}/contrib/download_ecj
-#	[ -f ecj.jar ] && mv ecj.jar ..
-#}
