@@ -75,11 +75,6 @@ OBJS = \
 	./net/sourceforge/dvb/projectx/xinput/file/XInputFileImpl.o \
 	./net/sourceforge/dvb/projectx/xinput/FileType.o \
 	./net/sourceforge/dvb/projectx/xinput/StreamInfo.o \
-	./net/sourceforge/dvb/projectx/xinput/topfield_raw/RawFileInputStream.o \
-	./net/sourceforge/dvb/projectx/xinput/topfield_raw/RawInterface.o \
-	./net/sourceforge/dvb/projectx/xinput/topfield_raw/RawReadIF.o \
-	./net/sourceforge/dvb/projectx/xinput/topfield_raw/XInputDirectoryImpl.o \
-	./net/sourceforge/dvb/projectx/xinput/topfield_raw/XInputFileImpl.o \
 	./net/sourceforge/dvb/projectx/xinput/XInputDirectory.o \
 	./net/sourceforge/dvb/projectx/xinput/XInputDirectoryIF.o \
 	./net/sourceforge/dvb/projectx/xinput/XInputFile.o \
@@ -91,7 +86,6 @@ all: projectx
 projectx: $(OBJS)
 	$(CROSS_COMPILE)gcj $(JFLAGS) -c -o ac3.o --resource ac3.bin ../resources/ac3.bin
 	$(CROSS_COMPILE)gcj $(JFLAGS) -c -o pjxresources_en.o --resource pjxresources_en.properties ../resources/pjxresources_en.properties
-	z=0; for x in `find -type f -name "*.o"`; do $(CROSS_COMPILE)objcopy --redefine-sym "_ZGr8_\$$_dummy"="_ZGr8_\$$_dummy$$z" $$x; z=$$((z=z+1)); done
 	$(CROSS_COMPILE)gcj $(JFLAGS) $(OBJS) pjxresources_en.o ac3.o -o projectx \
 		--main=net.sourceforge.dvb.projectx.common.Start \
 		-Djava.awt.headless=true $(LDFLAGS) $(GCJ_ARCHIVES)
@@ -100,7 +94,6 @@ projectx: $(OBJS)
 projectx-static: $(OBJS)
 	$(CROSS_COMPILE)gcj $(JFLAGS) -c -o ac3.o --resource ac3.bin ../resources/ac3.bin
 	$(CROSS_COMPILE)gcj $(JFLAGS) -c -o pjxresources_en.o --resource pjxresources_en.properties ../resources/pjxresources_en.properties
-	z=0; for x in `find -type f -name "*.o"`; do $(CROSS_COMPILE)objcopy --redefine-sym "_ZGr8_\$$_dummy"="_ZGr8_\$$_dummy$$z" $$x; z=$$((z=z+1)); done
 	$(CROSS_COMPILE)gcj $(JFLAGS) $(OBJS) pjxresources_en.o ac3.o -Djava.awt.headless=true --main=net.sourceforge.dvb.projectx.common.Start -save-temps
 	$(CROSS_COMPILE)gcc -o projectx $(OBJS) pjxresources_en.o ac3.o ./net.sourceforge.dvb.projectx.common.Startmain.i \
 	-shared-libgcc -Wl,-non_shared -lgcj -Wl,-call_shared -lsupc++ -Wl,--as-needed -lgcc_s -lpthread -lc -lm -ldl -lrt -Wl,--no-as-needed

@@ -1,7 +1,82 @@
-diff -bur src/net/sourceforge/dvb/projectx/common/Common.java src/net/sourceforge/dvb/projectx/common/Common.java
---- src/net/sourceforge/dvb/projectx/common/Common.java	2007-03-24 21:19:33.000000000 +0100
-+++ src/net/sourceforge/dvb/projectx/common/Common.java	2009-06-17 22:58:54.000000000 +0200
-@@ -81,8 +81,8 @@
+diff -Naur Project-X-org/MANIFEST.MF Project-X/MANIFEST.MF
+--- Project-X-org/MANIFEST.MF	2005-09-10 17:51:52.000000000 +0200
++++ Project-X/MANIFEST.MF	2010-02-17 22:33:42.000000000 +0100
+@@ -1,4 +1,4 @@
+ Manifest-Version: 1.0
+ Main-Class: net.sourceforge.dvb.projectx.common.Start
+ Created-By: 1.2.2 (Sun Microsystems Inc.)
+-Class-Path: lib/commons-net-1.3.0.jar lib/jakarta-oro-2.0.8.jar
++
+diff -Naur Project-X-org/build.sh Project-X/build.sh
+--- Project-X-org/build.sh	2007-01-25 21:06:14.000000000 +0100
++++ Project-X/build.sh	2010-02-17 22:33:25.000000000 +0100
+@@ -19,7 +19,7 @@
+ fi
+ 
+ mkdir -p build
+-javac -encoding "ISO-8859-1" -deprecation -O -g:none -classpath lib/commons-net-1.3.0.jar:lib/jakarta-oro-2.0.8.jar -d build @sources.lst
++javac -encoding "ISO-8859-1" -deprecation -O -g:none -d build @noguisources.lst
+ cp ./resources/* ./build
+ jar cfvm ProjectX.jar MANIFEST.MF -C build .
+ 
+diff -Naur Project-X-org/noguisources.lst Project-X/noguisources.lst
+--- Project-X-org/noguisources.lst	2009-01-15 19:53:35.000000000 +0100
++++ Project-X/noguisources.lst	2010-02-17 22:35:18.000000000 +0100
+@@ -7,7 +7,6 @@
+ src/net/sourceforge/dvb/projectx/audio/AudioFormatAAC.java
+ src/net/sourceforge/dvb/projectx/audio/MpaConverter.java
+ src/net/sourceforge/dvb/projectx/audio/MpaDecoder.java
+-src/net/sourceforge/dvb/projectx/audio/RIFFHeader.java
+ src/net/sourceforge/dvb/projectx/common/Common.java
+ src/net/sourceforge/dvb/projectx/common/GuiInterface.java
+ src/net/sourceforge/dvb/projectx/common/GuiInterfaceIF.java
+@@ -82,15 +81,3 @@
+ src/net/sourceforge/dvb/projectx/xinput/XInputStream.java
+ src/net/sourceforge/dvb/projectx/xinput/file/XInputDirectoryImpl.java
+ src/net/sourceforge/dvb/projectx/xinput/file/XInputFileImpl.java
+-src/net/sourceforge/dvb/projectx/xinput/ftp/FtpServer.java
+-src/net/sourceforge/dvb/projectx/xinput/ftp/FtpVO.java
+-src/net/sourceforge/dvb/projectx/xinput/ftp/StringCommandListener.java
+-src/net/sourceforge/dvb/projectx/xinput/ftp/XInputDirectoryImpl.java
+-src/net/sourceforge/dvb/projectx/xinput/ftp/XInputFileImpl.java
+-src/net/sourceforge/dvb/projectx/xinput/topfield_raw/RawFileInputStream.java
+-src/net/sourceforge/dvb/projectx/xinput/topfield_raw/RawInterface.java
+-src/net/sourceforge/dvb/projectx/xinput/topfield_raw/RawReadIF.java
+-src/net/sourceforge/dvb/projectx/xinput/topfield_raw/XInputDirectoryImpl.java
+-src/net/sourceforge/dvb/projectx/xinput/topfield_raw/XInputFileImpl.java
+-src/edu/stanford/ejalbert/BrowserLauncher.java
+-src/RawRead.java
+diff -Naur Project-X-org/src/edu/stanford/ejalbert/BrowserLauncher.java Project-X/src/edu/stanford/ejalbert/BrowserLauncher.java
+--- Project-X-org/src/edu/stanford/ejalbert/BrowserLauncher.java	2004-10-30 01:31:13.000000000 +0200
++++ Project-X/src/edu/stanford/ejalbert/BrowserLauncher.java	2010-02-17 22:31:06.000000000 +0100
+@@ -251,6 +251,7 @@
+ 	 *			<code>false</code> if any portion of the initialization failed
+ 	 */
+ 	private static boolean loadClasses() {
++/*
+ 		switch (jvm) {
+ 			case MRJ_2_0:
+ 				try {
+@@ -350,6 +351,7 @@
+ 				break;
+ 			default:
+ 			    break;
++*/
+ 		}
+ 		return true;
+ 	}
+diff -Naur Project-X-org/src/net/sourceforge/dvb/projectx/common/Common.java Project-X/src/net/sourceforge/dvb/projectx/common/Common.java
+--- Project-X-org/src/net/sourceforge/dvb/projectx/common/Common.java	2010-01-31 15:19:58.000000000 +0100
++++ Project-X/src/net/sourceforge/dvb/projectx/common/Common.java	2010-02-18 12:42:31.000000000 +0100
+@@ -70,7 +70,6 @@
+ 
+ import net.sourceforge.dvb.projectx.xinput.XInputFile;
+ import net.sourceforge.dvb.projectx.xinput.XInputDirectory;
+-import net.sourceforge.dvb.projectx.xinput.topfield_raw.RawInterface;
+ import net.sourceforge.dvb.projectx.xinput.DirType;
+ 
+ import net.sourceforge.dvb.projectx.net.WebInterface;
+@@ -81,8 +80,8 @@
  public final class Common extends Object {
  
  	/* main version index */
@@ -12,23 +87,20 @@ diff -bur src/net/sourceforge/dvb/projectx/common/Common.java src/net/sourceforg
  
  	private static String line_separator = System.getProperty("line.separator");
  
-@@ -235,10 +235,13 @@
+@@ -234,10 +233,9 @@
+ 	public static void init()
  	{
  		StatusString = Resource.getString("run.status");
- 
-+		System.out.println("scan");
+-
  		scan = new Scan();
 -		subpicture = new Subpicture();
 -		teletext = new Teletext();
-+		System.out.println("subtitle");
 +//		subpicture = new Subpicture();
-+		System.out.println("mpv decoder");
++//		teletext = new Teletext();
  		mpvdecoder = new MpvDecoder();
-+		System.out.println("color models");
  		subpicture_colormodels = loadColorModels();
  	}
- 
-@@ -288,8 +291,8 @@
+@@ -288,8 +286,8 @@
  		guiInterface = new GuiInterface(showGUI);
  
  		//load gui
@@ -39,7 +111,34 @@ diff -bur src/net/sourceforge/dvb/projectx/common/Common.java src/net/sourceforg
  	}
  
  	/**
-@@ -1414,7 +1417,7 @@
+@@ -677,16 +675,16 @@
+ 	 */
+ 	public static String checkLibraryAccess()
+ 	{
+-		try {
+-			Class cls = Class.forName("org.apache.commons.net.ftp.FTPClient");
+-
+-			canAccessFtp = true;
+-
+-			return null;
+-		}
+-		catch (Exception exc) {}
+-		catch (Error err) {}
+-
++//		try {
++//			Class cls = Class.forName("org.apache.commons.net.ftp.FTPClient");
++//
++//			canAccessFtp = true;
++//
++//			return null;
++//		}
++//		catch (Exception exc) {}
++//		catch (Error err) {}
++//
+ 		return "\ncommons-net library not accessible! see readme.txt [ii]\nensure the correct location/classpath, related to the executed .jar\n";
+ 	}
+ 
+@@ -1414,7 +1412,7 @@
  	{
  		List list = new ArrayList();
  
@@ -48,7 +147,7 @@ diff -bur src/net/sourceforge/dvb/projectx/common/Common.java src/net/sourceforg
  		list.add(getDateAndTime());
  		list.add(Resource.getString("javaev.java.version") + "\t" + System.getProperty("java.version"));
  		list.add(Resource.getString("javaev.java.vendor") + "\t" + System.getProperty("java.vendor"));
-@@ -1441,7 +1444,7 @@
+@@ -1441,7 +1439,7 @@
  		list.add(Resource.getString("javaev.java.user.lang") + "\t" + Resource.getChosenLanguage());
  		list.add(Resource.getString("javaev.java.user.name") + "\t" + System.getProperty("user.name"));
  		list.add(Resource.getString("javaev.java.user.home") + "\t" + System.getProperty("user.home"));
@@ -57,7 +156,7 @@ diff -bur src/net/sourceforge/dvb/projectx/common/Common.java src/net/sourceforg
  		return list.toArray();
  	}
  
-@@ -1533,7 +1536,9 @@
+@@ -1533,7 +1531,9 @@
  
  		ProcessedPercent = percent;
  
@@ -68,7 +167,7 @@ diff -bur src/net/sourceforge/dvb/projectx/common/Common.java src/net/sourceforg
  	}
  
  	/**
-@@ -1544,7 +1549,8 @@
+@@ -1544,7 +1544,8 @@
  	public static void updateProgressBar(String str)
  	{
  		setStatusString(str);
@@ -78,21 +177,62 @@ diff -bur src/net/sourceforge/dvb/projectx/common/Common.java src/net/sourceforg
  	}
  
  	/**
-diff -bur src/net/sourceforge/dvb/projectx/common/Start.java src/net/sourceforge/dvb/projectx/common/Start.java
---- src/net/sourceforge/dvb/projectx/common/Start.java	2007-03-24 21:19:33.000000000 +0100
-+++ src/net/sourceforge/dvb/projectx/common/Start.java	2009-06-17 22:53:16.000000000 +0200
-@@ -209,8 +209,10 @@
- 			/**
- 			 * environment
- 			 */
-+			System.out.println("getJAVAEv");
- 			environment = Common.getJavaEV(Common.getSettings().getInifile());
+@@ -1690,7 +1691,7 @@
  
-+			System.out.println("print");
- 			for (int i = 0; i < environment.length; i++)
- 				System.out.println(environment[i].toString());
+ 		try {
+ 			// Get input files from topfield raw disk access
+-			XInputDirectory xInputDirectory = new XInputDirectory(DirType.RAW_DIR);
++/*			XInputDirectory xInputDirectory = new XInputDirectory(DirType.RAW_DIR);
+ 			XInputFile[] addlist = xInputDirectory.getFiles();
  
-@@ -255,11 +257,12 @@
+ 			// Sort them
+@@ -1710,7 +1711,7 @@
+ 			// Add them to the list
+ 			for (int b = 0; b < addlist.length; b++)
+ 				arraylist.add(addlist[b]);
+-
++*/
+ 		} catch (Throwable t) {
+ 			// Assume no dll available or no hd or no file, so do nothing!
+ 		}
+diff -Naur Project-X-org/src/net/sourceforge/dvb/projectx/common/GuiInterface.java Project-X/src/net/sourceforge/dvb/projectx/common/GuiInterface.java
+--- Project-X-org/src/net/sourceforge/dvb/projectx/common/GuiInterface.java	2008-09-28 12:03:24.000000000 +0200
++++ Project-X/src/net/sourceforge/dvb/projectx/common/GuiInterface.java	2010-02-17 22:28:19.000000000 +0100
+@@ -51,18 +51,18 @@
+ 	 */
+ 	private void getImplementation(boolean loadGUI)
+ 	{
+-		try {
+-			if (loadGUI)
+-			{
+-				impl = (GuiInterfaceIF) Class.forName("net.sourceforge.dvb.projectx.gui.GuiInterfaceImpl").newInstance();
+-				accessible = true;
+-			}
+-
+-		} catch (Exception e) {
+-			//System.out.println(e.toString());
+-			Common.setExceptionMessage(e);
+-			// no gui class found
+-		}
++//		try {
++//			if (loadGUI)
++//			{
++//				impl = (GuiInterfaceIF) Class.forName("net.sourceforge.dvb.projectx.gui.GuiInterfaceImpl").newInstance();
++//				accessible = true;
++//			}
++
++//		} catch (Exception e) {
++//			//System.out.println(e.toString());
++//			Common.setExceptionMessage(e);
++//			// no gui class found
++//		}
+ 	}
+ 
+ 	/**
+diff -Naur Project-X-org/src/net/sourceforge/dvb/projectx/common/Start.java Project-X/src/net/sourceforge/dvb/projectx/common/Start.java
+--- Project-X-org/src/net/sourceforge/dvb/projectx/common/Start.java	2010-01-31 15:19:58.000000000 +0100
++++ Project-X/src/net/sourceforge/dvb/projectx/common/Start.java	2010-02-18 12:39:34.000000000 +0100
+@@ -255,11 +255,12 @@
  			/**
  			 * planned to disable ftp only, if commons-net is missing
  			 */
@@ -106,7 +246,7 @@ diff -bur src/net/sourceforge/dvb/projectx/common/Start.java src/net/sourceforge
  
  			System.out.println("Loading AC3 frames...");
  
-@@ -300,10 +303,7 @@
+@@ -300,10 +301,7 @@
  
  			else
  			{
@@ -118,9 +258,9 @@ diff -bur src/net/sourceforge/dvb/projectx/common/Start.java src/net/sourceforge
  				{
  					Common.getGuiInterface().addCollectionAtEnd();
  					Common.getGuiInterface().showActiveCollection(0);
-diff -bur -x'*.o' /dream/sources/cvs/projectx/Project-X/src/net/sourceforge/dvb/projectx/parser/MainProcess.java src/net/sourceforge/dvb/projectx/parser/MainProcess.java
---- src/net/sourceforge/dvb/projectx/parser/MainProcess.java	2009-03-03 11:46:58.000000000 +0100
-+++ src/net/sourceforge/dvb/projectx/parser/MainProcess.java	2009-06-18 08:26:26.000000000 +0200
+diff -Naur Project-X-org/src/net/sourceforge/dvb/projectx/parser/MainProcess.java Project-X/src/net/sourceforge/dvb/projectx/parser/MainProcess.java
+--- Project-X-org/src/net/sourceforge/dvb/projectx/parser/MainProcess.java	2009-03-03 11:46:58.000000000 +0100
++++ Project-X/src/net/sourceforge/dvb/projectx/parser/MainProcess.java	2010-02-17 22:27:03.000000000 +0100
 @@ -1162,9 +1162,9 @@
  
  		job_processing.setSplitSize(splitsize);
@@ -134,9 +274,9 @@ diff -bur -x'*.o' /dream/sources/cvs/projectx/Project-X/src/net/sourceforge/dvb/
  
  	}
  
-diff -bur src/net/sourceforge/dvb/projectx/video/MpvDecoder.java src/net/sourceforge/dvb/projectx/video/MpvDecoder.java
---- src/net/sourceforge/dvb/projectx/video/MpvDecoder.java	2007-01-25 21:06:16.000000000 +0100
-+++ src/net/sourceforge/dvb/projectx/video/MpvDecoder.java	2009-06-17 23:03:59.000000000 +0200
+diff -Naur Project-X-org/src/net/sourceforge/dvb/projectx/video/MpvDecoder.java Project-X/src/net/sourceforge/dvb/projectx/video/MpvDecoder.java
+--- Project-X-org/src/net/sourceforge/dvb/projectx/video/MpvDecoder.java	2009-03-22 11:49:08.000000000 +0100
++++ Project-X/src/net/sourceforge/dvb/projectx/video/MpvDecoder.java	2010-02-17 22:27:03.000000000 +0100
 @@ -72,8 +72,8 @@
  
  public class MpvDecoder extends Object {
@@ -375,10 +515,10 @@ diff -bur src/net/sourceforge/dvb/projectx/video/MpvDecoder.java src/net/sourcef
  	{
  		/* copy or add block data into picture */
  		for (comp=0; comp<block_count; comp++)
-diff -bur src/net/sourceforge/dvb/projectx/xinput/DirType.java src/net/sourceforge/dvb/projectx/xinput/DirType.java
---- src/net/sourceforge/dvb/projectx/xinput/DirType.java	2005-12-17 21:47:40.000000000 +0100
-+++ src/net/sourceforge/dvb/projectx/xinput/DirType.java	2009-06-17 22:53:16.000000000 +0200
-@@ -45,8 +45,8 @@
+diff -Naur Project-X-org/src/net/sourceforge/dvb/projectx/xinput/DirType.java Project-X/src/net/sourceforge/dvb/projectx/xinput/DirType.java
+--- Project-X-org/src/net/sourceforge/dvb/projectx/xinput/DirType.java	2005-12-17 21:47:40.000000000 +0100
++++ Project-X/src/net/sourceforge/dvb/projectx/xinput/DirType.java	2010-02-17 22:37:48.000000000 +0100
+@@ -45,14 +45,14 @@
  	/**
  	 * Directory on a ftp server
  	 */
@@ -389,10 +529,18 @@ diff -bur src/net/sourceforge/dvb/projectx/xinput/DirType.java src/net/sourcefor
  
  	/**
  	 * Directory on a harddisk of a topfield receiver in raw format
-diff -bur src/net/sourceforge/dvb/projectx/xinput/FileType.java src/net/sourceforge/dvb/projectx/xinput/FileType.java
---- src/net/sourceforge/dvb/projectx/xinput/FileType.java	2005-12-17 21:47:40.000000000 +0100
-+++ src/net/sourceforge/dvb/projectx/xinput/FileType.java	2009-06-17 22:53:16.000000000 +0200
-@@ -45,8 +45,8 @@
+ 	 */
+-	public final static DirType RAW_DIR = new DirType(2, "RAW_DIR",
+-			net.sourceforge.dvb.projectx.xinput.topfield_raw.XInputDirectoryImpl.class);
++//	public final static DirType RAW_DIR = new DirType(2, "RAW_DIR",
++//			net.sourceforge.dvb.projectx.xinput.topfield_raw.XInputDirectoryImpl.class);
+ 
+ 	/**
+ 	 * Default DirType
+diff -Naur Project-X-org/src/net/sourceforge/dvb/projectx/xinput/FileType.java Project-X/src/net/sourceforge/dvb/projectx/xinput/FileType.java
+--- Project-X-org/src/net/sourceforge/dvb/projectx/xinput/FileType.java	2005-12-17 21:47:40.000000000 +0100
++++ Project-X/src/net/sourceforge/dvb/projectx/xinput/FileType.java	2010-02-17 22:38:01.000000000 +0100
+@@ -45,14 +45,14 @@
  	/**
  	 * File on a ftp server
  	 */
@@ -403,37 +551,49 @@ diff -bur src/net/sourceforge/dvb/projectx/xinput/FileType.java src/net/sourcefo
  
  	/**
  	 * File on a harddisk of a topfield receiver in raw format
-diff -bur src/net/sourceforge/dvb/projectx/xinput/XInputStream.java src/net/sourceforge/dvb/projectx/xinput/XInputStream.java
---- src/net/sourceforge/dvb/projectx/xinput/XInputStream.java	2006-03-28 20:44:30.000000000 +0200
-+++ src/net/sourceforge/dvb/projectx/xinput/XInputStream.java	2009-06-17 22:53:16.000000000 +0200
-@@ -31,8 +31,6 @@
+ 	 */
+-	public final static FileType RAW = new FileType(2, "RAW",
+-			net.sourceforge.dvb.projectx.xinput.topfield_raw.XInputFileImpl.class);
++//	public final static FileType RAW = new FileType(2, "RAW",
++//			net.sourceforge.dvb.projectx.xinput.topfield_raw.XInputFileImpl.class);
+ 
+ 	/**
+ 	 * Default FileType
+diff -Naur Project-X-org/src/net/sourceforge/dvb/projectx/xinput/XInputStream.java Project-X/src/net/sourceforge/dvb/projectx/xinput/XInputStream.java
+--- Project-X-org/src/net/sourceforge/dvb/projectx/xinput/XInputStream.java	2006-03-28 20:44:30.000000000 +0200
++++ Project-X/src/net/sourceforge/dvb/projectx/xinput/XInputStream.java	2010-02-17 22:51:56.000000000 +0100
+@@ -31,7 +31,7 @@
  import java.io.InputStream;
  import java.io.BufferedInputStream;
  
 -import net.sourceforge.dvb.projectx.xinput.ftp.XInputFileImpl;
--
++//import net.sourceforge.dvb.projectx.xinput.ftp.XInputFileImpl;
+ 
  import net.sourceforge.dvb.projectx.common.Common;
  import net.sourceforge.dvb.projectx.common.Keys;
- 
-@@ -42,7 +40,6 @@
+@@ -42,7 +42,7 @@
  
  	private byte[] buffer = new byte[1];
  
 -	private XInputFileImpl xInputFile = null;
++//	private XInputFileImpl xInputFile = null;
  
  	/**
  	 * Create stream, which is able to handle special needs of the xinput package.
-@@ -55,9 +52,6 @@
+@@ -55,9 +55,9 @@
  		super(Common.getSettings().getBooleanProperty(Keys.KEY_additionalInputBuffer) ? new BufferedInputStream(aIs, 1048576) : aIs);
  	}
  
 -	public void setFtpFile(XInputFileImpl aIf) {
 -		xInputFile = aIf;
 -	}
++//	public void setFtpFile(XInputFileImpl aIf) {
++//		xInputFile = aIf;
++//	}
  
  	/**
  	 * Takes care, that always the full amount of data is read (if possible).
-@@ -143,12 +137,6 @@
+@@ -143,11 +143,11 @@
  	public final void close() throws IOException {
  		if (debug) System.out.println("Enter XInputStream.close()");
  
@@ -442,7 +602,37 @@ diff -bur src/net/sourceforge/dvb/projectx/xinput/XInputStream.java src/net/sour
 -			xInputFile.randomAccessClose();
 -			xInputFile = null;
 -		}
--
++//		if (xInputFile != null)
++//		{
++//			xInputFile.randomAccessClose();
++//			xInputFile = null;
++//		}
+ 
  		super.close();
  		if (debug) System.out.println("Leave XInputStream.close()");
+diff -Naur Project-X-org/src/net/sourceforge/dvb/projectx/xinput/topfield_raw/RawInterface.java Project-X/src/net/sourceforge/dvb/projectx/xinput/topfield_raw/RawInterface.java
+--- Project-X-org/src/net/sourceforge/dvb/projectx/xinput/topfield_raw/RawInterface.java	2005-12-17 21:47:40.000000000 +0100
++++ Project-X/src/net/sourceforge/dvb/projectx/xinput/topfield_raw/RawInterface.java	2010-02-17 22:29:12.000000000 +0100
+@@ -41,14 +41,14 @@
+ 	String sourcefile;
+ 
+ 	public RawInterface(String aSourceFile) {
+-		try {
+-			Class rawReadClass = Class.forName("RawRead");
+-			rawRead = (RawReadIF) rawReadClass.newInstance();
+-			sourcefile = aSourceFile;
+-			stream_size = 0;
+-		} catch (Exception e) {
+-			throw new IllegalArgumentException("Can't instantiate RawInterface");
+-		}
++//		try {
++//			Class rawReadClass = Class.forName("RawRead");
++//			rawRead = (RawReadIF) rawReadClass.newInstance();
++//			sourcefile = aSourceFile;
++//			stream_size = 0;
++//		} catch (Exception e) {
++//			throw new IllegalArgumentException("Can't instantiate RawInterface");
++//		}
  	}
+ 
+ 	public final void add_native_files(ArrayList arraylist) {
