@@ -4,9 +4,10 @@ It parses IFO files, reads NAV-blocks, and performs CSS authentication and descr
 HOMEPAGE = "http://www.dtek.chalmers.se/groups/dvd/development.shtml"
 LICENSE = "GPL"
 DEPENDS = "libdvdcss"
+DEPENDS_opendreambox = ""
 SECTION = "libs/multimedia"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.dtek.chalmers.se/groups/dvd/dist/libdvdread-${PV}.tar.gz"
 
@@ -15,6 +16,8 @@ inherit autotools
 EXTRA_OECONF = " --with-libdvdcss-includes=${STAGING_INCDIR} \
                  --with-libdvdcss-libs=${STAGING_LIBDIR} \
 "
+
+EXTRA_OECONF_opendreambox = ""
 
 do_stage() {
 	autotools_stage_all
