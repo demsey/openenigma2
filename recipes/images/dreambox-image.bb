@@ -21,9 +21,9 @@ opendreambox_rootfs_postprocess() {
     cd ${IMAGE_ROOTFS}
 
     # generate /etc/image-version
-	IMAGE_VERSION="270"
+    IMAGE_VERSION="000"
     IMAGE_DATE="$(date +%Y%m%d%H%M)"
-    IMAGE_TYPE="0"
+    IMAGE_TYPE="1"
     echo "version=${IMAGE_TYPE}${IMAGE_VERSION}${IMAGE_DATE}" > etc/image-version
     echo "comment=${DISTRO_NAME}" >> etc/image-version
     echo "target=9" >> etc/image-version
