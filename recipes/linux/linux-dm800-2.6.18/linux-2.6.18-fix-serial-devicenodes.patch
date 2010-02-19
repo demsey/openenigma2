@@ -1,0 +1,16 @@
+diff --git a/drivers/char/brcmserial.c b/drivers/char/brcmserial.c
+index 34f1a31..4737cd7 100644
+--- a/drivers/char/brcmserial.c
++++ b/drivers/char/brcmserial.c
+@@ -2937,7 +2937,11 @@ static int __init rs_init(void)
+ 	serial_driver->init_termios = tty_std_termios;
+ 	serial_driver->init_termios.c_cflag =
+ 		B115200 | CS8 | CREAD | CLOCAL;
++#if CONFIG_MIPS_BCM7401C0
++	serial_driver->flags = TTY_DRIVER_REAL_RAW;  // HACK to get device nodes on dm800
++#else
+ 	serial_driver->flags = TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV;
++#endif
+ 	serial_driver->refcount = 0;
+ 	serial_driver->ttys = serial_table;
+ 	serial_driver->termios = serial_termios;
