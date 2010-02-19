@@ -1,0 +1,23 @@
+diff -Naur trunk-org/libopkg/opkg_remove.c trunk/libopkg/opkg_remove.c
+--- trunk-org/libopkg/opkg_remove.c	2010-02-19 17:22:40.000000000 +0100
++++ trunk/libopkg/opkg_remove.c	2010-02-19 17:36:21.000000000 +0100
+@@ -360,8 +360,18 @@
+ 	  }
+ 
+ 	  opkg_message(conf, OPKG_INFO, "  deleting %s (noaction=%d)\n", file_name, conf->noaction);
+-	  if (!conf->noaction)
++	  if (!conf->noaction) {
++	       int l = strlen(file_name);
+ 	       unlink(file_name);
++	       if (file_name[l-3] == '.' && file_name[l-2] == 'p' && file_name[l-1] == 'y') {
++	            char fname_tmp[l+2];
++	            strncpy(fname_tmp, file_name, l);
++	            fname_tmp[l+1] = 0;
++	            fname_tmp[l] = 'c';
++	            if (!unlink(fname_tmp) || ((fname_tmp[l] = 'o') && !unlink(fname_tmp)))
++	                 printf("[Opendreambox] deleted: %s\n", fname_tmp);
++	       }
++	  }
+      }
+ 
+      /* Remove empty directories */
