@@ -7,7 +7,7 @@ SRC_URI += " http://trappist.elis.ugent.be/~mronsse/cdfs/download/cdfs-2.6.18.ta
 	file://stblinux-2.6.18-cdfs.patch \
 	file://linux-2.6.18-fix-mips-crosscompile.patch;patch=1 \
 	file://linux-2.6.18-fix-proc-cputype.patch;patch=1 \
-	file://fix-serial.patch;patch=1"
+	file://linux-2.6.18-fix-serial.patch;patch=1"
 
 do_configure_prepend() {
 	oe_machinstall -m 0644 ${WORKDIR}/dm800_defconfig ${S}/.config
