@@ -140,6 +140,7 @@ FILES_python-dbg += "${libdir}/python${PYTHON_MAJMIN}/lib-dynload/.debug"
 # catch all the rest (unsorted)
 PACKAGES += "python-misc"
 FILES_python-misc = "${libdir}/python${PYTHON_MAJMIN}"
+RDEPENDS_python-misc += "python-shell"
 
 # catch manpage
 PACKAGES += "python-man"

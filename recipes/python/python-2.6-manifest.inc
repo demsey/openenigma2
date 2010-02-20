@@ -18,7 +18,7 @@ RDEPENDS_python-threading="python-core python-lang"
 FILES_python-threading="${libdir}/python2.6/_threading_local.* ${libdir}/python2.6/dummy_thread.* ${libdir}/python2.6/dummy_threading.* ${libdir}/python2.6/mutex.* ${libdir}/python2.6/threading.* ${libdir}/python2.6/Queue.* "
 
 DESCRIPTION_python-distutils="Python Distribution Utilities"
-RDEPENDS_python-distutils="python-core"
+RDEPENDS_python-distutils="python-core python-shell"
 FILES_python-distutils="${libdir}/python2.6/config ${libdir}/python2.6/distutils "
 
 DESCRIPTION_python-doctest="Python framework for running examples in docstrings."
@@ -58,7 +58,7 @@ RDEPENDS_python-compiler="python-core"
 FILES_python-compiler="${libdir}/python2.6/compiler "
 
 DESCRIPTION_python-compression="Python High Level Compression Support"
-RDEPENDS_python-compression="python-core python-zlib"
+RDEPENDS_python-compression="python-core python-zlib python-shell"
 FILES_python-compression="${libdir}/python2.6/gzip.* ${libdir}/python2.6/zipfile.* ${libdir}/python2.6/tarfile.* ${libdir}/python2.6/lib-dynload/bz2.so "
 
 DESCRIPTION_python-re="Python Regular Expression APIs"
@@ -82,7 +82,7 @@ RDEPENDS_python-image="python-core"
 FILES_python-image="${libdir}/python2.6/colorsys.* ${libdir}/python2.6/imghdr.* ${libdir}/python2.6/lib-dynload/imageop.so ${libdir}/python2.6/lib-dynload/rgbimg.so "
 
 DESCRIPTION_python-tests="Python Tests"
-RDEPENDS_python-tests="python-core"
+RDEPENDS_python-tests="python-core python-shell"
 FILES_python-tests="${libdir}/python2.6/test "
 
 DESCRIPTION_python-core-dbg="Python core module debug information"
@@ -150,7 +150,7 @@ RDEPENDS_python-pprint="python-core"
 FILES_python-pprint="${libdir}/python2.6/pprint.* "
 
 DESCRIPTION_python-netserver="Python Internet Protocol Servers"
-RDEPENDS_python-netserver="python-core python-netclient"
+RDEPENDS_python-netserver="python-core python-netclient python-shell"
 FILES_python-netserver="${libdir}/python2.6/cgi.* ${libdir}/python2.6/*HTTPServer.* ${libdir}/python2.6/SocketServer.* "
 
 DESCRIPTION_python-curses="Python Curses Support"
@@ -206,7 +206,7 @@ RDEPENDS_python-unittest="python-core python-stringold python-lang"
 FILES_python-unittest="${libdir}/python2.6/unittest.* "
 
 DESCRIPTION_python-multiprocessing="Python Multiprocessing Support"
-RDEPENDS_python-multiprocessing="python-core python-io python-lang"
+RDEPENDS_python-multiprocessing="python-core python-io python-lang python-shell"
 FILES_python-multiprocessing="${libdir}/python2.6/lib-dynload/_multiprocessing.so ${libdir}/python2.6/multiprocessing "
 
 DESCRIPTION_python-robotparser="Python robots.txt parser"

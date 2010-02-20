@@ -52,7 +52,8 @@ PROVIDES += "\
   twisted-core \
 "
 
-RDEPENDS = "python-core python-zopeinterface"
+RDEPENDS = "python-core python-zopeinterface python-shell"
+
 RDEPENDS_${PN} += "\
   ${PN}-bin \
   ${PN}-conch \
