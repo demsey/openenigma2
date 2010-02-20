@@ -24,7 +24,17 @@ inherit autotools
 S = "${WORKDIR}/enigma2-skins"
 
 python populate_packages_prepend () {
-	if bb.data.expand('${REL_MINOR}', d) != "4":
-		enigma2_skindir = bb.data.expand('${datadir}/enigma2', d)
-		do_split_packages(d, enigma2_skindir, '(.*?)/.*', 'enigma2-skin-%s', 'Enigma2 Skin: %s', recursive=True, match_path=True, prepend=True)
+	enigma2_skindir = bb.data.expand('${datadir}/enigma2', d)
+
+	do_split_packages(d, enigma2_skindir, '(.*?)/.*', 'enigma2-skin-%s', 'Enigma2 Skin: %s', recursive=True, match_path=True, prepend=True)
+}
+
+python populate_packages_append () {
+	enigma2_skindir = bb.data.expand('${datadir}/enigma2', d)
+
+	#clear rdepends by default
+	for package in bb.data.getVar('PACKAGES', d, 1).split():
+		bb.data.setVar('RDEPENDS_' + package, '', d)
+
+	#todo add support for control files in skindir.. like plugins
 }
