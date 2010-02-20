@@ -143,7 +143,7 @@ FILES_python-fcntl="${libdir}/python2.6/lib-dynload/fcntl.so "
 
 DESCRIPTION_python-netclient="Python Internet Protocol Clients"
 RDEPENDS_python-netclient="python-core python-crypt python-datetime python-io python-lang python-logging python-mime"
-FILES_python-netclient="${libdir}/python2.6/*Cookie*.* ${libdir}/python2.6/base64.* ${libdir}/python2.6/cookielib.* ${libdir}/python2.6/ftplib.* ${libdir}/python2.6/gopherlib.* ${libdir}/python2.6/hmac.* ${libdir}/python2.6/httplib.* ${libdir}/python2.6/mimetypes.* ${libdir}/python2.6/nntplib.* ${libdir}/python2.6/poplib.* ${libdir}/python2.6/smtplib.* ${libdir}/python2.6/telnetlib.* ${libdir}/python2.6/urllib.* ${libdir}/python2.6/urllib2.* ${libdir}/python2.6/urlparse.* ${libdir}/python2.6/uuid.* ${libdir}/python2.6/rfc822.* ${libdir}/python2.6/mimetools.* "
+FILES_python-netclient="${libdir}/python2.6/*Cookie*.* ${libdir}/python2.6/base64.* ${libdir}/python2.6/cookielib.* ${libdir}/python2.6/ftplib.* ${libdir}/python2.6/gopherlib.* ${libdir}/python2.6/hmac.* ${libdir}/python2.6/httplib.* ${libdir}/python2.6/mimetypes.* ${libdir}/python2.6/nntplib.* ${libdir}/python2.6/poplib.* ${libdir}/python2.6/smtplib.* ${libdir}/python2.6/telnetlib.* ${libdir}/python2.6/urllib.* ${libdir}/python2.6/urllib2.* ${libdir}/python2.6/urlparse.* ${libdir}/python2.6/uuid.* ${libdir}/python2.6/rfc822.* "
 
 DESCRIPTION_python-pprint="Python Pretty-Print Support"
 RDEPENDS_python-pprint="python-core"
@@ -191,7 +191,7 @@ FILES_python-xml="${libdir}/python2.6/lib-dynload/pyexpat.so ${libdir}/python2.6
 
 DESCRIPTION_python-mime="Python MIME Handling APIs"
 RDEPENDS_python-mime="python-core python-io"
-FILES_python-mime="${libdir}/python2.6/mimetools.* ${libdir}/python2.6/uu.* ${libdir}/python2.6/quopri.* ${libdir}/python2.6/rfc822.* "
+FILES_python-mime="${libdir}/python2.6/MimeWriter.* ${libdir}/python2.6/mimetools.* ${libdir}/python2.6/uu.* ${libdir}/python2.6/quopri.* ${libdir}/python2.6/rfc822.* "
 
 DESCRIPTION_python-sqlite3="Python Sqlite3 Database Support"
 RDEPENDS_python-sqlite3="python-core python-datetime python-lang python-crypt python-io python-threading python-zlib"
