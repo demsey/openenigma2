@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.twistedmatrix.com"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://tmrc.mit.edu/mirror/twisted/Twisted/8.2/Twisted-${PV}.tar.bz2 "
 S = "${WORKDIR}/Twisted-${PV}"
@@ -28,6 +28,28 @@ PACKAGES += "\
   ${PN}-flow \
   ${PN}-pair \
   ${PN}-core \
+"
+
+PROVIDES += "\
+  twisted-zsh \
+  twisted-test \
+  twisted-protocols \
+  twisted-bin \
+  twisted-zsh \
+  twisted-test \
+  twisted-protocols \
+  twisted-bin \
+  twisted-conch \
+  twisted-lore \
+  twisted-mail \
+  twisted-names \
+  twisted-news \
+  twisted-runner \
+  twisted-web \
+  twisted-words \
+  twisted-flow \
+  twisted-pair \
+  twisted-core \
 "
 
 RDEPENDS = "python-core python-zopeinterface"
@@ -175,8 +197,6 @@ ${bindir}/mailmail \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/plugins/twisted_mail.py* \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/mail \
 "
-RREPLACES_${PN}-mail = "twisted-mail"
-RCONFLICTS_${PN}-mail = "twisted-mail"
 
 FILES_${PN}-names = " \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/plugins/twisted_names.py* \
@@ -198,8 +218,6 @@ ${bindir}/websetroot \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/plugins/twisted_web.py* \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/web\
 "
-RREPLACES_${PN}-web = "twisted-web"
-RCONFLICTS_${PN}-web = "twisted-web"
 
 FILES_${PN}-words = " \
 ${bindir}/im \
@@ -221,5 +239,15 @@ ${libdir}/${PYTHON_DIR}/site-packages/twisted/*/.debug \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/*/*/.debug \
 "
 
-RPROVIDES += "twisted-web twisted-mail"
-PROVIDES += "twisted-web twisted-mail"
+python populate_packages_prepend () {
+	rprovides = ''
+
+	for package in bb.data.getVar('PACKAGES', d, 1).split():
+		tokens = package.split('-')
+		if len(tokens) > 2:
+			name = 'twisted-' + tokens[2]
+			rprovides += ' '+name
+			bb.data.setVar('RPROVIDES_' + package, name, d)
+
+	bb.data.setVar('RPROVIDES_append', rprovides, d)
+}
