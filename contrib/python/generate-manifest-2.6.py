@@ -269,7 +269,7 @@ if __name__ == "__main__":
     "lib-dynload/cmath.so lib-dynload/math.so lib-dynload/_random.so random.* sets.*" )
 
     m.addPackage( "python-mime", "Python MIME Handling APIs", "python-core python-io",
-    "mimetools.* uu.* quopri.* rfc822.*" )
+    "MimeWriter.* mimetools.* uu.* quopri.* rfc822.*" )
 
     m.addPackage( "python-mmap", "Python Memory-Mapped-File Support", "python-core python-io",
     "lib-dynload/mmap.so " )
@@ -279,7 +279,7 @@ if __name__ == "__main__":
 
     m.addPackage( "python-netclient", "Python Internet Protocol Clients", "python-core python-crypt python-datetime python-io python-lang python-logging python-mime",
     "*Cookie*.* " + 
-    "base64.* cookielib.* ftplib.* gopherlib.* hmac.* httplib.* mimetypes.* nntplib.* poplib.* smtplib.* telnetlib.* urllib.* urllib2.* urlparse.* uuid.* rfc822.* mimetools.*" )
+    "base64.* cookielib.* ftplib.* gopherlib.* hmac.* httplib.* mimetypes.* nntplib.* poplib.* smtplib.* telnetlib.* urllib.* urllib2.* urlparse.* uuid.* rfc822.*" )
 
     m.addPackage( "python-netserver", "Python Internet Protocol Servers", "python-core python-netclient",
     "cgi.* *HTTPServer.* SocketServer.*" )
@@ -344,7 +344,7 @@ if __name__ == "__main__":
     m.addPackage( "python-unixadmin", "Python Unix Administration Support", "python-core",
     "lib-dynload/nis.so lib-dynload/grp.so lib-dynload/pwd.so getpass.*" )
         
-    m.addPackage( "python-xml", "Python basic XML support.", "python-core python-re",
+    m.addPackage( "python-xml", "Python basic XML support.", "python-core python-re python-elementtree",
     "lib-dynload/pyexpat.so xml xmllib.*" ) # package
 
     m.addPackage( "python-xmlrpc", "Python XMLRPC Support", "python-core python-xml python-netserver python-lang",
