@@ -1,0 +1,85 @@
+--- a/busybox-1.15.3/libbb/procps.c	2009-12-12 22:13:28.000000000 +0100
++++ busybox-1.15.3/libbb/procps.c	2010-02-23 00:00:30.000000000 +0100
+@@ -178,7 +178,7 @@
+ {
+ 	struct dirent *entry;
+ 	char buf[PROCPS_BUFSIZE];
+-	char filename[sizeof("/proc//cmdline") + sizeof(int)*3];
++	char filename[sizeof("/proc//task//cmdline//") + sizeof(int)*6];
+ 	char *filename_tail;
+ 	long tasknice;
+ 	unsigned pid;
+@@ -188,11 +188,14 @@
+ 	if (!sp)
+ 		sp = alloc_procps_scan();
+ 
+-	for (;;) {
+-		entry = readdir(sp->dir);
+-		if (entry == NULL) {
+-			free_procps_scan(sp);
+-			return NULL;
++	for(;;) {
++		if (!sp->taskdir)
++			break;
++		entry = readdir(sp->taskdir);
++		if(entry == NULL) {
++			closedir(sp->taskdir);
++			sp->taskdir = 0;
++			break;
+ 		}
+ 		pid = bb_strtou(entry->d_name, NULL, 10);
+ 		if (errno)
+@@ -216,7 +219,7 @@
+ 		}
+ #endif
+ 
+-		filename_tail = filename + sprintf(filename, "/proc/%u/", pid);
++		filename_tail = filename + sprintf(filename, "/proc/%u/task/%u/", sp->parentpid, pid);
+ 
+ 		if (flags & PSSCAN_UIDGID) {
+ 			if (stat(filename, &sb))
+@@ -468,6 +472,33 @@
+ 		break;
+ 	} /* for (;;) */
+ 
++	if(sp->taskdir)
++		return sp;
++
++	for (;;) {
++		entry = readdir(sp->dir);
++		if (entry == NULL) {
++			free_procps_scan(sp);
++			return NULL;
++		}
++		pid = bb_strtou(entry->d_name, NULL, 10);
++		if (errno)
++			continue;
++
++		filename_tail = filename + sprintf(filename, "/proc/%u/", pid);
++
++		if (!sp->taskdir) {
++			strcpy(filename_tail, "task");
++			sp->taskdir = xopendir(filename);
++			if(!sp->taskdir) {
++				// ignore processes without taskdir
++				continue;
++			}
++			sp->parentpid = pid;
++			return procps_scan(sp, flags);
++		}
++	}
++
+ 	return sp;
+ }
+ 
+--- a/busybox-1.15.3/include/libbb.h	2009-12-12 22:13:28.000000000 +0100
++++ busybox-1.15.3/include/libbb.h	2010-02-22 23:57:29.000000000 +0100
+@@ -1279,6 +1279,8 @@
+ 	DIR *dir;
+ 	uint8_t shift_pages_to_bytes;
+ 	uint8_t shift_pages_to_kb;
++	DIR *taskdir;
++	unsigned parentpid;
+ /* Fields are set to 0/NULL if failed to determine (or not requested) */
+ 	uint16_t argv_len;
+ 	char *argv0;

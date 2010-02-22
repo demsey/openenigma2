@@ -1,0 +1,66 @@
+--- busybox-1.15.3-org/miscutils/hdparm.c	2009-12-12 22:13:28.000000000 +0100
++++ busybox-1.15.3/miscutils/hdparm.c	2010-02-22 21:17:06.000000000 +0100
+@@ -288,6 +288,7 @@
+ 	smallint set_sleepnow;
+ 	smallint get_powermode;
+ 	smallint getset_apmmode;
++	smallint getset_acoustic;
+ 	int xfermode_requested;
+ 	unsigned long dkeep;
+ 	unsigned long standby_requested; /* 0..255 */
+@@ -297,6 +298,7 @@
+ 	unsigned long wcache;
+ 	unsigned long doorlock;
+ 	unsigned long apmmode;
++	unsigned long acoustic;
+ #endif
+ 	IF_FEATURE_HDPARM_GET_IDENTITY(        smallint get_IDentity;)
+ 	IF_FEATURE_HDPARM_HDIO_TRISTATE_HWIF(  smallint getset_busstate;)
+@@ -361,6 +363,7 @@
+ #define set_sleepnow       (G.set_sleepnow           )
+ #define get_powermode      (G.get_powermode          )
+ #define getset_apmmode     (G.getset_apmmode         )
++#define getset_acoustic    (G.getset_acoustic        )
+ #define xfermode_requested (G.xfermode_requested     )
+ #define dkeep              (G.dkeep                  )
+ #define standby_requested  (G.standby_requested      )
+@@ -370,6 +373,7 @@
+ #define wcache             (G.wcache                 )
+ #define doorlock           (G.doorlock               )
+ #define apmmode            (G.apmmode                )
++#define acoustic           (G.acoustic               )
+ #define get_IDentity       (G.get_IDentity           )
+ #define getset_busstate    (G.getset_busstate        )
+ #define perform_reset      (G.perform_reset          )
+@@ -1680,6 +1684,14 @@
+ 		ioctl_or_warn(fd, HDIO_DRIVE_CMD, &args);
+ 		args[1] = 0;
+ 	}
++	if (getset_acoustic == IS_SET) {
++		printf(" setting AAM level to 0x%02lX (%ld)\n", acoustic, acoustic);
++		ioctl_or_warn(fd, HDIO_SET_ACOUSTIC, (int*)acoustic);
++	}
++	if (getset_acoustic) {
++		ioctl_or_warn(fd, HDIO_GET_ACOUSTIC, (unsigned long*)&parm);
++		printf(" acoustic     = %2ld (128=quiet ... 254=fast)\n", parm);
++	}
+ 	if (getset_wcache == IS_SET) {
+ #ifdef DO_FLUSHCACHE
+ #ifndef WIN_FLUSHCACHE
+@@ -1986,7 +1998,7 @@
+ 	IF_FEATURE_HDPARM_GET_IDENTITY("iI")
+ 	IF_FEATURE_HDPARM_HDIO_GETSET_DMA("d::")
+ #ifdef HDIO_DRIVE_CMD
+-	"S:D:P:X:K:A:L:W:CyYzZ"
++	"S:D:P:X:K:A:L:W:CyYzZM:"
+ #endif
+ 	IF_FEATURE_HDPARM_HDIO_UNREGISTER_HWIF("U:")
+ #ifdef HDIO_GET_QDMA
+@@ -2026,6 +2038,7 @@
+ 		if (c == 'k') getset_keep      = parse_opts_0_1(&keep);
+ 		if (c == 'a') getset_readahead = parse_opts_0_INTMAX(&Xreadahead);
+ 		if (c == 'B') getset_apmmode   = parse_opts(&apmmode, 1, 255);
++		if (c == 'M') getset_acoustic  = parse_opts(&acoustic, 1, 254);
+ 		do_flush |= do_timings |= (c == 't');
+ 		do_flush |= do_ctimings |= (c == 'T');
+ #ifdef HDIO_DRIVE_CMD
