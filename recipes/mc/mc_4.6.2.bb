@@ -1,5 +1,5 @@
 require mc.inc
-PR = "r4"
+PR = "r5"
 HOMEPAGE = "http://www.midnight-commander.org/"
 
 S = "${WORKDIR}/${PN}-${PV}"
