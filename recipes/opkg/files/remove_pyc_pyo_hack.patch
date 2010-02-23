@@ -15,7 +15,7 @@ diff -Naur trunk-org/libopkg/opkg_remove.c trunk/libopkg/opkg_remove.c
 +	            fname_tmp[l+1] = 0;
 +	            fname_tmp[l] = 'c';
 +	            if (!unlink(fname_tmp) || ((fname_tmp[l] = 'o') && !unlink(fname_tmp)))
-+	                 printf("[Opendreambox] deleted: %s\n", fname_tmp);
++	                 /*printf("[Opendreambox] deleted: %s\n", fname_tmp)*/;
 +	       }
 +	  }
       }
