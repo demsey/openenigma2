@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenDreambox: Base Task for the OpenDreambox Distribution"
 SECTION = "opendreambox/base"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 
 inherit task
 
@@ -35,6 +35,7 @@ OPENDREAMBOX_BASE_RECOMMENDS = "\
   dreambox-dccamd \
   sambaserver \
   zeroconf \
+  avahi-daemon \
 "
 
 OPENDREAMBOX_BASE_OPTIONAL_RECOMMENDS = "\
