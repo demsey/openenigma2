@@ -60,6 +60,7 @@ fi
 }
 
 PACKAGES += "${PN}-modules ${PN}-tools"
+FILES_${PN} = ""
 FILES_${PN}-modules = "/lib/modules/"
-FILES_${PN}-tools = "/usr/"
+FILES_${PN}-tools = "/usr/*"
 
