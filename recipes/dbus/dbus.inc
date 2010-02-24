@@ -108,3 +108,4 @@ CONFFILES_${PN} = "${sysconfdir}/dbus-1/system.conf ${sysconfdir}/dbus-1/session
 
 INITSCRIPT_NAME = "dbus-1"
 INITSCRIPT_PARAMS = "start 02 5 2 . stop 20 0 1 6 ."
+INITSCRIPT_PARAMS_opendreambox = "start 02 S 2 3 5 . stop 20 0 1 6 ."
