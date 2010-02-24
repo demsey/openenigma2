@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenDreambox: Enigma2 Task for the OpenDreambox Distribution"
 SECTION = "opendreambox/base"
 LICENSE = "MIT"
-PR = "r4"
+PR = "r5"
 
 inherit task
 
@@ -55,6 +55,7 @@ RRECOMMENDS_task-opendreambox-enigma2 = "\
 RDEPENDS_task-opendreambox-enigma2_append_dm500hd = "\
   enigma2-plugin-extensions-genuinedreambox \
   enigma2-plugin-systemplugins-videomode \
+  enigma2-plugin-systemplugins-tempfancontrol \
 "
 
 RDEPENDS_task-opendreambox-enigma2_append_dm800 = "\
