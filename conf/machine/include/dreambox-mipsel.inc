@@ -1,6 +1,6 @@
 # dreambox-mipsel.inc
 
-MACHINE_FEATURES += "alsa pci wifi"
+MACHINE_FEATURES += "alsa pci"
 
 OLDEST_KERNEL = "2.6.12"
 
