@@ -36,6 +36,7 @@ OPENDREAMBOX_BASE_RECOMMENDS = "\
   sambaserver \
   zeroconf \
   avahi-daemon \
+  avahi-dnsconfd \
 "
 
 OPENDREAMBOX_BASE_OPTIONAL_RECOMMENDS = "\
