@@ -64,8 +64,10 @@ CONFFILES_avahi-daemon = "${sysconfdir}/avahi/avahi-daemon.conf"
 INITSCRIPT_PACKAGES = "avahi-daemon avahi-dnsconfd"
 INITSCRIPT_NAME_avahi-daemon = "avahi-daemon"
 INITSCRIPT_PARAMS_avahi-daemon = "defaults 21 19"
+INITSCRIPT_PARAMS_avahi-daemon_opendreambox = "start 21 S 2 3 5 . stop 19 0 1 6 ."
 INITSCRIPT_NAME_avahi-dnsconfd = "avahi-dnsconfd"
 INITSCRIPT_PARAMS_avahi-dnsconfd = "defaults 22 19"
+INITSCRIPT_PARAMS_avahi-dnsconfd_opendreambox = "start 22 S 2 3 5 . stop 19 0 1 6 ."
 
 # At the time the postinst runs, dbus might not be setup so only restart if running
 
