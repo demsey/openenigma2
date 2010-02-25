@@ -40,7 +40,7 @@ case "$1" in
 		if [ -n "$router" ] ; then
 			if ! root_is_nfs ; then
                                 if [ $have_bin_ip -eq 1 ]; then
-                                        while ip route del default 2>/dev/null ; do
+                                        while ip route del default dev $interface 2>/dev/null ; do
                                                 :
                                         done
                                 else
@@ -59,7 +59,7 @@ case "$1" in
 			if [ "$interface" == "$default_gw" ]; then
 				for i in $router ; do
 					if [ $have_bin_ip -eq 1 ]; then
-						ip route add default via $i metric $((metric++))
+						ip route add default dev $interface via $i metric $((metric++)) 2>/dev/null
 					else
 						route add default gw $i dev $interface metric $((metric++)) 2>/dev/null
 					fi
