@@ -24,7 +24,7 @@ inherit autotools
 
 S = "${WORKDIR}/enigma2-plugins"
 
-DEPENDS = "python-pyopenssl python-gdata streamripper"
+DEPENDS = "python-pyopenssl python-gdata streamripper python-mutagen"
 DEPENDS += "enigma2"
 
 python populate_packages_prepend () {
@@ -55,7 +55,6 @@ python populate_packages_prepend () {
 				bb.data.setVar('RCONFLICTS_' + full_package, ' '.join(line[11:].split(', ')), d)
 			if line.startswith('Maintainer: '):
 				bb.data.setVar('MAINTAINER_' + full_package, line[12:], d)
-
 
 	mydir = bb.data.getVar('D', d, 1) + "/../enigma2-plugins/"
 	for package in bb.data.getVar('PACKAGES', d, 1).split():
