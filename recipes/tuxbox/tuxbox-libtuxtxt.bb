@@ -9,7 +9,7 @@ SRCDATE_dm7020 = "20070307"
 
 PN = "libtuxtxt"
 PV = "0.0+cvs${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libs;method=ext \
 	file://acinclude.m4 \

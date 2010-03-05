@@ -236,7 +236,7 @@ diff -u -r1.23 tuxtxt_common.h
  
  	if (renderinfo->screenmode == 0 )
 -		tuxtxt_FillRect(renderinfo->lfb,renderinfo->var_screeninfo.xres,renderinfo->StartX+renderinfo->displaywidth, ys,renderinfo->var_screeninfo.xres-(renderinfo->StartX+renderinfo->displaywidth),renderinfo->var_screeninfo.yres   ,color);
-+		tuxtxt_FillRect(renderinfo->lfb,renderinfo->fix_screeninfo.line_length,renderinfo->StartX+renderinfo->displaywidth, ys,renderinfo->fix_screeninfo.line_length-(renderinfo->StartX+renderinfo->displaywidth),renderinfo->var_screeninfo.yres   ,color);
++		tuxtxt_FillRect(renderinfo->lfb,renderinfo->fix_screeninfo.line_length,renderinfo->StartX+renderinfo->displaywidth, ys,renderinfo->var_screeninfo.xres-(renderinfo->StartX+renderinfo->displaywidth),renderinfo->var_screeninfo.yres   ,color);
  }
  
  
@@ -245,13 +245,13 @@ diff -u -r1.23 tuxtxt_common.h
  void tuxtxt_ClearBB(tstRenderInfo* renderinfo,int color)
  {
 -	memset(renderinfo->lfb + (renderinfo->var_screeninfo.yres-renderinfo->var_screeninfo.yoffset )*renderinfo->var_screeninfo.xres, color, renderinfo->var_screeninfo.xres*renderinfo->var_screeninfo.yres);
-+	tuxtxt_FillRect(renderinfo->lfb,renderinfo->fix_screeninfo.line_length,0, renderinfo->var_screeninfo.yres - renderinfo->var_screeninfo.yoffset, renderinfo->fix_screeninfo.line_length, renderinfo->var_screeninfo.yres, color);
++	tuxtxt_FillRect(renderinfo->lfb,renderinfo->fix_screeninfo.line_length,0, renderinfo->var_screeninfo.yres - renderinfo->var_screeninfo.yoffset, renderinfo->var_screeninfo.xres, renderinfo->var_screeninfo.yres, color);
  }
  
  void tuxtxt_ClearFB(tstRenderInfo* renderinfo,int color)
  {
 -	memset(renderinfo->lfb + renderinfo->var_screeninfo.xres*renderinfo->var_screeninfo.yoffset, color, renderinfo->var_screeninfo.xres*renderinfo->var_screeninfo.yres);
-+	tuxtxt_FillRect(renderinfo->lfb,renderinfo->fix_screeninfo.line_length,0, renderinfo->var_screeninfo.yoffset, renderinfo->fix_screeninfo.line_length, renderinfo->var_screeninfo.yres, color);
++	tuxtxt_FillRect(renderinfo->lfb,renderinfo->fix_screeninfo.line_length,0, renderinfo->var_screeninfo.yoffset, renderinfo->var_screeninfo.xres, renderinfo->var_screeninfo.yres, color);
  }
  
  int  tuxtxt_GetCurFontWidth(tstRenderInfo* renderinfo)
