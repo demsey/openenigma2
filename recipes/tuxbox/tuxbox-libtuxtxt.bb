@@ -9,7 +9,7 @@ SRCDATE_dm7020 = "20070307"
 
 PN = "libtuxtxt"
 PV = "0.0+cvs${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libs;method=ext \
 	file://acinclude.m4 \
@@ -18,26 +18,22 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libs;metho
 SRC_URI_append_dm500hd = " \
 	file://32bpp.diff;patch=1 \
 	file://resize_framebuffer.diff;patch=1 \
-	file://allow_different_demux.diff;patch=1 \
-	file://fastclear.diff;patch=1"
+	file://allow_different_demux.diff;patch=1"
 
 SRC_URI_append_dm7025 = " \
 	file://32bpp.diff;patch=1 \
 	file://resize_framebuffer.diff;patch=1 \
-	file://allow_different_demux.diff;patch=1 \
-	file://fastclear.diff;patch=1"
+	file://allow_different_demux.diff;patch=1"
 
 SRC_URI_append_dm800 = " \
 	file://32bpp.diff;patch=1 \
 	file://resize_framebuffer.diff;patch=1 \
-	file://allow_different_demux.diff;patch=1 \
-	file://fastclear.diff;patch=1"
+	file://allow_different_demux.diff;patch=1"
 
 SRC_URI_append_dm8000 = " \
 	file://32bpp.diff;patch=1 \
 	file://resize_framebuffer.diff;patch=1 \
-	file://allow_different_demux.diff;patch=1 \
-	file://fastclear.diff;patch=1"
+	file://allow_different_demux.diff;patch=1"
 
 S = "${WORKDIR}/libs"
 EXTRA_OECONF = "--with-target=native"

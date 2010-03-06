@@ -1,10 +1,6 @@
-Index: libs/libtuxtxt/libtuxtxt.c
-===================================================================
-RCS file: /cvs/tuxbox/apps/tuxbox/libs/libtuxtxt/libtuxtxt.c,v
-retrieving revision 1.11
-diff -u -r1.11 libtuxtxt.c
---- libs/libtuxtxt/libtuxtxt.c	7 Sep 2008 18:17:34 -0000	1.11
-+++ libs/libtuxtxt/libtuxtxt.c	29 Jan 2009 20:22:13 -0000
+diff -Naur libs-org/libtuxtxt/libtuxtxt.c libs/libtuxtxt/libtuxtxt.c
+--- libs-org/libtuxtxt/libtuxtxt.c	2010-03-06 10:51:52.000000000 +0100
++++ libs/libtuxtxt/libtuxtxt.c	2010-03-06 10:55:25.000000000 +0100
 @@ -7,6 +7,15 @@
   *    Info entnommen aus videotext-0.6.19991029,                              *
   *    Copyright (c) 1994-96 Martin Buck  <martin-2.buck@student.uni-ulm.de>   *
@@ -21,13 +17,9 @@ diff -u -r1.11 libtuxtxt.c
   ******************************************************************************/
  
  #ifdef DEBUG
-Index: libs/libtuxtxt/tuxtxt_common.h
-===================================================================
-RCS file: /cvs/tuxbox/apps/tuxbox/libs/libtuxtxt/tuxtxt_common.h,v
-retrieving revision 1.23
-diff -u -r1.23 tuxtxt_common.h
---- libs/libtuxtxt/tuxtxt_common.h	29 Jan 2009 20:12:59 -0000	1.23
-+++ libs/libtuxtxt/tuxtxt_common.h	29 Jan 2009 20:22:13 -0000
+diff -Naur libs-org/libtuxtxt/tuxtxt_common.h libs/libtuxtxt/tuxtxt_common.h
+--- libs-org/libtuxtxt/tuxtxt_common.h	2010-03-06 10:51:52.000000000 +0100
++++ libs/libtuxtxt/tuxtxt_common.h	2010-03-06 10:56:26.000000000 +0100
 @@ -627,6 +627,19 @@
  	aG3_70, aG3_71, aG3_72, aG3_73, aG3_74, aG3_75, aG3_76, aG3_77, aG3_78, aG3_79, aG3_7a, aG3_7b, aG3_7c, aG3_7d, aG3_7e
  };
@@ -48,26 +40,31 @@ diff -u -r1.23 tuxtxt_common.h
  tuxtxt_cache_struct tuxtxt_cache;
  static pthread_mutex_t tuxtxt_cache_lock = PTHREAD_MUTEX_INITIALIZER;
  int tuxtxt_get_zipsize(int p,int sp)
-@@ -3294,12 +3307,16 @@
+@@ -3294,14 +3307,21 @@
  void tuxtxt_FillRect(unsigned char *lfb, int xres, int x, int y, int w, int h, int color)
  {
  	if (!lfb) return;
 -	unsigned char *p = lfb + x + y * xres;
 +	unsigned char *p = lfb + x*4 + y * xres;
++	unsigned char linebuf[w*4];
 +	int xtmp;
  
  	if (w > 0)
++	{
++		for (xtmp=0; xtmp<w; xtmp++)
++			memcpy(linebuf+xtmp*4,bgra[color],4);
++
  		for ( ; h > 0 ; h--)
  		{
 -			memset(p, color, w);
-+			for (xtmp=0; xtmp<w; xtmp++)
-+			{
-+				memcpy(p+xtmp*4,bgra[color],4);
-+			}
++			memcpy(p,linebuf,w*4);
  			p += xres;
  		}
++	}
  }
-@@ -3311,7 +3328,7 @@
+ 
+ void tuxtxt_RenderDRCS(int xres,
+@@ -3311,7 +3331,7 @@
  	unsigned char fgcolor, unsigned char bgcolor)
  {
  	if (d == NULL) return;
@@ -76,7 +73,7 @@ diff -u -r1.23 tuxtxt_common.h
  	unsigned char *ay = ax + 13; /* array[0..10] of y-offsets for each pixel */
  
  	for (y = 0; y < 10; y++) /* 10*2 bytes a 6 pixels per char definition */
-@@ -3335,9 +3352,21 @@
+@@ -3335,9 +3355,21 @@
  			for (i = 0; i < h; i++)
  			{
  				if (ax[x+1] > ax[x])
@@ -100,7 +97,7 @@ diff -u -r1.23 tuxtxt_common.h
  				d += xres;
  			}
  			d -= h * xres;
-@@ -3350,20 +3379,26 @@
+@@ -3350,20 +3382,26 @@
  void tuxtxt_DrawVLine(unsigned char *lfb, int xres, int x, int y, int l, int color)
  {
  	if (!lfb) return;
@@ -130,7 +127,7 @@ diff -u -r1.23 tuxtxt_common.h
  }
  
  void tuxtxt_FillRectMosaicSeparated(unsigned char *lfb, int xres,int x, int y, int w, int h, int fgcolor, int bgcolor, int set)
-@@ -3378,48 +3413,54 @@
+@@ -3378,48 +3416,54 @@
  
  void tuxtxt_FillTrapez(unsigned char *lfb, int xres,int x0, int y0, int l0, int xoffset1, int h, int l1, int color)
  {
@@ -196,7 +193,7 @@ diff -u -r1.23 tuxtxt_common.h
  	}
  }
  
-@@ -3683,7 +3724,7 @@
+@@ -3683,7 +3727,7 @@
  				if (lfb) 
  				{
  					int x,y,f,c;
@@ -205,7 +202,7 @@ diff -u -r1.23 tuxtxt_common.h
  					for (y=0; y<fontheight;y++)
  					{
  						for (f=0; f<factor; f++)
-@@ -3691,7 +3732,7 @@
+@@ -3691,7 +3735,7 @@
  							for (x=0; x<curfontwidth*xfactor;x++)
  							{
  								c = (y&4 ? (x/3)&1 :((x+3)/3)&1);
@@ -214,7 +211,7 @@ diff -u -r1.23 tuxtxt_common.h
  							}
  							p += xres;
  						}
-@@ -3729,7 +3770,7 @@
+@@ -3729,7 +3773,7 @@
  			}
  			axdrcs[12] = curfontwidth; /* adjust last x-offset according to position, FIXME: double width */
  			tuxtxt_RenderDRCS(xres,p,
@@ -223,7 +220,7 @@ diff -u -r1.23 tuxtxt_common.h
  						  axdrcs, fgcolor, bgcolor);
  		}
  		else
-@@ -3996,12 +4037,12 @@
+@@ -3996,12 +4040,12 @@
  void tuxtxt_FillBorder(tstRenderInfo* renderinfo, int color)
  {
  	int ys =  renderinfo->var_screeninfo.yres-renderinfo->var_screeninfo.yoffset;
@@ -240,7 +237,7 @@ diff -u -r1.23 tuxtxt_common.h
  }
  
  
-@@ -4037,12 +4078,12 @@
+@@ -4037,12 +4081,12 @@
  }
  void tuxtxt_ClearBB(tstRenderInfo* renderinfo,int color)
  {
@@ -255,7 +252,7 @@ diff -u -r1.23 tuxtxt_common.h
  }
  
  int  tuxtxt_GetCurFontWidth(tstRenderInfo* renderinfo)
-@@ -4079,7 +4120,7 @@
+@@ -4079,7 +4123,7 @@
  	renderinfo->PosX += t;
  	int curfontwidth2 = tuxtxt_GetCurFontWidth(renderinfo);
  	renderinfo->PosX -= t;
@@ -264,7 +261,7 @@ diff -u -r1.23 tuxtxt_common.h
  	if (alphachar <= 0) return;
  
  	if (zoom && Attribute->doubleh)
-@@ -4112,7 +4153,7 @@
+@@ -4112,7 +4156,7 @@
  #if TUXTXT_DEBUG
  		printf("TuxTxt <FT_Get_Char_Index for Char %x \"%c\" failed\n", alphachar, alphachar);
  #endif
@@ -273,7 +270,7 @@ diff -u -r1.23 tuxtxt_common.h
  		renderinfo->PosX += curfontwidth;
  		return;
  	}
-@@ -4127,7 +4168,7 @@
+@@ -4127,7 +4171,7 @@
  		printf("TuxTxt <FTC_SBitCache_Lookup: 0x%x> c%x a%x g%x w%d h%d x%d y%d\n",
  				 error, alphachar, Attribute, glyph, curfontwidth, renderinfo->fontheight, renderinfo->PosX, renderinfo->PosY);
  #endif
@@ -282,7 +279,7 @@ diff -u -r1.23 tuxtxt_common.h
  		renderinfo->PosX += curfontwidth;
  		return;
  	}
-@@ -4188,13 +4229,13 @@
+@@ -4188,13 +4232,13 @@
  		    Row = 0;
  		}
  		else		
@@ -298,7 +295,7 @@ diff -u -r1.23 tuxtxt_common.h
  		for (Row = he; Row; Row--) /* row counts up, but down may be a little faster :) */
  		{
  			int pixtodo = (renderinfo->usettf ? renderinfo->sbit->width : curfontwidth);
-@@ -4203,8 +4244,8 @@
+@@ -4203,8 +4247,8 @@
  			for (Bit = xfactor * (renderinfo->sbit->left + renderinfo->TTFShiftX); Bit > 0; Bit--) /* fill left margin */
  			{
  				for (f = factor-1; f >= 0; f--)
@@ -309,7 +306,7 @@ diff -u -r1.23 tuxtxt_common.h
  				if (!renderinfo->usettf)
  					pixtodo--;
  			}
-@@ -4224,14 +4265,14 @@
+@@ -4224,14 +4268,14 @@
  						color = bgcolor;
  
  					for (f = factor-1; f >= 0; f--)
@@ -328,7 +325,7 @@ diff -u -r1.23 tuxtxt_common.h
  						if (!renderinfo->usettf)
  							pixtodo--;
  					}
-@@ -4242,17 +4283,17 @@
+@@ -4242,17 +4286,17 @@
  				  Bit > 0; Bit--) /* fill rest of char width */
  			{
  				for (f = factor-1; f >= 0; f--)
@@ -351,7 +348,7 @@ diff -u -r1.23 tuxtxt_common.h
  
  		renderinfo->PosX += curfontwidth;
  		renderinfo->TTFShiftY = backupTTFshiftY; // restore TTFShiftY
-@@ -4300,9 +4341,8 @@
+@@ -4300,9 +4344,8 @@
  
  void tuxtxt_SwitchScreenMode(tstRenderInfo* renderinfo,int newscreenmode)
  {
@@ -362,7 +359,7 @@ diff -u -r1.23 tuxtxt_common.h
  	/* reset transparency mode */
  	if (renderinfo->transpmode)
  		renderinfo->transpmode = 0;
-@@ -4370,42 +4410,53 @@
+@@ -4370,42 +4413,53 @@
  
  		tuxtxt_setfontwidth(renderinfo,fw);
  
@@ -444,7 +441,7 @@ diff -u -r1.23 tuxtxt_common.h
  	}
  }
  
-@@ -4431,7 +4482,7 @@
+@@ -4431,7 +4485,7 @@
  	if (renderinfo->boxed)
  	{
  		renderinfo->PosX = renderinfo->StartX + column*width;
@@ -453,7 +450,7 @@ diff -u -r1.23 tuxtxt_common.h
  		return;
  	}
  
-@@ -4442,7 +4493,7 @@
+@@ -4442,7 +4496,7 @@
  
  		if (l > 9) /* smaller font, if no space for one half space at front and end */
  			tuxtxt_setfontwidth(renderinfo,oldfontwidth * 10 / (l+1));
@@ -462,7 +459,7 @@ diff -u -r1.23 tuxtxt_common.h
  		renderinfo->PosX += ((width) - (l*renderinfo->fontwidth+l*renderinfo->fontwidth/abx))/2; /* center */
  		for (p = tuxtxt_cache.adip[linkpage]; *p; p++)
  			tuxtxt_RenderCharBB(renderinfo,*p, &tuxtxt_atrtable[ATR_L250 + column]);
-@@ -4451,7 +4502,7 @@
+@@ -4451,7 +4505,7 @@
  	else /* display number */
  	{
  		renderinfo->PosX = renderinfo->StartX + column*width;
@@ -471,7 +468,7 @@ diff -u -r1.23 tuxtxt_common.h
  		if (linkpage < tuxtxt_cache.page)
  		{
  			line[6] = '<';
-@@ -4620,7 +4671,7 @@
+@@ -4620,7 +4674,7 @@
  void tuxtxt_CopyBB2FB(tstRenderInfo* renderinfo)
  {
  	unsigned char *src, *dst, *topsrc;
@@ -480,7 +477,7 @@ diff -u -r1.23 tuxtxt_common.h
  
  	/* line 25 */
  	if (!renderinfo->pagecatching)
-@@ -4636,8 +4687,8 @@
+@@ -4636,8 +4690,8 @@
  		if (ioctl(renderinfo->fb, FBIOPAN_DISPLAY, &renderinfo->var_screeninfo) == -1)
  			perror("TuxTxt <FBIOPAN_DISPLAY>");
  
@@ -491,7 +488,7 @@ diff -u -r1.23 tuxtxt_common.h
  //			 ClearBB(*(lfb + renderinfo->var_screeninfo.xres * renderinfo->var_screeninfo.yoffset));
  
  		if (renderinfo->clearbbcolor >= 0)
-@@ -4648,18 +4699,18 @@
+@@ -4648,18 +4702,18 @@
  		return;
  	}
  
@@ -515,7 +512,7 @@ diff -u -r1.23 tuxtxt_common.h
  
  	if (renderinfo->transpmode)
  		fillcolor = tuxtxt_color_transp;
-@@ -4667,94 +4718,82 @@
+@@ -4667,94 +4721,81 @@
  		fillcolor = tuxtxt_cache.FullScrColor;
  
  	if (renderinfo->zoommode == 2)
@@ -571,15 +568,16 @@ diff -u -r1.23 tuxtxt_common.h
  //	if (!pagecatching )
  //		memcpy(dst, lfb + (StartY+24*fontheight)*renderinfo->var_screeninfo.xres, renderinfo->var_screeninfo.xres*fontheight); /* copy line25 in normal height */
 -	for (i = renderinfo->var_screeninfo.yres - renderinfo->StartY - 25*renderinfo->fontheight; i >= 0;i--)
-+	dst -= renderinfo->fix_screeninfo.line_length;
-+	for (i = renderinfo->var_screeninfo.yres - renderinfo->StartY - 25 * renderinfo->fontheight; i >= 0;i--)
- 	{
+-	{
 -		memset(dst + renderinfo->var_screeninfo.xres*(renderinfo->fontheight+i), fillcolor, screenwidth);
-+		for (swtmp=0; swtmp < screenwidth/4;swtmp++)
-+		{
-+			memcpy(dst + renderinfo->fix_screeninfo.line_length*(renderinfo->fontheight+i)+swtmp*4, bgra[fillcolor], 4);
-+		}
- 	}
+-	}
++	dst -= renderinfo->fix_screeninfo.line_length;
++
++	unsigned char linebuf[screenwidth];
++	for (swtmp=0; swtmp < screenwidth/4;swtmp++)
++		memcpy(linebuf+swtmp*4, bgra[fillcolor], 4);
++	for (i = renderinfo->var_screeninfo.yres - renderinfo->StartY - 25 * renderinfo->fontheight; i >= 0;i--)
++		memcpy(dst + renderinfo->fix_screeninfo.line_length*(renderinfo->fontheight+i), linebuf, screenwidth);
  }
  
  void tuxtxt_setcolors(tstRenderInfo* renderinfo,unsigned short *pcolormap, int offset, int number)
@@ -642,7 +640,7 @@ diff -u -r1.23 tuxtxt_common.h
  }
  
  /******************************************************************************
-@@ -4968,11 +5007,11 @@
+@@ -4968,11 +5009,11 @@
  
  			for (row = 0; row < DRCSROWS; row++)
  				for (col = 0; col < DRCSCOLS; col++)
@@ -657,7 +655,7 @@ diff -u -r1.23 tuxtxt_common.h
  						ax, tuxtxt_color_white, tuxtxt_color_black);
  
  			memset(renderinfo->page_char + 40, 0xff, 24*40); /* don't render any char below row 0 */
-@@ -5062,13 +5101,13 @@
+@@ -5062,13 +5103,13 @@
  				renderinfo->pageinfo = p;
  				renderinfo->boxed = p->boxed;
  			}
@@ -673,7 +671,7 @@ diff -u -r1.23 tuxtxt_common.h
  		}
  		else
  			startrow = 1;
-@@ -5408,39 +5447,6 @@
+@@ -5408,39 +5449,6 @@
  		renderinfo->page_atrb[i].doublew = 0;
  		renderinfo->page_atrb[i].IgnoreAtBlackBgSubst = 0;
  	}
@@ -713,13 +711,18 @@ diff -u -r1.23 tuxtxt_common.h
  	return 1;	
  }
  /******************************************************************************
-Index: libs/libtuxtxt/tuxtxt_def.h
-===================================================================
-RCS file: /cvs/tuxbox/apps/tuxbox/libs/libtuxtxt/tuxtxt_def.h,v
-retrieving revision 1.13
-diff -u -r1.13 tuxtxt_def.h
---- libs/libtuxtxt/tuxtxt_def.h	29 Jan 2009 20:12:59 -0000	1.13
-+++ libs/libtuxtxt/tuxtxt_def.h	29 Jan 2009 20:22:13 -0000
+@@ -5489,7 +5497,7 @@
+ 		FT_Done_FreeType(renderinfo->library);
+ 	renderinfo->manager = 0;
+ 	renderinfo->library = 0;
+-	tuxtxt_ClearFB(renderinfo,renderinfo->previousbackcolor);
++	memset(renderinfo->lfb, 0, renderinfo->fix_screeninfo.smem_len);
+ 	/* unmap framebuffer */
+ 	munmap(renderinfo->lfb, renderinfo->fix_screeninfo.smem_len);
+ 	printf("[TTX] Rendering ended\n");
+diff -Naur libs-org/libtuxtxt/tuxtxt_def.h libs/libtuxtxt/tuxtxt_def.h
+--- libs-org/libtuxtxt/tuxtxt_def.h	2010-03-06 10:51:52.000000000 +0100
++++ libs/libtuxtxt/tuxtxt_def.h	2010-03-06 10:55:25.000000000 +0100
 @@ -72,8 +72,10 @@
  #define hold_mosaic         0x1E
  #define release_mosaic      0x1F
